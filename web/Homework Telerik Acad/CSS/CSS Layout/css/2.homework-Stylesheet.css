@@ -1,0 +1,75 @@
+﻿body {
+    font-family: Arial;
+}
+
+h1 {
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 0px;
+}
+
+#mainSection {
+    background-color: #EEEEEE;
+    border-radius: 10px;
+    padding: 10px;
+    float: left;
+    width: 388px;    
+}
+
+.subsection {
+    background-color: #ffffff;
+    border: 1px solid #C8C8C8;
+    float: left;
+    min-height: 86px;
+    margin-bottom: 15px;
+    margin-top: 30px;
+    padding: 13px;
+    width: 360px;
+}
+
+img {
+    border: 1px solid #C8C8C8;
+    float: left;
+}
+
+.description {
+    float: left;
+    font-size: 12px;
+    margin-left: 13px;
+    width: 195px;
+}
+
+span {
+    font-weight: bold;
+}
+
+.buttons {
+    color: #ffffff;
+    float: right;
+    font-size: 14px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.button1 {
+    background-image: url('../images/Button1.png');
+    width: 77px;
+    height: 25px;
+    float: left;
+    margin-right: 3px;
+}
+
+.button2 {
+    background-image: url('../images/Button2.png');
+    float: right;
+    height: 25px;
+    width: 64px;
+}
+
+a {
+    color: #ffffff;
+    padding-top: 6px;
+    padding-left: 5px;
+    text-decoration: none;
+    vertical-align: middle;
+}

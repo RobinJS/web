@@ -1,0 +1,130 @@
+﻿body {
+    font-family: Arial;
+    font-size: 12px;
+}
+
+#mainDiv {
+    border: 1px solid black;
+    background-color: #F1F1F1;
+    position: absolute;
+    top: 3px;
+    left: 2px;
+    width: 790px;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+nav {
+    float: left;
+    width: 140px;
+}
+
+section {
+    border: 1px solid #939393;
+    background-color: #ffffff;
+    float: left;
+    padding: 5px;
+    min-height: 550px;
+    width: 485px;
+}
+
+aside {
+    background-color: #ffffff;
+    float: right;
+    text-align: center;
+    width: 150px;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+li:first-of-type a {
+    color: #981E1C;
+    font-weight: bold;
+}
+
+li > a {
+    text-decoration: none;
+    color: #000000;
+}
+
+#homePage {
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+h1 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #ffffff;
+    font-size: 14px;
+    background-color: #808080;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.buttons {
+    border: 1px solid black;
+    float: left;
+    font-size: 12px;
+    margin-right: 5px;
+    text-align: center;
+    width: 98px;
+}
+
+div[class*=buttons] a {
+    color: #000000;
+    text-decoration: none;
+}
+
+div[class*=buttons] a:hover {
+    text-decoration: underline;
+}
+
+.previous {
+    float: left;
+    padding-top: 2px;
+}
+
+.next {
+    float: right;
+    padding-top: 2px;
+}
+
+hr {
+    background-color: #939393;
+    height: 2px;
+    margin-top: 30px;
+}
+
+img[alt*=Logo] {
+    float: left;
+    margin-right: 10px;
+}
+.bold {
+    font-weight: bold;
+}
+
+a {
+    color: #911F1D;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+aside div {
+    border: 1px solid #939393;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 1px;
+}
+
+aside input {
+    width: 100px;   
+}

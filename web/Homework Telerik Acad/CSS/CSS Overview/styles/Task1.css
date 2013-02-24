@@ -1,0 +1,25 @@
+﻿.darkFont {
+    color: #B1B5B8;
+}
+.yellowFont {
+    color: #D5C591;
+    text-decoration: none;
+}
+section {
+    background-color: #595959;
+    font-family: Arial;
+    font-weight: bold;
+    width: 450px;
+}
+
+#red {
+    color: #FD0A26;
+    font-style: normal;
+}
+#orange {
+    color: #DB6833;
+}
+#publicPost {
+    color: #D5C591;
+    font-style: normal;
+}

@@ -1,0 +1,92 @@
+﻿body {
+    background-color: #000000;
+}
+
+#mainSection {
+    background: rgb(57,57,57); /* Old browsers */
+    background: -moz-linear-gradient(left,  rgba(57,57,57,1) 0%, rgba(81,81,81,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(57,57,57,1)), color-stop(100%,rgba(81,81,81,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  rgba(57,57,57,1) 0%,rgba(81,81,81,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  rgba(57,57,57,1) 0%,rgba(81,81,81,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  rgba(57,57,57,1) 0%,rgba(81,81,81,1) 100%); /* IE10+ */
+    background: linear-gradient(to right,  rgba(57,57,57,1) 0%,rgba(81,81,81,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#393939', endColorstr='#515151',GradientType=1 ); /* IE6-9 */
+    border: 1px solid #53473B;
+    border-radius: 10px;
+    height: 310px;
+    width: 640px;
+}
+
+#mainHeader {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 55px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    float: left;
+    width: 620px;
+}
+
+img {
+    float: left;
+}
+
+label {
+    color: #ffffff;
+    font-size: 22px;
+    margin-right: 12px;
+    vertical-align: top;
+}
+
+form {
+    display: inline;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+input[type=text], input[type=email] {
+    margin-right: 25px;
+    margin-top: 4px;
+    text-indent: 10px;
+    vertical-align: top;
+}
+
+input[type=image] {
+    padding-top: 3px;
+}
+
+#mainContent {
+    -webkit-box-shadow:  0px -2px 5px 3px #000000;
+    box-shadow:  0px -2px 5px 3px #000000;
+    background-color: #3B3B3B;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: 1px solid #53473B;
+    border-right: 1px solid #53473B;
+    border-bottom: 1px solid #53473B;
+    height: 250px;
+    margin-top: 75px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+h1 {
+    color: #FCD41C;
+    font-size: 30px;
+    position: absolute;
+    top: 70px;
+}
+
+p {
+    color: #878787;
+    font-family: Arial;
+    font-size: 16px;
+    padding-top: 60px;
+}
+
+span {
+    color: #BCBCBC;
+}

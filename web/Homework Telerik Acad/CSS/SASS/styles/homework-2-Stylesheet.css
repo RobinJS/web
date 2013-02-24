@@ -1,0 +1,22 @@
+body, ul, li {
+  margin: 0;
+  padding: 0; }
+
+body ul {
+  list-style-type: none; }
+  body ul li {
+    display: inline-block;
+    margin: 5px;
+    float: left; }
+    body ul li img {
+      width: 125px;
+      height: 75px; }
+    body ul li:hover > div img {
+      display: block;
+      position: absolute;
+      top: 140px;
+      left: 5px;
+      width: 500px;
+      height: 300px; }
+    body ul li div img {
+      display: none; }

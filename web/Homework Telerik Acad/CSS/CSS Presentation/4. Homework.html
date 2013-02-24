@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS Presentation - Task 4</title>
+    <link href="css/4.homework-Stylesheet.css" type="text/css" rel="Stylesheet" />
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+</head>
+<body>
+    <section id="container" class="gradient">
+        <header class="gradient">
+            <nav>
+                <a href="#"><span>V</span>iew</a>
+                <a href="#"><span>E</span>dit</a>
+                <a href="#"><span>H</span>elp</a>
+            </nav>
+        </header>
+        <section id="display">
+            <input type="text" class="gradient"/>
+        </section>
+        <section id="binary">
+            <div class="table">
+                <div class="tableRow">
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">63</div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell">47</div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell rightAlign">32</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">0000</div>
+                    <div class="tableCell">1000</div>
+                    <div class="tableCell">0111</div>
+                    <div class="tableCell">0001</div>
+                    <div class="tableCell">1011</div>
+                    <div class="tableCell">1011</div>
+                    <div class="tableCell">0111</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">31</div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell">15</div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell"></div>
+                    <div class="tableCell rightAlign">0</div>
+                </div>
+            </div>
+        </section>
+        <section id="numSys">
+            <div>
+                <input type="radio" name="numSys" id="Hex"/><label for="Hex">Hex</label><br />
+            </div>
+            <div>
+                <input type="radio" name="numSys" id="Dec" checked="checked"/><label for="Dec">Dec</label><br />
+            </div>
+            <div>
+                <input type="radio" name="numSys" id="Oct"/><label for="Oct">Oct</label><br />
+            </div>
+            <div>
+                <input type="radio" name="numSys" id="Bin"/><label for="Bin">Bin</label>
+            </div>
+        </section>
+        <section id="buttonBlock">
+            <div class="buttonBlockPart1">
+                <div><button type="button" class="cleared" disabled="disabled">&nbsp;</button></div>
+                <div class="hover"><button type="button" class="oper gradient">Mod</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled">A</button></div>
+                <div class="hover"><button type="button" class="func gradient">MC</button></div>
+                <div class="hover"><button type="button" class="func gradient">MR</button></div>
+                <div class="hover"><button type="button" class="func gradient">MS</button></div>
+                <div class="hover"><button type="button" class="func gradient">M+</button></div>
+                <div class="hover"><button type="button" class="func gradient">M-</button></div>
+            </div>
+            <div class="buttonBlockPart1">
+                <div class="hover"><button type="button" class="oper gradient">(</button></div>
+                <div class="hover"><button type="button" class="oper gradient">)</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled">B</button></div>
+                <div class="hover"><button type="button" class="oper gradient" style="font-size: 22px; font-weight: 900;">&larr;</button></div>
+                <div class="hover"><button type="button" class="oper gradient">CE</button></div>
+                <div class="hover"><button type="button" class="oper gradient">C</button></div>
+                <div class="hover"><button type="button" class="oper gradient">&plusmn;</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled" id="sqrt">&radic;</button></div>
+            </div>
+            <div class="buttonBlockPart1">
+                <div class="hover"><button type="button" class="oper gradient">RoL</button></div>
+                <div class="hover"><button type="button" class="oper gradient">RoR</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled">C</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">7</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">8</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">9</button></div>
+                <div class="hover"><button type="button" class="oper gradient">/</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled" id="percent">%</button></div>
+            </div>
+            <div class="buttonBlockPart1">
+                <div class="hover"><button type="button" class="oper gradient">Or</button></div>
+                <div class="hover"><button type="button" class="oper gradient">Xor</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled">D</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">4</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">5</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">6</button></div>
+                <div class="hover"><button type="button" class="oper gradient">*</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled" style="font-weight: normal; font-size: 14px;">1/x</button></div>
+            </div>
+            <div class="buttonBlockPart2">
+                <div class="hover"><button type="button" class="oper gradient">Lsh</button></div>
+                <div class="hover"><button type="button" class="oper gradient">Rsh</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled">E</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">1</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">2</button></div>
+                <div class="hover"><button type="button" class="numbers gradient">3</button></div>
+                <div class="hover"><button type="button" class="oper gradient">-</button></div>
+                <div class="hover" id="equaltyDiv"><button type="button" class="equalty oper" style="font-size: 26px; font-weight: normal;">=</button></div>
+            </div>
+            <div class="buttonBlockPart2">
+                <div class="hover"><button type="button" class="oper gradient">Not</button></div>
+                <div class="hover"><button type="button" class="oper gradient">And</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled">F</button></div>
+                <div class="hover" id="zeroDiv"><button type="button" class="zero numbers gradient">0</button></div>
+                <div class="disabled"><button type="button" class="disabled" disabled="disabled">.</button></div>
+                <div class="hover"><button type="button" class="oper gradient">+</button></div>
+            </div>
+        </section>
+        <section id="type">
+            <div>
+                <input type="radio" name="type" id="Qword" checked="checked"/><label for="Qword">Qword</label><br />
+            </div>
+            <div>
+                <input type="radio" name="type" id="Dword"/><label for="Dword">Dword</label><br />
+            </div>
+            <div>
+                <input type="radio" name="type" id="Word"/><label for="Word">Word</label><br />
+            </div>
+            <div>
+                <input type="radio" name="type" id="Byte"/><label for="Byte">Byte</label>
+            </div>
+        </section>
+    </section>
+</body>
+</html>

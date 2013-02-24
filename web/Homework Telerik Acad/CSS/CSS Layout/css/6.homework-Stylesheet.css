@@ -1,0 +1,66 @@
+﻿body {
+    font-size: 10px;
+}
+
+#main {
+    background-color: #1E3741;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+nav {
+    font-family: Calibri;
+    float: left;
+    border: 1px solid black;
+    display: inline;
+    height: 50px;
+    width: 550px;
+    padding: 0px;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+nav ul li a {
+    float: left;
+    font-size: 14px;
+    margin-right: 2px;
+    margin-left: 0px;
+    padding: 10px;
+    border: 1px solid black;
+    margin-top: 7px;
+    height: 12px;
+}
+
+#sideMenu ul {
+    margin-top: 50px;
+    width: 220px;
+    font-size: 14px;
+    border: 1px solid black;
+    margin-left: 0px;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    margin-right: 10px;
+}
+
+#sideMenu ul li {
+    padding-left: 5px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+}
+
+#sideMenu ul li:hover {
+    padding-left: 5px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    display: block;
+}
+#picture {
+    position: absolute;
+    top: 54px;
+    left: 230px;
+}

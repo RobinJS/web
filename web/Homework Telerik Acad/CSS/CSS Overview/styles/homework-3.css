@@ -1,0 +1,38 @@
+﻿body {
+    background: #A9A9A9;
+}
+h1 {
+    color: #FAFAD2;
+    font-size: 32px;
+    font-weight: bold;
+}
+#mainH1 {
+    text-align: center;
+    font-size: 48px;
+}
+a {
+    text-decoration: none;
+    color: #000000;
+}
+nav li a {
+    color: #FEFEFE;
+    font-weight: bold;
+    font-size: 24px;
+}
+a:hover {
+    text-decoration: underline;
+}
+.current {
+    background-color: #D3D3D3;   
+}
+nav li {
+    list-style-type: none;
+    text-align: center;
+}
+header+p {
+    font-size: 20px;
+}
+body>footer {
+    text-align: center;
+    font-size: 18px;   
+}
