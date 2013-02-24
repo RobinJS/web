@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Simple Form</title>
+    <style type="text/css">
+        .required
+        {
+            font-weight:bold;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <div>Member name : <input type="text" name="memberName" value="" required="required"/><span class="required">*req</span></div>
+        <div>E-mail : <input type="email" name="memberMail" value="" pattern="[^ @]*@[^ @].[^ @]" required="required"/><span class="required">*req</span></div>
+        <div>School : <input type="text" name="memberSchool" value="" required="required"/><span class="required">*req</span></div>
+        <div>
+            <input type="image" src="images/submit.png" name="submit" alt="submit" />
+        </div>
+    </form>
+</body>
+</html>

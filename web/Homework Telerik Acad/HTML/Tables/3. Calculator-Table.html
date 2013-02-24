@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Calculator Table</title>
+    <style type="text/css">
+        [type=button]
+        {
+            width:30px;
+            height:30px;
+            font-size:20px;
+        }
+        .number
+        {
+            color:blue;
+            border:1px solid lightblue;
+        }
+        .operator
+        {
+            color:red;
+            border:1px solid pink;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <table cellspacing="5" cellpadding="0" style="border:1px solid #C0C0C0">
+            <tr>
+                <td colspan="5"><input type="text" name="result" style="width: 170px; text-align:right"/></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="1" class="number" /></td>
+                <td><input type="button" value="2" class="number" /></td>
+                <td><input type="button" value="3" class="number" /></td>
+                <td><input type="button" value="+" class="operator" /></td>
+                <td><input type="button" value="C" class="operator" /></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="4" class="number" /></td>
+                <td><input type="button" value="5" class="number" /></td>
+                <td><input type="button" value="6" class="number" /></td>
+                <td><input type="button" value="-" class="operator" /></td>
+                <td><input type="button" value="%" class="operator" /></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="7" class="number" /></td>
+                <td><input type="button" value="8" class="number" /></td>
+                <td><input type="button" value="9" class="number" /></td>
+                <td><input type="button" value="*" class="operator" /></td>
+                <td rowspan="2"><input type="button" value="=" class="operator" style="height:65px"/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="button" value="0" style="width:65px" class="number" /></td>
+                <td><input type="button" value="." class="operator" /></td>
+                <td><input type="button" value="/" class="operator" /></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
