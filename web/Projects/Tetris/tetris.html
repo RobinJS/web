@@ -1,0 +1,193 @@
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="jquery-1.10.1.min.js"></script>
+    <style type="text/css">
+        #wrapper {
+            margin: 0 auto;
+            width: 430px;
+        }
+
+        #field {
+            border: 1px solid black;
+            display: inline-block;
+            height: 416px;
+            width: 320px;
+        }
+
+        #pannel {
+            border: 1px solid black;
+            float: right;
+            display: inline-block;
+            height: 416px;
+            text-align: center;
+            width: 100px;
+        }
+
+        .brickObject {
+            background-color: #00aa90;
+            border: 1px solid black;
+            height: 30px;
+            position: absolute;
+            width: 30px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="wrapper">
+        <div id="field"></div>
+        <div id="pannel">
+            <a href="#" id="startGame">Start Game</a>
+            <a href="#" id="stopGame">Stop Game</a>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+
+        $("#startGame").on("click", startGame);
+        $("#stopGame").on("click", stopGame);
+
+
+
+        var game = "off";
+        var initialRow = 0;
+        var initialCol = 4;
+        var gameSpeed = 1000;
+        var moveObject;
+
+
+        /*  initializin game field  */
+        var fieldGrid = [13];
+        for (var i = 0; i < 13; i++) {
+            fieldGrid[i] = new Array(10);
+            //for (var j = 0; j < 10; j++) {
+            //    fieldGrid[i][j] = 0;
+            //}
+        }
+
+        /*  Brick constructor   */
+        function Brick() {
+
+            var brick = document.createElement("div");
+            brick.setAttribute("class", "brickObject");
+            var step = 32;
+            this.currentRow = 0;
+            this.currentCol = 4;
+
+            this.init = function () {
+
+                currentRow = initialRow;   // 0
+                currentCol = initialCol;   // 4
+
+                if (fieldGrid[currentRow][currentCol] != undefined) {
+                    alert("Game Over!");
+                    stopGame();
+                }
+                else {
+                    fieldGrid[currentRow][currentCol] = this;
+                    brick.style.left = "658px";
+                    brick.style.top = "9px";
+                    $("#field").append(brick);
+                }
+
+                document.body.addEventListener("keydown", function (e) {
+                    if (!e) {
+                        e = window.event;
+                    }
+                    var command = e.keyCode - 37;
+                    //playerControl(command);
+
+                    switch (command) {
+                        case 0: currentCol--; break;
+                        case 2: currentCol++; break;
+                        case 3: placeBrick(); break;
+                        default: break;
+                    }
+                });
+            },
+
+            this.move = function () {
+                if (game == "on") {
+                    if (parseInt(brick.style.top) >= 384 || (fieldGrid[currentRow + 1][currentCol] != undefined)) {
+                        moveObject = clearInterval(moveObject);
+                        //row = 0;
+                        //col = 4;
+                        //brick.style.top = row;
+                        createBrick();
+                    }
+                    else {
+                        fieldGrid[currentRow][currentCol] = undefined;
+                        brick.style.top = 9 + (currentRow + 1) * step + "px";
+                        brick.style.left = 498 + (currentCol + 1) * step + "px";
+                        currentRow++;
+                        fieldGrid[currentRow][currentCol] = this;
+                    }
+                }
+            }
+
+            var placeBrick = function () {
+                var rowOfAvailablePlaceBottom = 12;
+                
+                for (var i = currentRow + 1; i < fieldGrid.length; i++) {
+                    if (fieldGrid[i][currentCol] != undefined) {
+                        rowOfAvailablePlaceBottom = i - 1;
+                        break;
+                    }
+                }
+                
+                fieldGrid[currentRow][currentCol] = undefined;
+                //currentRow = rowOfAvailablePlaceBottom;
+                fieldGrid[rowOfAvailablePlaceBottom][currentCol] = this;
+                
+                brick.style.top = 9 + (rowOfAvailablePlaceBottom) * step + "px";
+                brick.style.left = 498 + (currentCol + 1) * step + "px";
+
+                moveObject = clearInterval(moveObject);
+                //row = 0;
+                //col = 4;
+                createBrick();
+            };
+
+            var playerControl = function (command) {
+                console.log(command);
+            };
+
+
+        }
+
+        /*  Game Start  */
+        function startGame() {
+            if (game == "off") {
+                game = "on";
+
+                for (var i = 0; i < 13; i++) {
+                    //fieldGrid[i] = new Array(10);
+                    for (var j = 0; j < 10; j++) {
+                        fieldGrid[i][j] = undefined;
+                    }
+                }
+
+                createBrick();
+            }
+        }
+
+        function stopGame() {
+            if (game == "on") {
+                game = "off";
+                moveObject = clearInterval(moveObject);
+            }
+        }
+
+        function createBrick() {
+            var brick = new Brick();
+            brick.init();
+            currentRow = 0;
+            currentCol = 4;
+            moveObject = setInterval(brick.move, gameSpeed);
+        }
+
+    </script>
+</body>
+</html>
