@@ -149,13 +149,13 @@ function showNextFigure() {
     var cell = $("#nextFigure table td");
     cell.css("backgroundColor", "transparent");
 
-    // Move initial column coordinates to left so it will be easyer to place next figure in the "#pannel"'s grid
+    /* Move initial column coordinates to left so it will be easyer to place next figure in the "#pannel"'s grid */
     var figureToShow = (nextFigure.currentVariant).slice(0, nextFigure.currentVariant.length);
     for (var column = 1; column < figureToShow.length; column += 2) {
         figureToShow[column] -= 3;
     }
 
-    // Make next figure appear
+    /* Make next figure appear */
     for (var i = 0; i < figureToShow.length; i += 2) {
         var row = figureToShow[i];
         var col = figureToShow[i + 1];
@@ -355,7 +355,7 @@ function Figure(currentType) {
                 cell.css("backgroundColor", "white");
             }
         }
-    };   //............
+    };
 
     var getCurrentFigureCoordinates = function () {
         currentFigureCoordinates = [4];
@@ -395,7 +395,7 @@ function Figure(currentType) {
         var singleRowToDelete;
         for (var rowTodelete in rowsToDelete) {
             singleRowToDelete = gameField[rowsToDelete[rowTodelete]];
-            gameField.splice(rowsToDelete[rowTodelete], 1); // what if we first put a new row
+            gameField.splice(rowsToDelete[rowTodelete], 1);
             gameField.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
             drawField();
             rowsCleared++;
