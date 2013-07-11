@@ -6,9 +6,9 @@ window.onload = function () {
 var game = "off";
 var gameSpeed = 1000;
 var moveable;
-var _fieldBorderLeft = 0;
-var _fieldBorderRight = 9;
-var _fieldBorderBottom = 19;
+var FIELD_BORDER_LEFT = 0;
+var FIELD_BORDER_RIGHT = 9;
+var FIELD_BORDER_BOTTOM = 19;
 var variantIndex = 0;
 var figure;
 var nextFigure;
@@ -256,7 +256,7 @@ function Figure(currentType) {
             currentCellRow = figure.currentVariant[i];
             currentCellCol = figure.currentVariant[i + 1];
 
-            if (currentCellRow == _fieldBorderBottom) {
+            if (currentCellRow == FIELD_BORDER_BOTTOM) {
                 return false;
             }
 
@@ -276,7 +276,7 @@ function Figure(currentType) {
             currentCellRow = figure.currentVariant[i];
             currentCellCol = figure.currentVariant[i + 1];
 
-            if (currentCellCol == _fieldBorderLeft) {
+            if (currentCellCol == FIELD_BORDER_LEFT) {
                 return false;
             }
 
@@ -296,7 +296,7 @@ function Figure(currentType) {
             currentCellRow = figure.currentVariant[i];
             currentCellCol = figure.currentVariant[i + 1];
 
-            if (currentCellCol == _fieldBorderRight) {
+            if (currentCellCol == FIELD_BORDER_RIGHT) {
                 return false;
             }
 
@@ -323,7 +323,7 @@ function Figure(currentType) {
         /* Check if next variant goes out of the game field or comes over already taken cells */
         figure.gameFieldFigureAppearance(0); // temporary clearning the figure on the field
         for (var col = 1; col < nextVariant.length; col += 2) {
-            if (nextVariant[col] < _fieldBorderLeft || _fieldBorderRight < nextVariant[col]) {
+            if (nextVariant[col] < FIELD_BORDER_LEFT || FIELD_BORDER_RIGHT < nextVariant[col]) {
                 figure.gameFieldFigureAppearance(1);
                 return false;
             }
@@ -379,11 +379,11 @@ function Figure(currentType) {
         }
 
         /* Check which rows to remove */
-        var _fullRowTemplate = ["1", "1", "1", "1", "1", "1", "1", "1", "1", "1"];
+        var FULL_ROW_TEMPLATE = ["1", "1", "1", "1", "1", "1", "1", "1", "1", "1"];
         var rowsToDelete = [];
 
         for (var i = firstFigureRow; i <= lastRowToCheck; i++) { // check 4 rows
-            if (gameField[i].toString() == _fullRowTemplate) {
+            if (gameField[i].toString() == FULL_ROW_TEMPLATE) {
                 rowsToDelete.push(i);
             }
             if (i == gameField.length - 1) {
