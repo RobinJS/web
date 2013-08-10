@@ -1,8 +1,19 @@
 window.onload = function () {
-    $("#startNewGame").on("click", startNewGame);
-    $("#stopGame").on("click", stopGame);
-    $("#pauseGame").on("click", pauseGame);
+    var startNewGameButton = document.getElementById("startNewGame");
+    addEventHandler(startNewGameButton, "click", startNewGame);
+    var stopGameButton = document.getElementById("stopGame");
+    addEventHandler(stopGameButton, "click", stopGame);
+    var pauseGameButton = document.getElementById("pauseGame");
+    addEventHandler(pauseGameButton, "click", pauseGame);
 };
+
+function addEventHandler(obj, eventName, handler) {
+    if (document.attachEvent) {
+        obj.attachEvent("on" + eventName, handler)
+    } else if (document.addEventListener) {
+        obj.addEventListener(eventName, handler, false);
+    }
+}
 
 var game = "off";
 var gameSpeed = 1000;
@@ -88,25 +99,12 @@ var listener = function (e) {
     }
 }
 
-// testing...
-var start;
-var end;
-
 function startNewGame() {
-    //if (game == "on") {
-    //    moveable = clearInterval(moveable);
-    //}
-
-
-
-    // testing...
-    start = new Date;
     moveable = clearInterval(moveable);
-
-    $("#gameOver").css("display", "none");
+    document.getElementById("gameOver").style.display = "none";
     clearGameField();
-    $("#rowsCleared").html(0);
-    $("#currentLevel").html(1);
+    document.getElementById("rowsCleared").innerHTML = 0;
+    document.getElementById("currentLevel").innerHTML = 1;
 
     game = "on";
     document.body.addEventListener("keydown", listener, false);
@@ -130,9 +128,9 @@ function pauseGame() {
 }
 
 function gameOver() {
-    $("#gameOver span:nth-of-type(1)").html(level);
-    $("#gameOver span:nth-of-type(2)").html(rowsCleared);
-    $("#gameOver").css("display", "block");
+    document.getElementById("gameOver").getElementsByTagName("span")[0].innerHTML = level;
+    document.getElementById("gameOver").getElementsByTagName("span")[1].innerHTML = rowsCleared;
+    document.getElementById("gameOver").style.display = "block";
     stopGame();
 }
 
@@ -169,32 +167,20 @@ function checkIfFigureCanBePlaced() {
 
 function showNextFigure() {
     /* Clearing the "#pannel"'s grid before showing next figure */
-    var cells = $("#nextFigure table td");
-    cells.css("backgroundColor", "transparent");
+    var cells = document.querySelectorAll("#nextFigure table td");
+    for (var i = 0; i < cells.length; i++) {
+        cells[i].style.backgroundColor = "transparent";
+    }
 
     var figureToShow = nextFigure.currentVariant;
     /* Making next figure appear */
     for (var i = 0; i < figureToShow.length; i += 2) {
         var row = figureToShow[i];
         var col = figureToShow[i + 1] - 3;  /* Moving initial column coordinates to left so it will be easier to place next figure in the "#pannel"'s grid */
-        var cell = $("#nextFigure table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
-        cell.css("backgroundColor", "#92d5ef");
+
+        var cell = document.getElementById("nextFigure").getElementsByTagName("tr")[row].getElementsByTagName("td")[col];
+        cell.style.backgroundColor = "#92d5ef";
     }
-
-    ///* Moving initial column coordinates to left so it will be easier to place next figure in the "#pannel"'s grid */
-    //var figureToShow = (nextFigure.currentVariant).slice(0, nextFigure.currentVariant.length);
-    //for (var column = 1; column < figureToShow.length; column += 2) {
-    //    figureToShow[column] -= 3;
-    //}
-
-    //// make this a picture or something
-    ///* Making next figure appear */
-    //for (var i = 0; i < figureToShow.length; i += 2) {
-    //    var row = figureToShow[i];
-    //    var col = figureToShow[i + 1];
-    //    var cell = $("#nextFigure table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
-    //    cell.css("backgroundColor", "#92d5ef");
-    //}
 }
 
 function Figure(currentType) {
@@ -220,15 +206,7 @@ function Figure(currentType) {
             }
 
             /* Updating currentVariant */
-            //figure.currentVariant = currentFigureAllVariants[variantIndex];
             figure.gameFieldFigureAppearance(1);
-            //drawField();
-
-            // testing...
-            end = new Date;
-            var dif = end - start;
-            console.log(dif);
-            //$("#startNewGame").click();
         }
         else {
             moveable = clearInterval(moveable);
@@ -248,9 +226,8 @@ function Figure(currentType) {
                 }
             }
 
-            figure.currentVariant = currentFigureAllVariants[variantIndex];
+            //figure.currentVariant = currentFigureAllVariants[variantIndex];
             figure.gameFieldFigureAppearance(1);
-            //drawField();
         }
     };
 
@@ -265,9 +242,8 @@ function Figure(currentType) {
                 }
             }
 
-            figure.currentVariant = currentFigureAllVariants[variantIndex];
+            //figure.currentVariant = currentFigureAllVariants[variantIndex];
             figure.gameFieldFigureAppearance(1);
-            //drawField();
         }
     };
 
@@ -284,7 +260,6 @@ function Figure(currentType) {
 
             figure.currentVariant = currentFigureAllVariants[variantIndex];
             figure.gameFieldFigureAppearance(1);
-            //drawField();
         }
     };
 
@@ -350,6 +325,7 @@ function Figure(currentType) {
 
     var checkIfFigureCanBeRotated = function () {
         var nextVariant;
+        /* Getting next variant */
         if (variantIndex < currentFigureAllVariants.length - 1) {
             nextVariant = currentFigureAllVariants[variantIndex + 1];
         }
@@ -388,12 +364,12 @@ function Figure(currentType) {
             var col = figure.currentVariant[i + 1];
             gameField[row][col] = clearParameter;
 
-            var cell = $("#field table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
+            var cell = document.getElementById("field").getElementsByTagName("tr")[row].getElementsByTagName("td")[col];
             if (clearParameter == 0) {
-                cell.css("backgroundColor", "transparent");
+                cell.style.backgroundColor = "transparent";
             }
             else {
-                cell.css("backgroundColor", "white");
+                cell.style.backgroundColor = "white";
             }
         }
     };
@@ -409,15 +385,8 @@ function Figure(currentType) {
 
     var checkForFullRow = function () {
         /* first, we find the first row of the current figure, after it stops. This will be the first row to check if full, then we check forward (the next 3 rows, because the longest figure takes 4 fows) */
-        var firstFigureRow = figure.currentVariant[0];
+        var firstFigureRow = figure.currentVariant[0]; // The first digit of all variants represents the first row of the current figure.
         var lastRowToCheck = firstFigureRow + 3;
-
-        /* Find at which gameField row the first figure row occurs */
-        //for (var i = 2; i < figure.currentVariant.length; i += 2) {
-        //    if (figure.currentVariant[i] < firstFigureRow) {
-        //        firstFigureRow = figure.currentVariant[i];
-        //    }
-        //}
 
         /* Check which rows to remove */
         var FULL_ROW_TEMPLATE = ["1", "1", "1", "1", "1", "1", "1", "1", "1", "1"];
@@ -433,15 +402,15 @@ function Figure(currentType) {
         }
 
         /* Deleting full rows */
-        var singleRowToDelete;
-        for (var rowTodelete in rowsToDelete) {
-            singleRowToDelete = gameField[rowsToDelete[rowTodelete]];
-            gameField.splice(rowsToDelete[rowTodelete], 1);
-            gameField.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-            //drawField();
-            rowsCleared++;
-            updateClearedRows();
-            newLevelCheck();
+        if (rowsToDelete.length != 0) {
+            for (var i = 0; i < rowsToDelete.length; i++) {
+                gameField.splice(rowsToDelete[i], 1);
+                gameField.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+                updateGameFieldVisual();
+                rowsCleared++;
+                updateClearedRows();
+                newLevelCheck();
+            }
         }
     };
 }
@@ -451,34 +420,36 @@ function getRandomNumber(max) {
     return index;
 }
 
-function drawField() {
+function updateGameFieldVisual() {
     for (var row = 0; row < gameField.length; row++) {
         for (var col = 0; col < gameField[0].length; col++) {
-
-            var cell = $("#field table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
+            var cells = document.getElementById("field").getElementsByTagName("tr")[row].getElementsByTagName("td")[col];
 
             if (gameField[row][col] == 1) {
-                cell.css("backgroundColor", "white");
+                cells.style.backgroundColor = "white";
             }
             else if (gameField[row][col] == 0) {
-                cell.css("backgroundColor", "transparent");
+                cells.style.backgroundColor = "transparent";
             }
         }
     }
+
 }
 
 function clearGameField() {
-    $("td").css("backgroundColor", "transparent");
-
+    var cells = document.getElementById("field").getElementsByTagName("td");
+    var currentCell = 0;
     for (var row = 0; row < gameField.length; row++) {
         for (var col = 0; col < gameField[0].length; col++) {
             gameField[row][col] = 0;
+            cells[currentCell].style.backgroundColor = "transparent";
+            currentCell++;
         }
     }
 }
 
 function updateClearedRows() {
-    $("#rowsCleared").html(rowsCleared);
+    document.getElementById("rowsCleared").innerHTML = rowsCleared;
 }
 
 function newLevelCheck() {
@@ -490,5 +461,5 @@ function newLevelCheck() {
 function changeLevel() {
     level++;
     gameSpeed -= 150;
-    $("#currentLevel").html(level);
+    document.getElementById("currentLevel").innerHTML = level;
 }
