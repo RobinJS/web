@@ -8,6 +8,7 @@
 
 #field, #panel {
     box-shadow: 6px 6px 10px #999;
+	behavior: url(ie-css3.htc); /*if IE*/
 }
 
 body {
@@ -44,6 +45,7 @@ table {
     background: -ms-linear-gradient(top, #92d5ef 1%,#16a9e2 100%);
     background: linear-gradient(to bottom, #92d5ef 1%,#16a9e2 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#92d5ef', endColorstr='#16a9e2',GradientType=0 );
+	behavior: url(ie-css3.htc); /*if IE*/
 }
 
 td {
@@ -53,6 +55,7 @@ td {
     margin: 0 1px;
     height: 25px;
     width: 25px;
+	behavior: url(ie-css3.htc); /*if IE*/
 }
 
 a {
@@ -72,6 +75,7 @@ a {
 
 #field, #panel, #rowsCleared, #currentLevel {
     border-radius: 3px;
+	behavior: url(ie-css3.htc); /*if IE*/
 }
 
 #nextFigure {
@@ -93,6 +97,7 @@ a {
     position: absolute;
     top: 114px;
     text-align: center;
+	behavior: url(ie-css3.htc); /*if IE*/
 }
 
     #gameOver p {
