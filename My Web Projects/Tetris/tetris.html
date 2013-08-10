@@ -3,7 +3,8 @@
 <head>
     <title>Tetris</title>
     <meta charset="utf-8" />
-    <script type="text/javascript" src="jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="jquery-1.10.2.js"></script>-->
     <link type="text/css" href="tetris.css" rel="stylesheet" />
     <!--[if gte IE 9]>
         <style type="text/css">
@@ -270,13 +271,14 @@
                 </tbody>
             </table>
         </div>
-        <div id="pannel">
+        <div id="panel">
             <a href="#" id="startNewGame">Start New Game</a>
             <a href="#" id="stopGame">Stop Game</a>
-            <div>Rows cleared:</div>
-            <div id="rowsCleared">0</div>
+            <a href="#" id="pauseGame">Pause Game</a>
             <div>Current Level:</div>
             <div id="currentLevel">1</div>
+            <div>Rows cleared:</div>
+            <div id="rowsCleared">0</div>
             <div>Next Figure:</div>
             <div id="nextFigure">
                 <table>

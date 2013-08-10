@@ -1,6 +1,7 @@
 window.onload = function () {
     $("#startNewGame").on("click", startNewGame);
     $("#stopGame").on("click", stopGame);
+    $("#pauseGame").on("click", pauseGame);
 };
 
 var game = "off";
@@ -9,7 +10,6 @@ var moveable;
 var FIELD_BORDER_LEFT = 0;
 var FIELD_BORDER_RIGHT = 9;
 var FIELD_BORDER_BOTTOM = 19;
-var variantIndex = 0;
 var figure;
 var nextFigure;
 var rowsCleared = 0;
@@ -39,29 +39,31 @@ var gameField = [
 ];
 
 var figureTypes = ["I", "J", "L", "O", "S", "T", "Z"];
-var getFigureVariants = function (type) {
+
+function getFigureVariants(type) {
+    // The first part's row of each figure variant equals the first row of the figure. This facilitate checkForFullRow() function.
     var variantsToReturn;
     switch (type) {
         case "I":
             variantsToReturn = [[0, 3, 0, 4, 0, 5, 0, 6], [0, 4, 1, 4, 2, 4, 3, 4]];
             break;
         case "J":
-            variantsToReturn = [[2, 3, 0, 4, 1, 4, 2, 4], [0, 3, 1, 3, 1, 4, 1, 5], [0, 4, 1, 4, 2, 4, 0, 5], [0, 3, 0, 4, 0, 5, 1, 5]];
+            variantsToReturn = [[0, 4, 2, 3, 1, 4, 2, 4], [0, 3, 1, 3, 1, 4, 1, 5], [0, 4, 1, 4, 2, 4, 0, 5], [0, 3, 0, 4, 0, 5, 1, 5]];
             break;
         case "L":
-            variantsToReturn = [[0, 4, 1, 4, 2, 4, 2, 5], [0, 3, 1, 3, 0, 4, 0, 5], [0, 3, 1, 4, 2, 4, 0, 4], [1, 3, 1, 4, 0, 5, 1, 5]];
+            variantsToReturn = [[0, 4, 1, 4, 2, 4, 2, 5], [0, 3, 1, 3, 0, 4, 0, 5], [0, 3, 1, 4, 2, 4, 0, 4], [0, 5, 1, 3, 1, 4, 1, 5]];
             break;
         case "O":
             variantsToReturn = [[0, 4, 1, 4, 0, 5, 1, 5], [0, 4, 1, 4, 0, 5, 1, 5]];
             break;
         case "S":
-            variantsToReturn = [[1, 3, 0, 4, 1, 4, 0, 5], [0, 3, 1, 3, 2, 4, 1, 4]];
+            variantsToReturn = [[0, 4, 1, 3, 1, 4, 0, 5], [0, 3, 1, 3, 2, 4, 1, 4]];
             break;
         case "T":
-            variantsToReturn = [[0, 3, 1, 4, 0, 4, 0, 5], [1, 3, 0, 4, 2, 4, 1, 4], [1, 3, 0, 4, 1, 4, 1, 5], [0, 4, 1, 4, 2, 4, 1, 5]];
+            variantsToReturn = [[0, 3, 1, 4, 0, 4, 0, 5], [0, 4, 1, 3, 2, 4, 1, 4], [0, 4, 1, 3, 1, 4, 1, 5], [0, 4, 1, 4, 2, 4, 1, 5]];
             break;
         case "Z":
-            variantsToReturn = [[0, 3, 1, 4, 0, 4, 1, 5], [1, 4, 2, 4, 0, 5, 1, 5]];
+            variantsToReturn = [[0, 3, 1, 4, 0, 4, 1, 5], [0, 5, 1, 4, 2, 4, 1, 5]];
             break;
         default:
             console.log("Invalid figure type: " + type);
@@ -86,15 +88,26 @@ var listener = function (e) {
     }
 }
 
+// testing...
+var start;
+var end;
+
 function startNewGame() {
-    if (game == "on") {
-        moveable = clearInterval(moveable);
-    }
+    //if (game == "on") {
+    //    moveable = clearInterval(moveable);
+    //}
+
+
+
+    // testing...
+    start = new Date;
+    moveable = clearInterval(moveable);
 
     $("#gameOver").css("display", "none");
     clearGameField();
     $("#rowsCleared").html(0);
-    
+    $("#currentLevel").html(1);
+
     game = "on";
     document.body.addEventListener("keydown", listener, false);
     createNextFigure();
@@ -104,13 +117,16 @@ function startNewGame() {
 function stopGame() {
     moveable = clearInterval(moveable);
     document.body.removeEventListener("keydown", listener, false);
-    clearGameField();
     rowsCleared = 0;
     level = 1;
     gameSpeed = 1000;
-    $("#rowsCleared").html(0);
-    $("#currentLevel").html(1);
     game = "off";
+}
+
+function pauseGame() {
+    if (game == "on") {
+        alert("The game is paused. Click \"OK\" to resume.");
+    }
 }
 
 function gameOver() {
@@ -153,22 +169,32 @@ function checkIfFigureCanBePlaced() {
 
 function showNextFigure() {
     /* Clearing the "#pannel"'s grid before showing next figure */
-    var cell = $("#nextFigure table td");
-    cell.css("backgroundColor", "transparent");
+    var cells = $("#nextFigure table td");
+    cells.css("backgroundColor", "transparent");
 
-    /* Moving initial column coordinates to left so it will be easier to place next figure in the "#pannel"'s grid */
-    var figureToShow = (nextFigure.currentVariant).slice(0, nextFigure.currentVariant.length);
-    for (var column = 1; column < figureToShow.length; column += 2) {
-        figureToShow[column] -= 3;
-    }
-
+    var figureToShow = nextFigure.currentVariant;
     /* Making next figure appear */
     for (var i = 0; i < figureToShow.length; i += 2) {
         var row = figureToShow[i];
-        var col = figureToShow[i + 1];
+        var col = figureToShow[i + 1] - 3;  /* Moving initial column coordinates to left so it will be easier to place next figure in the "#pannel"'s grid */
         var cell = $("#nextFigure table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
         cell.css("backgroundColor", "#92d5ef");
     }
+
+    ///* Moving initial column coordinates to left so it will be easier to place next figure in the "#pannel"'s grid */
+    //var figureToShow = (nextFigure.currentVariant).slice(0, nextFigure.currentVariant.length);
+    //for (var column = 1; column < figureToShow.length; column += 2) {
+    //    figureToShow[column] -= 3;
+    //}
+
+    //// make this a picture or something
+    ///* Making next figure appear */
+    //for (var i = 0; i < figureToShow.length; i += 2) {
+    //    var row = figureToShow[i];
+    //    var col = figureToShow[i + 1];
+    //    var cell = $("#nextFigure table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
+    //    cell.css("backgroundColor", "#92d5ef");
+    //}
 }
 
 function Figure(currentType) {
@@ -194,9 +220,15 @@ function Figure(currentType) {
             }
 
             /* Updating currentVariant */
-            figure.currentVariant = currentFigureAllVariants[variantIndex];
+            //figure.currentVariant = currentFigureAllVariants[variantIndex];
             figure.gameFieldFigureAppearance(1);
-            drawField();
+            //drawField();
+
+            // testing...
+            end = new Date;
+            var dif = end - start;
+            console.log(dif);
+            //$("#startNewGame").click();
         }
         else {
             moveable = clearInterval(moveable);
@@ -218,7 +250,7 @@ function Figure(currentType) {
 
             figure.currentVariant = currentFigureAllVariants[variantIndex];
             figure.gameFieldFigureAppearance(1);
-            drawField();
+            //drawField();
         }
     };
 
@@ -235,26 +267,24 @@ function Figure(currentType) {
 
             figure.currentVariant = currentFigureAllVariants[variantIndex];
             figure.gameFieldFigureAppearance(1);
-            drawField();
+            //drawField();
         }
     };
 
     this.rotate = function () {
         if (checkIfFigureCanBeRotated()) {
-            if (variantIndex < currentFigureAllVariants.length - 1) {
-                figure.gameFieldFigureAppearance(0);
+            figure.gameFieldFigureAppearance(0);
+            if (variantIndex < currentFigureAllVariants.length - 1) { // if variantIndex is not the last array of currentFigureAllVariants
                 variantIndex++;
-                figure.currentVariant = currentFigureAllVariants[variantIndex];
-                figure.gameFieldFigureAppearance(1);
-                drawField();
             }
-            else if (variantIndex == currentFigureAllVariants.length - 1) {
-                figure.gameFieldFigureAppearance(0);
+            else if (variantIndex == currentFigureAllVariants.length - 1) { // if variantIndex points to the last array of currentFigureAllVariants, make variantIndex point to the first variant 
+                //figure.gameFieldFigureAppearance(0);
                 variantIndex = 0;
-                figure.currentVariant = currentFigureAllVariants[variantIndex];
-                figure.gameFieldFigureAppearance(1);
-                drawField();
             }
+
+            figure.currentVariant = currentFigureAllVariants[variantIndex];
+            figure.gameFieldFigureAppearance(1);
+            //drawField();
         }
     };
 
@@ -383,11 +413,11 @@ function Figure(currentType) {
         var lastRowToCheck = firstFigureRow + 3;
 
         /* Find at which gameField row the first figure row occurs */
-        for (var i = 2; i < figure.currentVariant.length; i += 2) {
-            if (figure.currentVariant[i] < firstFigureRow) {
-                firstFigureRow = figure.currentVariant[i];
-            }
-        }
+        //for (var i = 2; i < figure.currentVariant.length; i += 2) {
+        //    if (figure.currentVariant[i] < firstFigureRow) {
+        //        firstFigureRow = figure.currentVariant[i];
+        //    }
+        //}
 
         /* Check which rows to remove */
         var FULL_ROW_TEMPLATE = ["1", "1", "1", "1", "1", "1", "1", "1", "1", "1"];
@@ -408,7 +438,7 @@ function Figure(currentType) {
             singleRowToDelete = gameField[rowsToDelete[rowTodelete]];
             gameField.splice(rowsToDelete[rowTodelete], 1);
             gameField.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-            drawField();
+            //drawField();
             rowsCleared++;
             updateClearedRows();
             newLevelCheck();
@@ -424,12 +454,13 @@ function getRandomNumber(max) {
 function drawField() {
     for (var row = 0; row < gameField.length; row++) {
         for (var col = 0; col < gameField[0].length; col++) {
+
+            var cell = $("#field table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
+
             if (gameField[row][col] == 1) {
-                var cell = $("#field table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
                 cell.css("backgroundColor", "white");
             }
             else if (gameField[row][col] == 0) {
-                var cell = $("#field table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
                 cell.css("backgroundColor", "transparent");
             }
         }
@@ -437,11 +468,11 @@ function drawField() {
 }
 
 function clearGameField() {
+    $("td").css("backgroundColor", "transparent");
+
     for (var row = 0; row < gameField.length; row++) {
         for (var col = 0; col < gameField[0].length; col++) {
             gameField[row][col] = 0;
-            var cell = $("table tr:nth-child(" + (row + 1) + ") td:nth-child(" + (col + 1) + ")");
-            cell.css("backgroundColor", "transparent");
         }
     }
 }

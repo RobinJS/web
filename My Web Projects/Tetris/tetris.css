@@ -1,12 +1,12 @@
-#field, #pannel, table, td, a {
+#field, #panel, table, td, a {
     margin: 0;
 }
 
-#wrapper, #field, #pannel, a {
+#wrapper, #field, #panel, a {
     display: block;
 }
 
-#field, #pannel {
+#field, #panel {
     box-shadow: 6px 6px 10px #999;
 }
 
@@ -25,7 +25,7 @@ body {
     margin-right: 10px;
 }
 
-#pannel {
+#panel {
     background-color: #fff;
     border: 1px solid black;
     display: inline-block;
@@ -70,7 +70,7 @@ a {
     width: 100px;
 }
 
-#field, #pannel, #rowsCleared, #currentLevel {
+#field, #panel, #rowsCleared, #currentLevel {
     border-radius: 3px;
 }
 
@@ -84,16 +84,21 @@ a {
     }
 
 #gameOver {
+    background-color: rgba(25, 170, 226, 0.6);
+    border-radius: 10px 10px 10px 10px;
     display: none;
-    margin-left: 34px;
+    font-family: Verdana;
+    margin-left: 28px;
+    padding: 5px;
     position: absolute;
-    top: 130px;
+    top: 114px;
     text-align: center;
 }
 
     #gameOver p {
         color: #f00;
         font-size: 26px;
+        margin-top: 0;
     }
 
     #gameOver > div {
