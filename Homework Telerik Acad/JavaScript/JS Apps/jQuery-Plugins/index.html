@@ -1,0 +1,140 @@
+<! doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>jQuery tree view</title>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
+    <style type="text/css">
+        ul li ul li ul {
+            display: none;
+        }
+
+        ul li ul {
+            display: none;
+        }
+
+        ul {
+            font-family: Georgia;
+            list-style-image: url("images/item-closed-icon.png");
+        }
+
+            ul li a {
+                text-decoration: none;
+            }
+
+        li {
+            margin: 2px 0;
+        }
+
+        a {
+            color: #000;
+        }
+
+            a:hover {
+                color: #62BB4D;
+            }
+    </style>
+</head>
+<body>
+    <ul>
+        <li><a href="#">Item</a>
+            <ul>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#">Item</a>
+            <ul>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#">Item</a>
+            <ul>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#">Item</a>
+            <ul>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#">Item</a>
+            <ul>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item</a></li>
+                        <li><a href="#">Sub item</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
+    </ul>
+    <script type="text/javascript">
+        $("a").on("click", expand);
+
+        function expand() {
+            var subItems = $(this).siblings("ul");
+
+            if (subItems.css("display") == "none") {
+                subItems.css("display", "block");
+                $(this).parent("li").css("list-style-image", "url('images/item-opened-icon.png'");
+            }
+            else if (subItems.css("display") == "block") {
+                subItems.parent().find($("ul")).css("display", "none");
+                $(this).parent("li").css("list-style-image", "url('images/item-closed-icon.png'");
+                subItems.parent().find($("li")).css("list-style-image", "url('images/item-closed-icon.png'");
+            }
+        }
+    </script>
+</body>
+</html>

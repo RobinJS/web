@@ -1,0 +1,183 @@
+﻿<html>
+<head>
+    <title>Strings - All Tasks</title>
+    <link href="js-console.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="js-console">
+    </div>
+    <script src="js-console.js"></script>
+    <script>
+        // 1. Write a JavaScript function which reverses string and returns itExample: "sample" -> "elpmas".
+        jsConsole.write("Task 1 result: ");
+
+        var string = "sample";  // getting user input
+
+        if (!parseInt(string)) {    // check if user iput is a string
+
+            var array = new Array(string.length);
+
+            for (var i = 0; i < string.length; i++) {
+                array[i] = string[i];
+            }
+            array.reverse();    //reverse the digits
+            jsConsole.writeLine(array.join("").toString());  // printing result
+        }
+        else {
+            jsConsole.writeLine("<span style='color: red;'>invalid string</span>");
+        }
+
+
+        // 2. Write a JavaScript function to check if in a given expression the brackets are put correctly.
+        jsConsole.write("Task 2 result: ");
+
+        var expression = "((a+b)/5-d)";  // getting user input  // sample: )(a+b))
+
+        var openBrackets = 0;
+        var closeBrackets = 0;
+        var firstBracket;
+        var lastBracket;
+
+        // count brackets quantity
+        for (var char in expression) {
+            if (expression[char] == '(') {
+                openBrackets++;
+                lastBracket = '(';
+
+                if (firstBracket != '(' && firstBracket != ')') {   // if the first bracket is unknown yet, save the following char as the first bracket
+                    firstBracket = "(";
+                }
+
+            }
+            else if (expression[char] == ')') {
+                closeBrackets++;
+                lastBracket = ')';
+
+                if (firstBracket != '(' && firstBracket != ')') {   // if the first bracket is unknown yet, save the following char as the first bracket
+                    firstBracket = ")";
+                }
+            }
+        }
+
+        if (openBrackets != closeBrackets) {  // if brackets have different qunatity
+            jsConsole.writeLine("<span style='color: red;'>incorrect expression. '(' and ')' brackets have different quantity</span>");
+        }
+        else {  // if brackets have equal quantity make more checks
+            if (firstBracket == ')') {
+                jsConsole.writeLine("<span style='color: red;'>incorrect expression - the first bracket is ')'</span>");
+            }
+            else if (lastBracket == '(') {
+                jsConsole.writeLine("<span style='color: red;'>incorrect expression - the last bracket is '('</span>");
+            }
+            else {
+                jsConsole.writeLine("The expression is probably correct! :)");  // printing probably correct result
+            }
+
+        }
+
+
+        // 3. Write a JavaScript function that finds how many times a substring is contained in a given text (perform case insensitive search).
+        jsConsole.write("Task 3 result: ");
+
+        var userText = "We are living in an yellow submarine. We don't have anything else. Inside the submarine is very tight. So we are drinking all the day. We will move out of it in 5 days.";
+        userText = userText.toLowerCase();
+
+        var substringToCheck = "in";
+        substringToCheck = substringToCheck.toLowerCase();
+
+        var count = 0;
+        var index = 0;
+
+        while (index != -1) {
+            index = userText.indexOf(substringToCheck, index);
+            if (index != -1) {
+                count++;
+                index += substringToCheck.length;
+            }
+        }
+
+        jsConsole.writeLine(count);
+
+
+        // 4. You are given a text. Write a function that changes the text in all regions: 
+        //    <upcase>text</upcase> to uppercase.
+        //    <lowcase>text</lowcase> to lowercase</li>
+        //    <mixcase>text</mixcase> to mix casing(random)
+
+        //  ------  NOT FINISHED    ------  //
+
+        //                jsConsole.write("Task 4 result: ");
+
+        //                var userText = "We are <mixcase>living</mixcase> in a <upcase>yellow submarine</upcase>. We <mixcase>don't</mixcase> have <lowcase>anything</lowcase> else.";
+        //                var newText = "";
+        //                var index = 0;
+        //                var part = "";
+        //                var sub = "";
+
+
+        //                while (userText.indexOf("<upcase>", 0) != -1 && userText.indexOf("</upcase>", 0) != -1 && userText.indexOf("<lowcase>", 0) != -1 && userText.indexOf("</lowcase>", 0) != -1 && userText.indexOf("<mixcase>", 0) != -1 && userText.indexOf("</mixcase>", 0) != -1 ) {
+        //                    if (userText.indexOf("<upcase>", 0) != -1) {
+        //                        sub = userText.substring(userText.indexOf("<upcase>") + 8, userText.indexOf("</upcase>"));  // get the substring between <upcase> and </upcase>
+        //                        userText = userText.replace(sub, sub.toUpperCase());    // replace with changed substring
+        //                        userText = userText.replace("<upcase>", "");    // remove tag
+        //                        userText = userText.replace("</upcase>", "");    // remove tag
+        //                    }
+
+        //                    if (userText.indexOf("<lowcase>", 0) != -1) {
+        //                        sub = userText.substring(userText.indexOf("<lowcase>") + 9, userText.indexOf("</lowcase>")); // get the substring between <lowcase> and </lowcase>
+        //                        userText = userText.replace(sub, sub.toLowerCase());    // replace with changed substring
+        //                        userText = userText.replace("<lowcase>", "");    // remove tag
+        //                        userText = userText.replace("</lowcase>", "");    // remove tag
+        //                    }
+
+        //                    if (userText.indexOf("<mixcase>", 0) != -1) {
+        //                        sub = userText.substring(userText.indexOf("<mixcase>") + 9, userText.indexOf("</mixcase>")); // get the substring between <mixcase> and </mixcase>
+        //                        userText = userText.replace(sub, toMixCase(sub));    // replace with changed substring
+        //                        userText = userText.replace("<mixcase>", "");    // remove tag
+        //                        userText = userText.replace("</mixcase>", "");    // remove tag
+        //                    }
+        //                }
+
+        //                jsConsole.writeLine(userText);
+
+
+
+        // 5. Write a function that replaces non breaking white-spaces in a text with &nbsp;.
+
+        var userText = "Write a function that replaces non breaking white-spaces";
+
+        jsConsole.write("Task 5 result: ");
+
+        while (userText.indexOf(" ", 0) != -1) {
+            userText = userText.replace(" ", "&nbsp;");
+        }
+
+        jsConsole.writeLine(userText);
+
+        //You can test with: alert(userText);
+
+
+        // 6. Write a function that extracts the content of a html page given as text. The function should return anything that is in a tag, without the tags.
+        
+        //  ------  NOT FINISHED    ------  //
+        
+        //        jsConsole.write("Task 6 result: ");
+
+        //        var userText = '<html><head><title>Sample site</title></head><body><div>text<div>more text</div>and more...</div>in body</body></html>';
+        //        var substring, beginning, end;
+
+        //        while (userText.indexOf("<", 0) != -1 && userText.indexOf(">", 0) != -1) {
+
+        //            beginning = userText.indexOf("<");
+        //            end = userText.indexOf(">");
+
+        //            substring = userText.substring(beginning, end);
+        //            userText = userText.replace(substring, "");
+        //        }
+
+        //        jsConsole.writeLine(userText);
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Table of students</title>
+    <meta charset="utf-8" />
+    <script src="js/jquery-1.10.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <style>
+        body {
+            font-family: georgia;
+        }
+
+        section {
+            float: left;
+            width: 500px;
+        }
+
+        aside {
+            float: left;
+            padding: 20px;
+            width: 300px;
+        }
+
+        div div {
+            border: 2px solid #808080;
+            margin: 10px;
+            height: 50px;
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <header>
+            <h1>Text</h1>
+        </header>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed commodo dolor. Duis eu viverra diam. Sed luctus in lectus quis vestibulum. Nunc accumsan congue velit at tincidunt. Nulla mi massa, feugiat vitae molestie eu, ultricies faucibus quam. Donec fermentum ornare venenatis. Donec eu ultricies enim, vulputate ultrices tellus. Donec vitae sapien id turpis posuere commodo ac quis mi. Vestibulum ac feugiat lectus. Integer iaculis viverra lorem sit amet sollicitudin. Morbi volutpat tellus convallis ligula pulvinar sagittis. Integer vulputate lectus adipiscing ornare pharetra. Cras vehicula id neque sed rhoncus. Cras nisl dolor, blandit in sagittis in, scelerisque vel arcu. Donec blandit odio ut nisi luctus fermentum. Praesent sagittis blandit feugiat. Donec rutrum ipsum vel mauris vulputate, in eleifend nisi dapibus. Maecenas rhoncus commodo blandit. Sed vitae volutpat nibh, sed mattis odio. Ut luctus, arcu sed scelerisque pretium, tortor orci vestibulum mi, ut aliquet nibh libero pellentesque nibh. Fusce porttitor, dolor eu venenatis sagittis, lacus orci euismod tortor, eu mollis sapien ipsum sit amet diam. Nullam mattis augue nec ante euismod pretium. Suspendisse tempus ligula vitae velit ullamcorper, vitae feugiat mauris sagittis. Sed in sapien lacus. Proin molestie lorem quam, ac tristique diam suscipit vel. Aenean volutpat magna nec felis facilisis.
+        </p>
+    </section>
+    <aside>
+        <h2>Change background color</h2>
+        <div>
+            <div class="red"></div>
+            <div class="green"></div>
+            <div class="blue"></div>
+            <div class="orange"></div>
+            <div class="silver"></div>
+            <div class="yellow"></div>
+        </div>
+    </aside>
+
+    <script>
+        var divs = $("aside div div");
+
+        for (var i = 0; i < divs.length; i++) {
+            divs[i].style.backgroundColor = divs[i].className;
+        }
+
+        divs.on("click", changeBackgroundColor);
+        divs.css("cursor", "pointer");
+
+        function changeBackgroundColor() {
+            
+            $("body").css("backgroundColor", this.className);
+        }
+    </script>
+</body>
+</html>

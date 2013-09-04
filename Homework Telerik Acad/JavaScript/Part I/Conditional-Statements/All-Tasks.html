@@ -1,0 +1,276 @@
+﻿<html>
+<head>
+    <title>Operators and Expressions - All Tasks</title>
+    <link href="js-console.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="js-console">
+    </div>
+    <script src="js-console.js"></script>
+    <script>
+        // 1. Variables exchange
+        var int1 = 16;
+        var int2 = 8;
+
+        jsConsole.write("1. int1=" + int1 + ", int2=" + int2);
+
+        if (int1 > int2) {
+            var temp = int1;
+            int1 = int2;
+            int2 = temp;
+            jsConsole.writeLine(" -> int1 is greater. New values: int1=" + int1 + ", int2=" + int2);
+        }
+        else if (int1 < int2) {
+            jsConsole.writeLine(" -> int2 is greater");
+        }
+        else if (int1 == int2) {
+            jsConsole.writeLine(" -> int1 equals int2");
+        }
+
+        // 2. The sign (+ or -) of the product of three real numbers
+        var realNum1 = 9;
+        var realNum2 = -4;
+        var realNum3 = 10;
+
+        jsConsole.write("2. realNum1=" + realNum1 + ", realNum2=" + realNum2 + ", realNum3=" + realNum3);
+
+        if (realNum1 < 0 && realNum2 < 0 && realNum3 < 0) // if three -
+        {
+            jsConsole.writeLine(" -> The result is: -");
+        }
+        if (realNum1 > 0 && realNum2 > 0 && realNum3 > 0)   // if three +
+        {
+            jsConsole.writeLine(" -> The result is: +");
+        }
+        if (realNum1 < 0 && realNum2 > 0 && realNum3 > 0)   // if only A is -
+        {
+            jsConsole.writeLine(" -> The result is: -");
+        }
+        if (realNum1 > 0 && realNum2 < 0 && realNum3 > 0)   // if only B is -
+        {
+            jsConsole.writeLine(" -> The result is: -");
+        }
+        if (realNum1 > 0 && realNum2 > 0 && realNum3 < 0)   // if only C is -
+        {
+            jsConsole.writeLine(" -> The result is: -");
+        }
+        if (realNum1 < 0 && realNum2 < 0 && realNum3 > 0)   // if A and B are -
+        {
+            jsConsole.writeLine(" -> The result is: +");
+        }
+        if (realNum1 > 0 && realNum2 < 0 && realNum3 < 0)   // if B and C are -
+        {
+            jsConsole.writeLine(" -> The result is: +");
+        }
+        if (realNum1 < 0 && realNum2 > 0 && realNum3 < 0)   // if A and C are -
+        {
+            jsConsole.writeLine(" -> The result is: +");
+        }
+
+        // 3. Biggest of three integers
+        var int1 = 32;
+        var int2 = 1;
+        var int3 = 16;
+
+        jsConsole.write("3. int1=" + int1 + ", int2=" + int2 + ", int3=" + int3);
+        
+        if (int1 > int2) {
+            if (int1 > int3) {
+                jsConsole.writeLine(" -> int1 is the biggest.");
+            }
+        }
+        if (int2 > int1) {
+            if (int2 > int3) {
+                jsConsole.writeLine(" -> int2 is the biggest.");
+            }
+        }
+        if (int3 > int1) {
+            if (int3 > int2) {
+                jsConsole.writeLine(" -> int3 is the biggest.");
+            }
+        }
+        else if ((int1 == int2)) {
+            if (int2 == int3) {
+                jsConsole.writeLine(" -> the three numbers are equal.");
+            }
+        }
+
+        // 4. Three values in descending order
+        var firstNum = 11;
+        var secondNum = 24;
+        var thirdNum = 3;
+
+        jsConsole.writeLine("4. firstNum=" + firstNum + ", secondNum=" + secondNum + ", thirdNum=" + thirdNum);
+
+        if (firstNum > secondNum && firstNum > thirdNum)    // firstNum is the greatest
+        {
+            if (secondNum > thirdNum) {
+                jsConsole.writeLine(" -> Numbers in descending order: " + firstNum + ", " + secondNum + ", " + thirdNum);
+            }
+            else {
+                jsConsole.writeLine(" -> Numbers in descending order: " + firstNum + ", " + thirdNum, + ", " +secondNum);
+            }
+        }
+        if (secondNum > firstNum && secondNum > thirdNum)   //secondNum is the greatest
+        {
+            if (firstNum > thirdNum) {
+                jsConsole.writeLine(" -> Numbers in descending order: " + secondNum + ", " + firstNum + ", " + thirdNum);
+            }
+            else {
+                jsConsole.writeLine(" -> Numbers in descending order: " + secondNum + ", " + thirdNum + ", " + firstNum);
+            }
+        }
+        if (thirdNum > firstNum && thirdNum > secondNum)    //thirdNum is the greatest
+        {
+            if (firstNum > secondNum) {
+                jsConsole.writeLine(" -> Numbers in descending order: " + thirdNum + ", " + firstNum, + ", " +secondNum);
+            }
+            else {
+                jsConsole.writeLine(" -> Numbers in descending order: " + thirdNum + ", " + secondNum + ", " + firstNum);
+            }
+        }
+
+        // 5. Digit name
+        var digit = 9;
+
+        jsConsole.write("5. digit=" + digit);
+
+        switch (digit) {
+            case 0: jsConsole.writeLine(" -> zero"); break;
+            case 1: jsConsole.writeLine(" -> one"); break;
+            case 2: jsConsole.writeLine(" -> two"); break;
+            case 3: jsConsole.writeLine(" -> three"); break;
+            case 4: jsConsole.writeLine(" -> four"); break;
+            case 5: jsConsole.writeLine(" -> five"); break;
+            case 6: jsConsole.writeLine(" -> six"); break;
+            case 7: jsConsole.writeLine(" -> seven"); break;
+            case 8: jsConsole.writeLine(" -> eight"); break;
+            case 9: jsConsole.writeLine(" -> nine"); break;
+            default: jsConsole.writeLine("Not a valid number!"); break;
+        }
+
+        // 6. Quadratic equation
+        var a = 5;
+        var b = -6;
+        var c = 3;
+
+        jsConsole.write("6. a=" + a + ", b=" + b + ", c=" + c);
+
+        var descrim = Math.pow(b, 2) - (4 * a * c);
+        var equationPositive = (-b + Math.sqrt(descrim)) / (2 * a);
+        var equationNegative = (-b - Math.sqrt(descrim)) / (2 * a);
+
+        if (descrim < 0)
+        {
+            jsConsole.writeLine(" -> The equation has no real roots.");
+        }
+        else if (descrim == 0)
+        {
+            jsConsole.writeLine(" -> The double root is: " + equationPositive);
+        }
+        else if (descrim > 0)
+        {
+            jsConsole.writeLine(" -> The roots are: " + equationPositive + " and " + equationNegative);
+        }
+
+        // 7. Greatest of 5 variables
+        var one = 6;
+        var two = 90;
+        var three = 45;
+        var four = 18;
+        var five = 9;
+
+        jsConsole.write("7. one=" + one + ", two=" + two + ", three=" + three + ", four=" + four + ", five=" + five);
+
+        if (one > two && one > three && one > four && one > five)     // checking the firs one
+        {
+            jsConsole.writeLine(" -> number " + one + " is the greatest.");
+        }
+        if (two > one && two > three && two > four && two > five)     // checking the second one
+        {
+            jsConsole.writeLine(" -> number " + two + " is the greatest.");
+        }
+        if (three > one && three > two && three > four && three > five)     // checking the third one
+        {
+            jsConsole.writeLine(" -> number " + three + " is the greatest.");
+        }
+        if (four > one && four > two && four > three && four > five)     // checking the fourth one
+        {
+            jsConsole.writeLine(" -> number " + four + " is the greatest.");
+        }
+        if (five > one && five > two && five > three && five > four)     // checking the fifth one
+        {
+            jsConsole.writeLine(" -> number " + five + " is the greatest.");
+        }
+
+        // 8. Number to text convertor
+        var number = 999;
+
+        jsConsole.write("8. number=" + number + " -> ");
+
+        var singleDigit = new Array ( "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" );
+        var doubleRoundDigit = new Array ( "zero", "ten", "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety" );
+        var teen = new Array ( "zero", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" );
+
+        var length = number.toString().length;
+
+        var rounding = Math.floor(number / 10);
+        var tens = Math.floor(rounding % 10);
+        var ones = Math.floor(number % 10);
+        var hundreds = Math.floor(number / 100);
+
+        if (length == 1 || number == 0)     // if number is a single digit or 0
+        {
+            jsConsole.write(singleDigit[number]);
+        }
+
+        if (length == 2)        // if number is a double digit
+        {
+
+            if (number % 10 == 0)       // if number is 10, 20, 30...
+            {
+                jsConsole.write(doubleRoundDigit[rounding]);
+            }
+            if (number % 10 != 0)       // if number is 15, 26, 38...
+            {
+                if (number >= 20)
+                {
+                    jsConsole.write(doubleRoundDigit[rounding] + " " + singleDigit[ones]);
+                }
+                else
+                {
+                    jsConsole.write(teen[ones]);      // if 10 < number < 20
+                }
+            }
+        }
+
+        if (length == 3)        // if number is a tripple digit
+        {
+            if (tens == 0 & ones == 0)       // if number is a clear hundred: 100, 200, 300...
+            {
+                jsConsole.write(singleDigit[hundreds] + " hundred");
+            }
+            if (ones == 0 & tens != 0)       // if number is 510, 620, 830...
+            {
+                jsConsole.write(singleDigit[hundreds] + " hundred and " + doubleRoundDigit[tens]);
+            }
+            if (ones != 0)  // if number is 509, 519, 529
+            {
+                if (tens >= 2)      // if number is 526, 536, 586...
+                {
+                    jsConsole.write(singleDigit[hundreds] + " hundred " + doubleRoundDigit[tens] + " " + singleDigit[ones]);
+                }
+                if (tens == 1)     // if number is 112, 418...
+                {
+                    jsConsole.write(singleDigit[hundreds] + " hundred and " + teen[ones]);
+                }
+                if (tens == 0)
+                {
+                    jsConsole.write(singleDigit[hundreds] + " hundred and " + singleDigit[ones]);
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

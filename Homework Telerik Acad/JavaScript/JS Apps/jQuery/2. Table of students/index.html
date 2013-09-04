@@ -1,0 +1,199 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Table of students</title>
+    <meta charset="utf-8" />
+    <script src="js/jquery-1.10.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <style>
+        body {
+            font-family: georgia;
+        }
+
+        #wrapper {
+            border: 1px solid;
+            overflow: hidden;
+            padding: 10px;
+            width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #controls {
+            margin: 0 auto;
+            width: 400px;
+        }
+
+            #controls div {
+                float: left;
+                margin: 0 10px 10px;
+                width: 140px;
+            }
+
+                #controls div:last-of-type {
+                    width: 60px;
+                }
+
+        label {
+            padding-left: 5px;
+        }
+
+        input, #tableBody tr td {
+            text-indent: 5px;
+        }
+
+        input {
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#66494949',GradientType=0 );
+            border: 1px solid #AAAAAA;
+            border-radius: 3px 3px 3px 3px;
+            width: 140px;
+            -webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
+            -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
+            box-shadow: inset 2px 2px 2px 0px #dddddd;
+        }
+
+        #grade {
+            width: 60px;
+        }
+
+        button {
+            border-radius: 5px;
+            font-weight: bold;
+            clear: both;
+            color: #fff;
+            display: block;
+            margin: 10px auto;
+            background: rgb(169,219,128);
+            background: -moz-linear-gradient(top, rgb(169,219,128) 0%, rgb(150,197,111) 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(169,219,128)), color-stop(100%,rgb(150,197,111)));
+            background: -webkit-linear-gradient(top, rgb(169,219,128) 0%,rgb(150,197,111) 100%);
+            background: -o-linear-gradient(top, rgb(169,219,128) 0%,rgb(150,197,111) 100%);
+            background: -ms-linear-gradient(top, rgb(169,219,128) 0%,rgb(150,197,111) 100%);
+            background: linear-gradient(to bottom, rgb(169,219,128) 0%,rgb(150,197,111) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a9db80', endColorstr='#96c56f',GradientType=0 );
+        }
+
+        table {
+            border: 1px solid cadetblue;
+            border-radius: 3px 3px 3px 3px;
+            width: 500px;
+        }
+
+        th {
+            background-color: mediumaquamarine;
+            color: #FFFFFF;
+        }
+
+            th:last-of-type {
+                font-size: 12px;
+                width: 20px;
+            }
+
+            th:nth-of-type(3n) {
+                width: 60px;
+            }
+
+        #tableBody tr {
+            background: rgb(228,245,252);
+            background: -moz-linear-gradient(top, rgb(228,245,252) 0%, rgb(191,232,249) 50%, rgb(159,216,239) 51%, rgb(176,224,230) 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(228,245,252)), color-stop(50%,rgb(191,232,249)), color-stop(51%,rgb(159,216,239)), color-stop(100%,rgb(176,224,230)));
+            background: -webkit-linear-gradient(top, rgb(228,245,252) 0%,rgb(191,232,249) 50%,rgb(159,216,239) 51%,rgb(176,224,230) 100%);
+            background: -o-linear-gradient(top, rgb(228,245,252) 0%,rgb(191,232,249) 50%,rgb(159,216,239) 51%,rgb(176,224,230) 100%);
+            background: -ms-linear-gradient(top, rgb(228,245,252) 0%,rgb(191,232,249) 50%,rgb(159,216,239) 51%,rgb(176,224,230) 100%);
+            background: linear-gradient(to bottom, rgb(228,245,252) 0%,rgb(191,232,249) 50%,rgb(159,216,239) 51%,rgb(176,224,230) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e4f5fc', endColorstr='#b0e0e6',GradientType=0 );
+        }
+
+            #tableBody tr td {
+                padding: 2px 0;
+            }
+
+                th:first-child, #tableBody tr td:first-child {
+                    width: 204px;
+                }
+
+                th:nth-child(3n-1), #tableBody tr td:nth-child(3n-1) {
+                    width: 204px;
+                }
+
+                th:nth-child(3n), #tableBody tr td:nth-child(3n) {
+                    text-align: center;
+                    width: 60px;
+                }
+
+                th:last-child, #tableBody tr td:last-child {
+                    width: 30px;
+                }
+
+        #remove img:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <header>
+            <h1>Table of students</h1>
+        </header>
+        <div id="controls">
+            <div>
+                <label for="firstName">First name:</label>
+                <input type="text" id="firstName" value="" />
+            </div>
+            <div>
+                <label for="lastName">Last name:</label>
+                <input type="text" id="lastName" value="" />
+            </div>
+            <div>
+                <label for="grade">Grade:</label>
+                <input type="text" id="grade" value="" />
+            </div>
+
+            <button id="addStudent">Add student</button>
+        </div>
+        <div id="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Grade</th>
+                        <th>Del.</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        $("#addStudent").on("click", addStudent);
+
+        var tableBody = $("#tableBody");
+
+        function addStudent() {
+            var firstName = $("#firstName").val();
+            var lastName = $("#lastName").val();
+            var grade = $("#grade").val();
+
+            var imageRemoveStudent = '<img src=' + '"images/remove-icon.png" class="remove" />';
+            var newRow = "<tr><td>" + firstName + "</td><td>" + lastName + "</td><td>" + grade + '</td><td id="remove">' + imageRemoveStudent + "</td></tr>";
+            tableBody.append(newRow);
+        }
+
+        $(document).on("click", ".remove", function () {
+            $(this).parents("tr").remove();
+        });
+
+        function removeStudent(el) {
+            el.parent("tr").remove();
+        }
+
+        $(function () {
+            $("#tableBody").sortable();
+            $("#tableBody").disableSelection();
+        });
+    </script>
+</body>
+</html>

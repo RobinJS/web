@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<!--
+Task 1. Write a script that creates a number of div elements.
+	Each div element must have the following:
+		- Random width and height between 20px and 100px
+		- Random background color
+		- Random font color
+		- Random position on the screen (position:absolute)
+		- A strong element with text "div" inside the div
+		- Random border-radius
+		- Random border color
+		- Random border-width between 1px and 20px
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>DOM Manipulation - Crating random divs</title>
+	<style>
+		#container {
+			min-height: 90%;
+			min-width: 99%;
+			max-width: 100%;
+			margin-top: 22px;
+			position: absolute;
+		}
+
+		.random-div {
+			border: 1px solid black;
+			width: 20px;
+			height: 20px;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<label for="tb-num-of-elements">Number of elements:</label>
+		<input type="text" id="tb-num-of-elements" />
+		<a href="#" onclick="onCreateElementsButtonClick()">Create elements</a>
+		<div id="container"></div>
+	</div>
+	<script>
+		var container = document.getElementById("container");
+
+		var divs = document.getElementsByClassName("random-div");
+		var maxWidth = screen.width - 100;
+		var maxHeight = screen.height - 300;
+
+		function onCreateElementsButtonClick() {
+			// before we draw the new elements we clear the space in case there are some random divs left from the previous creation
+			container.innerHTML = "";
+
+			var count = document.getElementById("tb-num-of-elements").value;
+			createRandomDivs(count);
+		}
+
+		function createRandomDivs(count) {
+
+			for (var i = 0; i < count; i++) {
+				var div = document.createElement("div");
+				div.classList.add("random-div");
+				makeDiv(div);
+				container.appendChild(div);
+			}
+		}
+
+		function makeDiv(div) {
+			div.style.width = ((Math.random() * 100) + 20) + "px";
+			div.style.height = ((Math.random() * 100) + 20) + "px";
+
+			div.style.backgroundColor = generateRandomColor();
+			div.style.color = generateRandomColor();
+
+			div.style.position = "absolute";
+			var topPosition = parseInt(Math.random() * (maxHeight - 40));
+			div.style.top = topPosition + "px";
+			var leftPosition = parseInt(Math.random() * (maxWidth - 40));
+			div.style.left = leftPosition + "px";
+
+			var innerElement = document.createElement("strong");
+			innerElement.innerHTML = "div";
+			div.appendChild(innerElement);
+
+			div.style.borderRadius = ((Math.random() * 100) + 1) + "px";
+			div.style.borderColor = generateRandomColor();
+			div.style.borderWidth = ((Math.random() * 20) + 1) + "px";
+		}
+
+		function generateRandomColor() {
+			var red = (Math.random() * 256) | 0;
+			var green = (Math.random() * 256) | 0;
+			var blue = (Math.random() * 256) | 0;
+			return "rgb(" + red + "," + green + "," + blue + ")";
+		}
+	</script>
+</body>
+</html>

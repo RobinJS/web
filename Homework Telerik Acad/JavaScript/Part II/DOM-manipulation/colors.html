@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+Task 4. Create a text area and two inputs with type="color".
+	- Make the font color of the text area as the value of the first color input
+	- Make the background color of the text area as the value of the second input
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>DOM Manipulation - Colors</title>
+	<style>
+		body {
+			font-size: 18px;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<p>
+			Please, enter the color value in hexadecimal including the "#" simbol. Ex.: #10ffde;
+		</p>
+		<p>
+			<label for="tb-font-color">Font color:</label>
+			<input type="color" id="tb-font-color" />
+			<a href="#" onclick="onChangeFontColorButtonClick()">Change Font Color</a><br />
+		</p>
+		<p>
+			<label for="tb-background-color">Background color:</label>
+			<input type="color" id="tb-background-color" />
+			<a href="#" onclick="onChangeBackgroundColorButtonClick()">Change Background Color</a><br />
+		</p>
+		<textarea id="textarea" cols="60" rows="8">
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et nisl libero, ac venenatis lorem. Suspendisse potenti. Sed vel felis ante, in accumsan tortor. Nam commodo tortor non leo pulvinar elementum. Nulla eu est lacus, eu feugiat libero. Cras venenatis consequat tempus. Suspendisse sagittis ipsum at odio vestibulum gravida. In vel ante ut velit faucibus adipiscing. Vestibulum semper vehicula adipiscing. Pellentesque hendrerit augue quis nunc adipiscing vitae semper diam volutpat. Aliquam ultricies, nibh sed pharetra volutpat, nulla arcu dignissim sapien, ac faucibus erat arcu nec orci. 
+		</textarea>
+	</div>
+	<script>
+		var text = document.getElementById("textarea");
+
+		function onChangeFontColorButtonClick() {
+
+			var fontColorValue = document.getElementById("tb-font-color").value;
+			text.style.color = fontColorValue;
+		}
+
+		function onChangeBackgroundColorButtonClick() {
+			var backgroundColorValue = document.getElementById("tb-background-color").value;
+			text.style.backgroundColor = backgroundColorValue;
+		}
+	</script>
+</body>
+</html>

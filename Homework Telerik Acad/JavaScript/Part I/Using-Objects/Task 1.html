@@ -1,0 +1,72 @@
+﻿<html>
+<head>
+    <title>Loops - Task 1</title>
+    <link href="js-console.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="js-console">
+    </div>
+    <script src="js-console.js"></script>
+    <script>
+        //1. Write functions for working with shapes in standard Planar coordinate system
+        //  - Points are represented by coordinates P(X, Y)
+        //  - Lines are represented by two points, marking their beginning and ending
+        //        L(P1(X1,Y1),P2(X2,Y2))
+        //  - Calculate the distance between two points
+        //  - Check if three segment lines can form a triangle
+
+        
+        var pointA = Point(5, -3);
+        var pointB = Point(-2, 4);
+        var pointC = Point(4, 4);
+        var pointD = Point(8, -6);
+        var pointE = Point(9, 1);
+        var pointF = Point(-1, 5);
+
+        // calculate distance
+        var distance = CalculateDistance(pointA, pointB);
+        jsConsole.write("Task 1. Distance: ");
+        jsConsole.write(distance);
+
+        // check for triangle
+        var lineA = Line(pointA, pointB);
+        var lineB = Line(pointC, pointD);
+        var lineC = Line(pointE, pointF);
+
+        jsConsole.write(" Possible triangle: ");
+        CheckForTriangle(lineA, lineB, lineC);
+
+
+        // point creator
+        function Point(x, y) {
+            return { x: x, y: y };
+        }
+
+        // line creator
+        function Line(point1, point2) {
+            return { pointA: point1, pointB: point2 };
+        }
+
+        // distance calculating function
+        function CalculateDistance(point1, point2) {
+            return Math.sqrt((point1.x - point2.x) * (point1.x - point2.x) + (point1.y - point2.y) * (point1.y - point2.y));
+        }
+
+        // triangle checking function
+        function CheckForTriangle(lineA, lineB, lineC) {
+
+            var a = CalculateDistance(lineA.pointA, lineA.pointB);
+            var b = CalculateDistance(lineB.pointA, lineB.pointB);
+            var c = CalculateDistance(lineC.pointA, lineC.pointB);
+
+            if (a + b > c && a + c > b && b + c > a) {
+                jsConsole.writeLine("true");
+            }
+            else {
+                jsConsole.writeLine("false");
+            }
+        }
+
+    </script>
+</body>
+</html>

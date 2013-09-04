@@ -1,0 +1,285 @@
+﻿<html>
+<head>
+    <title>Arrays - All Tasks</title>
+    <link href="js-console.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="js-console">
+    </div>
+    <script src="js-console.js"></script>
+    <script>
+        // 1. Write a script that allocates array of 20 integers and initializes each element by its index multiplied by 5. Print the obtained array on the console.
+
+        jsConsole.writeLine("Task 1: ");
+
+        var numbers = new Array();
+
+        for (var i = 0; i < 20; i++) {
+            numbers[i] = i * 5;
+        }
+
+        for (var element in numbers) {
+            jsConsole.write(numbers[element] + " ");
+        }
+
+        jsConsole.writeLine("<br />");
+
+
+        // 2. Write a script that compares two char arrays lexicographically (letter by letter).
+
+        jsConsole.writeLine("Task 2: ");
+
+        var arr1 = ['b', 'u', 'l', 'g', 'a', 'r', 'i', 'a'];
+        var arr2 = ['h', 'u', 'n', 'g', 'a', 'r', 'y'];
+        //var arr2 = ['b', 'u', 'l', 'g', 'a', 'r', 'i', 'p'];
+
+
+        var shortest;
+        var longest;
+        var equal = true;
+
+        (arr1.length == arr2.length) ? shortest = arr1 : (arr1.length < arr2.length) ? (shortest = arr1, longest = arr2) : (shortest = arr2, longest = arr1);
+
+        for (var i = 0; i < shortest.length; i++) {
+            if (arr1[i] < arr2[i]) {
+                jsConsole.write(arr1 + " is before " + arr2);
+                equal = false;
+                break;
+            }
+            if (arr1[i] > arr2[i]) {
+                jsConsole.write(arr2 + " is before " + arr1);
+                equal = false;
+                break;
+            }
+        }
+
+        if (equal == true) {
+            jsConsole.write("Both arrays are equal.");
+        }
+
+        jsConsole.writeLine("<br />");
+
+
+        // 3. Write a script that finds the maximal sequence of equal elements in an array. Example: {2, 1, 1, 2, 3, 3, 2, 2, 2, 1} -> {2, 2, 2}.
+
+        jsConsole.write("Task 3: ");
+
+        var intArray = [2, 1, 1, 2, 3, 3, 2, 2, 2, 1];
+        var first = intArray[0];
+        var next = 0;
+        var length = 1;
+        var bestLength = 0;
+        var end = 0;
+
+        // searching for the maximal sequence
+        for (var i = 1; i < intArray.length; i++) {
+            next = intArray[i];
+
+            if (first == intArray[i]) {
+                length++;
+                if (length > bestLength) {
+                    bestLength = length;
+                    end = i;
+                }
+            }
+            else {
+                length = 1;
+            }
+
+            first = intArray[i];
+        }
+
+        var beginning = end - (bestLength - 1);
+        jsConsole.writeLine();
+
+        printInfo();
+
+        // printing info
+        function printInfo() {
+            jsConsole.writeLine("The maximal sequence is " + bestLength);
+            jsConsole.writeLine("From index [" + beginning + "] to index [" + end + "] of the array");
+            jsConsole.write("Which are the numbers: ");
+
+            for (var i = beginning; i <= end; i++) {
+                jsConsole.write(intArray[i] + " ");
+            }
+
+            jsConsole.writeLine("<br />");
+        }
+
+
+        // 4. Write a script that finds the maximal increasing sequence in an array. Example: {3, 2, 3, 4, 2, 2, 4} -> {2, 3, 4}.
+
+        jsConsole.write("Task 4: ");
+
+        intArray = [3, 2, 3, 4, 2, 2, 4];
+        first = intArray[0];
+        next = 0;
+        length = 1;
+        bestLength = 0;
+        end = 0;
+
+        // searching for the maximal increasing sequence
+        for (var i = 1; i < intArray.length; i++) {
+            next = intArray[i];
+            if (first < intArray[i]) {
+                length++;
+                if (length > bestLength) {
+                    bestLength = length;
+                    end = i;
+                }
+            }
+            else {
+                length = 1;
+            }
+
+            first = intArray[i];
+        }
+
+        var beginning = end - (bestLength - 1);
+        jsConsole.writeLine();
+
+        // printing info
+        printInfo();
+
+
+        // 5. Sorting an array means to arrange its elements in increasing order. Write a script to sort an array. Use the "selection sort" algorithm: Find the smallest element, move it at the first position, find the smallest from the rest, move it at the second position, etc.
+
+        jsConsole.writeLine("Task 5: ");
+
+        var arr = [15, 4, -3, 11, 9, -8, 6];
+
+        // print array before sorting it
+        jsConsole.write("Array: ");
+        for (var element in arr) {
+            jsConsole.write(arr[element] + " ");
+        }
+
+        // sort the array
+        var temp = 0;
+
+        for (var j = 0; j < arr.length; j++) {
+            for (var i = 0; i < arr.length - 1; i++) {
+                if (arr[i + 1] < arr[i]) {
+                    temp = arr[i + 1];
+                    arr[i + 1] = arr[i];
+                    arr[i] = temp;
+                }
+            }
+        }
+
+        jsConsole.writeLine();
+        jsConsole.write("Array sorted: ");
+        for (var element in arr) {
+            jsConsole.write(arr[element] + " ");
+        }
+
+        jsConsole.writeLine("<br />");
+
+
+        // 6. Write a program that finds the most frequent number in an array. Example:	{4, 1, 1, 4, 2, 3, 4, 4, 1, 2, 4, 9, 3} -> 4 (5 times)
+
+        jsConsole.writeLine("Task 6: ");
+
+        intArray = [4, 1, 1, 4, 2, 3, 1, 2, 4, 9, 3, 2, 2, 1, 1];
+
+        //print array
+        jsConsole.write("Array: ");
+
+        for (var index in intArray) {
+            jsConsole.write(intArray[index] + " ");
+        }
+        jsConsole.writeLine();
+
+        //Sorting array
+        intArray.sort();
+
+        first = intArray[0];
+        next = 0;
+        length = 1;
+        bestLength = 0;
+        end = 0;
+
+        // searching for the maximal sequence
+        for (var i = 1; i < intArray.length; i++) {
+            next = intArray[i];
+            if (first == intArray[i]) {
+                length++;
+                if (length > bestLength) {
+                    bestLength = length;
+                    end = i;
+                }
+            }
+            else {
+                length = 1;
+            }
+
+            first = intArray[i];
+        }
+
+        var beginning = end - (bestLength - 1);
+
+        // printing info
+        jsConsole.writeLine("The most frequent number is: " + intArray[end]);
+        jsConsole.writeLine("It is repeating " + bestLength + " times.");
+        jsConsole.writeLine();
+
+
+        // 7. Write a program that finds the index of given element in a sorted array of integers by using the binary search algorithm (find it in Wikipedia)
+
+        jsConsole.writeLine("Task 7: ");
+
+        intArray = [2, 5, 8, 11, 19, 21, 34, 48];
+
+        // print array
+        jsConsole.write("Array: ");
+
+        for (var index in intArray) {
+            jsConsole.write(intArray[index] + " ");
+        }
+        jsConsole.writeLine();
+
+        // find index
+        var searchFor = 11;
+        var maxIndex = intArray.length - 1;
+        var minIndex = 0;
+        var trialIndex = Math.floor((minIndex + maxIndex) / 2);
+
+        do
+        {
+            trialIndex = Math.floor((minIndex + maxIndex) / 2);
+            if (searchFor < intArray[minIndex] || searchFor > intArray[maxIndex])
+            {
+                jsConsole.writeLine("Index was not found!");
+                break;
+            }
+
+            else if (searchFor == intArray[trialIndex])
+            {
+                jsConsole.writeLine(searchFor + " found at index [" + trialIndex +"]");
+                break;
+            }
+            else if (searchFor == intArray[maxIndex])
+            {
+                jsConsole.writeLine(searchFor + " found at index [" + maxIndex + "]");
+                break;
+            }
+            else if (searchFor > intArray[trialIndex])
+            {
+                minIndex = trialIndex + 1;
+            }
+            else if (searchFor < intArray[trialIndex])
+            {
+                maxIndex = trialIndex - 1;
+            }
+            
+            if (minIndex == trialIndex)
+            {
+                jsConsole.writeLine("Index was not found!");
+            }
+        }
+        while (searchFor != trialIndex && minIndex != trialIndex);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+	Task 3. Write a script that shims querySelector and querySelectorAll in older browsers.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>DOM Manipulation - Shims</title>
+	<style>
+		body {
+			font-size: 20px;
+		}
+
+		.buttons {
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body>
+	<ul id="list">
+		<li>
+			<a href="#">Home</a>
+		</li>
+		<li>
+			<a href="#">Profile</a>
+		</li>
+		<li>
+			<a href="#">Friends</a>
+		</li>
+	</ul>
+
+	<a href="#" class="buttons" onclick="onChangeUlButtonClick()">Change the &lt;ul&gt; using "querySelector"</a><br />
+	<a href="#" class="buttons" onclick="onChangeLiButtonClick()">Change all the &lt;li&gt; items using "querySelectorAll"</a>
+
+	<script>		
+		if (!document.querySelector || !document.querySelectorAll) {
+			document.querySelectorAll = function (selector) {
+				if (selector == '#') {
+					return document.getElementById(selector.substr(1));
+				}
+				if (selector == '.') {
+					return document.getElementsByClassName(selector.substr(1));
+				}
+			}
+
+			document.querySelector = function (selector) {
+				return document.getElementById(selector.substr(1));
+			}
+		}
+
+		var list = document.querySelector("#list");
+		var navItems = mainNav.querySelectorAll("ul > li > a");
+		
+		function onChangeUlButtonClick() {
+			list.style.fontSize = "26px";
+		}
+
+		function onChangeLiButtonClick() {
+			list.style.fontStyle = "italic";
+		}
+		
+	</script>
+</body>
+</html>

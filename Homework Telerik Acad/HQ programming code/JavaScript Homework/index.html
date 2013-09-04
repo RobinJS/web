@@ -1,0 +1,28 @@
+<! DOCTYPE html>
+<html>
+<head>
+	<title>Browser Checker</title>
+	<meta charset="utf-8" />
+	<script type="text/javascript">
+	function BrowserChecker( THE_event, argumenti) {
+		var myWindow = window;
+		var myBrowser = myWindow.navigator.appCodeName;
+		var isMozilla = myBrowser == "Mozilla";
+
+		if(isMozilla) {
+		    alert("Yes");
+		} else {
+		    alert("No");
+		}
+	}
+
+	</script>
+
+</head>
+<body>
+	<div>
+		<p>Click the button to check if your browser is Mozilla.</p>
+		<input type="button" value="click me" onclick="BrowserChecker()">
+	<div>
+</body>
+</html>

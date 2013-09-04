@@ -1,0 +1,56 @@
+<html>
+<head>
+    <title>Image slider</title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        .slider {
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        #sliderHead {
+            border: 3px inset white;
+            box-shadow: 7px 7px 7px #888888;
+            margin: 10px auto;
+            width: 600px;
+            height: 450px;
+        }
+
+        #sliderThumbnails {
+            display: table;
+            height: 100px;
+            margin: 0 auto;
+            width: 680px;
+        }
+
+        img {
+            box-shadow: 7px 7px 7px #888888;
+            margin: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .arrows {
+            box-shadow: none;
+            margin-top: 34%;
+        }
+
+            .arrows:last-of-type {
+                float: right;
+            }
+    </style>
+</head>
+<body>
+    <div class="slider">
+        <div id="sliderHead">
+            <img class="arrows" id="previous" src="images/previous.png" alt="Previous image" />
+            <img class="arrows" id="next" src="images/next.png" alt="Next image" />
+        </div>
+        <h1 id="heading"></h1>
+        <div id="sliderThumbnails"></div>
+        <script type="text/javascript" src="slider.js"></script>
+    </div>
+</body>
+</html>

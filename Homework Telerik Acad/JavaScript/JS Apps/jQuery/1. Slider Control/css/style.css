@@ -1,0 +1,45 @@
+body {
+    font-family: Calibri;
+    font-size: 18px;
+}
+
+#mainContent {
+    margin: 0 auto;
+    width: 994px;
+}
+
+#slider {
+    background-color: #fff;
+    border: 2px solid #e6e6e6;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#navigation {
+    display: table;
+    height: 25px;
+    margin: 0 auto;
+}
+
+#previous, #next, #slidesCoounter, p {
+    float: left;
+}
+
+#slidesCoounter {
+    padding: 0 10px;
+}
+
+p {
+    text-indent: 20px;
+    text-align: justify;
+}
+
+h1, p {
+    margin: 0;
+    padding: 15px;
+}
+
+img {
+    border-radius: 5px 5px 5px 5px;
+    margin-top: 15px;
+}

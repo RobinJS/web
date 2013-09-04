@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Trash Bucket</title>
+    <style>
+        .container {
+            border-radius: 5px;
+            border: 1px solid black;
+            width: 400px;
+            height: 100px;
+            float: left;
+            padding:10px;
+            margin:5px;
+        }
+
+        img {
+            border: 0;
+        }
+
+        #bucket {
+            float: left;
+            margin-right: 20px;
+        }
+
+        input[type*=button] {
+            float: left;
+            margin-right: 20px;
+        }
+    </style>
+    <script>
+        var garbages = 0;
+        // drag and drop functions
+        function allowDrop(ev, image) {
+            ev.preventDefault();
+                image.src = "images/bucket-opened.png";
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("dragged-id", ev.target.id);
+        }
+
+        function drop(ev, image) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("dragged-id");
+            ev.target.appendChild(document.getElementById(data));
+            image.src = "images/bucket-closed.png";
+
+            garbages++;
+            if (garbages == 6) {
+                clearTimer();
+                garbages = 0;
+                showResults();
+            }
+        }
+
+        // timer functions
+        var timer;
+        var milliseconds = 0;
+
+        function startTimer() {
+            timer = setInterval(setTime, 1);
+        }
+        function clearTimer() {
+            clearInterval(timer);
+        }
+        function setTime(){
+            document.getElementById('milliseconds').innerHTML = milliseconds;
+            milliseconds++;
+        }
+
+        // result functions
+        function showResults() {
+            var date = new Date();
+            var name = prompt("Please, enter your name!", "");
+            saveScore(date.toUTCString(), name, milliseconds);
+            restoreScore();
+        }
+
+        // storage functions
+        function saveScore(date, name, milliseconds) {
+            localStorage.setValue("Date: ", date);
+            localStorage.setValue("Name: ", name);
+            localStorage.setValue("Time (in milliseconds): ", milliseconds);
+        }
+
+        function restoreScore() {
+            var date = localStorage.getValue("Date: ");
+            var name = localStorage.getValue("Name: ");
+            var milliseconds = localStorage.getValue("Time (in milliseconds): ");
+            var result = date + " " + name + " " + milliseconds;
+            document.getElementById('results').innerHTML = result;
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Clean the trash</h1>
+    <div>
+        <input type="button" value="Start the timer" onclick="startTimer()"/>
+        <p>milliseconds: <span id="milliseconds"></span></p>
+    </div>
+    <div class="container">
+        <img id="bucket" src="images/bucket-closed.png" onDragLeave="CloseBucket(this)" ondragover="allowDrop(event, this)" ondrop="drop(event, this)"/>
+        <div id="garbageArea">
+            <img src="images/garbage.png" id="garbage1" draggable="true" ondragstart="drag(event)"></img>
+            <img src="images/garbage.png" id="garbage2" draggable="true" ondragstart="drag(event)"></img>
+            <img src="images/garbage.png" id="garbage3" draggable="true" ondragstart="drag(event)"></img>
+            <img src="images/garbage.png" id="garbage4" draggable="true" ondragstart="drag(event)"></img>
+            <img src="images/garbage.png" id="garbage5" draggable="true" ondragstart="drag(event)"></img>
+            <img src="images/garbage.png" id="garbage6" draggable="true" ondragstart="drag(event)"></img>
+        </div>
+    </div>
+    <div id="results">
+    </div>
+</body>
+</html>

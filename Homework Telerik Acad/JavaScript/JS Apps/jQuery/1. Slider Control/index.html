@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>SyFy</title>
+    <meta charset="utf-8" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery-1.10.1.min.js"></script>
+</head>
+<body>
+    <div id="mainContent">
+        <div id="slider"></div>
+        <div id="navigation">
+            <a href="#" id="previous">Previous</a>
+            <div id="slidesCoounter">
+                <span id="currentPageNumber"></span> / <span id="totalSlidesNumber"></span>
+            </div>
+            <a href="#" id="next">Next</a>
+        </div>
+    </div>
+
+    <script>
+        $("#next").on("click", displayNext);
+        $("#previous").on("click", displayPrevious);
+
+        var slider = $("#slider");
+        var currentPage = 0;
+        var slides = ["Warehouse13.html", "Continuum.html", "Sinbad.html", "Faceoff.html"];
+        slider.load(slides[currentPage]);
+        $("#currentPageNumber").html(currentPage + 1);
+        $("#totalSlidesNumber").html(slides.length);
+
+        setInterval(autoSlide, 5000);
+        function autoSlide() {
+            displayNext();
+            if (currentPage == slides.length - 1) {
+                currentPage = -1;
+            }
+        }
+
+        function displayNext() {
+            if (currentPage < slides.length - 1) {
+                var next = currentPage + 1;
+                slider.load(slides[next]);
+                currentPage = next;
+                $("#currentPageNumber").text(currentPage + 1);
+            }
+        }
+
+        function displayPrevious() {
+            if (currentPage > 0) {
+                var previous = currentPage - 1;
+                slider.load(slides[previous]);
+                currentPage = previous;
+                $("#currentPageNumber").text(currentPage + 1);
+            }
+        }
+    </script>
+</body>
+</html>

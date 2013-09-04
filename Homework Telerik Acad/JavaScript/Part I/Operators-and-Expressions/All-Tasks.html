@@ -1,0 +1,114 @@
+﻿<html>
+<head>
+    <title>Operators and Expressions - All Tasks</title>
+    <link href="js-console.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="js-console">
+    </div>
+    <script src="js-console.js"></script>
+    <script>
+        // 1. Odd or even
+        var number = 35;
+        if (number % 2 == 0) {
+            jsConsole.writeLine("1. Number " + number + " is even.");
+        }
+        else {
+            jsConsole.writeLine("1. Number " + number + " is odd.");
+        }
+
+        // 2. Division without remainder by 7 and 5 in the sam time
+        if (number % 5 == 0 && number % 7 == 0) {
+            jsConsole.writeLine("2. Number " + number + " can be devided by 5 and 7 in the sam time.");
+        }
+        else {
+            jsConsole.writeLine("2. Number " + number + " can NOT be devided by 5 and 7 in the sam time.");
+        }
+
+        // 3. Rectangle’s area
+        var width = 3;
+        var height = 12;
+        jsConsole.writeLine("3. Rectangle: width: " + width + ", height: " + height + ", area: " + width * height);
+
+        // 4. Check if third digit (right-to-left) is 7
+        var integer = 3724;
+        jsConsole.write("4. Integer: " + integer);
+        jsConsole.write(" Third digit is 7? ");
+
+        var expression = Math.floor(integer / 100) % 10;
+        jsConsole.writeLine(expression == 7);
+
+        // 5. Finding if the bit 3 (counting from 0) of a given integer is 1 or 0
+        jsConsole.writeLine("5. Integer " + integer + " in binary: " + integer.toString(2));
+        var mask = 1 << 3;
+        var intAndMask = integer & mask;
+        var bit = intAndMask >> 3;
+        jsConsole.writeLine("Bit 3 (counting from 0) is: " + bit);
+
+        // 6. Point in a circle
+        var x = 5;
+        var y = 8;
+        var radius = 5;
+        var equation = Math.pow(x, 2) + Math.pow(y, 2);
+        jsConsole.write("6. x=" + x + ", y=" + y + ", radius=" + radius + ". Is the point within the circle? ");
+
+        if (equation > -Math.pow(radius, 2) && equation < Math.pow(radius, 2)) {
+            jsConsole.writeLine(true);
+        }
+        else {
+            jsConsole.writeLine(false);
+        }
+
+        // 7. Prime number
+        var number = 37;
+        var isPrime = true;
+        var sqrt = Math.sqrt(number);
+
+        for (var i = 2; i <= 100; i++) {
+            if (isPrime && (i <= sqrt)) {
+                if (number % i == 0) {
+                    isPrime = false;
+                }
+            }
+        }
+        jsConsole.writeLine("7. Is number " + number + " prime? " + isPrime);
+
+        // 8. Trapezoid's area
+        var sideA = 6;
+        var sideB = 4;
+        var trapezoidHeight = 2;
+
+        var trapArea = ((sideA + sideB) / 2) * trapezoidHeight;
+        jsConsole.writeLine("8. Side A=" + sideA + ", Side B=" + sideB + ", Height=" + trapezoidHeight + " Trapezoid's area=" + trapArea);
+
+        // 9. Point, circle and rectangle
+        var pointX = 3;
+        var pointY = 6;
+        var circle = Math.pow((pointX - 1), 2) + Math.pow((pointY - 1), 2);
+        if (circle >= -9 && circle <= 9) {
+            var withinCircle = true;
+        }
+        else {
+            var withinCircle = false ;
+        }
+
+        var rect = x >= -1 && x <= 5 && y >= -1 && y <= 1;
+
+        jsConsole.writeLine("9. point X=" + pointX + ", point Y=" + pointY);
+
+        if (withinCircle && rect) {
+            jsConsole.writeLine("The selected point is within both the circle and the rectangle.");
+        }
+        else if (withinCircle && !rect) {
+            jsConsole.writeLine("The selected point is within the circle, but out of the rectangle.");
+        }
+        else if (!withinCircle && rect) {
+            jsConsole.writeLine("The selected point is out of the circle, but within the rectangle.");
+        }
+        else if (!withinCircle && !rect) {
+            jsConsole.writeLine("The selected point is outside of both the circle and the rectangle.");
+        }
+
+    </script>
+</body>
+</html>

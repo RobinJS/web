@@ -1,0 +1,96 @@
+﻿<html>
+<head>
+    <title>Loops - All Tasks</title>
+    <link href="js-console.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="js-console">
+    </div>
+    <script src="js-console.js"></script>
+    <script>
+        // 1. Write a script that prints all the numbers from 1 to N
+
+        var n = 10;
+        jsConsole.write("Task 1: ");
+
+        for (var i = 1; i <= n; i++) {
+            jsConsole.write(i + " ");
+        }
+
+        jsConsole.writeLine("<br />");
+
+        // 2. Write a script that prints all the numbers from 1 to N, that are not divisible by 3 and 7 at the same time
+
+        var n2 = 50;
+        jsConsole.write("Task 2: ");
+
+        for (var i = 1; i <= n2; i++) {
+            if (i % 21 != 0) {
+                jsConsole.write(i + " ");
+            }
+            else {
+                jsConsole.write("[ ] ");
+            }
+        }
+        jsConsole.writeLine("<br />");
+
+        // 3. Write a script that finds the max and min number from a sequence of numbers
+        var numbers = new Array(5, 3, -15, 64, 91, -7, 6);
+
+        var max;
+        var min;
+
+        if (numbers[1] > numbers[2]) {
+            max = numbers[1];
+            min = numbers[2];
+        }
+        else {
+            max = numbers[2];
+            min = numbers[1];
+        }
+
+        for (var i = 2; i < numbers.length; i++) {
+            if (numbers[i] > max) {
+                max = numbers[i];
+            }
+            else if (numbers[i] < min) {
+                min = numbers[i];
+            }
+        }
+
+        jsConsole.write("Task 3: Max: " + max + " Min: " + min);
+        jsConsole.writeLine("<br />");
+
+        // 4. Write a script that finds the lexicographically smallest and largest property in document, window and navigator objects
+
+        jsConsole.writeLine("Task 4:");
+
+        var smallest = 'z';
+        var largest = 'a';
+
+        function findProperties(object) {
+            for (var property in object) {
+                if (property < smallest.toString) {
+                    smallest = property;
+                }
+                if (property > largest.toString) {
+                    largest = property;
+                }
+            }
+        }
+
+        findProperties(document);
+        jsConsole.write("The smallest property of document object is: '" + smallest + "' The largest is: '" + largest + "'");
+        jsConsole.writeLine();
+
+        findProperties(window);
+        jsConsole.write("The smallest property of window object is: '" + smallest + "' The largest is: '" + largest + "'");
+        jsConsole.writeLine();
+
+        findProperties(navigator);
+        jsConsole.write("The smallest property of navigator object is: '" + smallest + "' The largest is: '" + largest + "'");
+        jsConsole.writeLine();
+
+    </script>
+</body>
+</html>
