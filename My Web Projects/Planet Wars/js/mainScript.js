@@ -1,5 +1,5 @@
 require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships", "planet" ],
-	function( stage, config, markers, arrow, SingleShip, ships, Planet ) {
+	function( stage, config, markers, arrow, SingleShip, Ships, Planet ) {
 
 	// create planes
 	// set starting planet
@@ -20,10 +20,10 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 
 	
 	function findDestinationPlanet( mouseX, mouseY ){
-		var isDest = false;
+		var isDest = {};
 		planets.forEach(function(planet){
 			if ( (mouseX >= (planet.x - planet.size) && mouseX <= (planet.x + planet.size)) && (mouseY >= (planet.y - planet.size) && mouseY <= (planet.y + planet.size)) ) {
-				isDest = true;
+				isDest = planet;
 			}
 		});
 
@@ -31,21 +31,19 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 	}
 
 	mainStage.on('stagemouseup', function(e){
-		config.clickedPlanet = null;
+		
 		mainStage.removeEventListener('stagemousemove', arrow.drawArrow);
 		markers.removeTouchMarker();
 		markers.removeDestinationMarker();
-
-		if ( config.destinationPlanet === null ) {
-			config.destinationPlanet.isDestination = findDestinationPlanet( e.stageX, e.stageY );
-
-			if ( config.destinationPlanet.isDestination ) {
-				ships.sendShips();
-			}
-		}
-
 		config.line.graphics.clear();
 
+		if ( config.destinationPlanet === null ) {
+			config.destinationPlanet = findDestinationPlanet( e.stageX, e.stageY );
+			var ships = new Ships( config.clickedPlanet, config.destinationPlanet );
+			ships.sendShips();
+		}
+
+		config.clickedPlanet = null;
 	});
 
 

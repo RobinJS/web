@@ -2,10 +2,20 @@ define(function(){
 	var config = require('config'),
 		SingleShip = require('singleShip');
 	
-	var ships = [];
+	var Ships = function( startPlanet, destinationPlanet ){
+		this.startPlanet = startPlanet;
+		this.destinationPlanet = destinationPlanet;
+		this.ships = {};
+	};
 
-	return {
+	$.extend(Ships.prototype, {
 		sendShips: function() {
+			this.createShipsToSend();
+
+			this.ships.forEach(function(ship){
+				ship.send();
+			});
+
 			this.animateShips(function(){
 				config.destinationPlanet.updateShipsNum( config.clickedPlanet.getShipsNum() );
 				config.clickedPlanet.setShipsNum( 0 );
@@ -14,13 +24,17 @@ define(function(){
 			});
 		},
 
-		animateShips: function( callback ){
+		createShipsToSend: function(){
 			var shipsToSendNum = config.clickedPlanet.getShipsNum();
+			for (var i = 0; i < shipsToSendNum; i++) {
+				this.ships.push(new SingleShip( config.clickedPlanet, config.destinationPlanet ));
+			}
+		},
+
+		animateShips: function( callback ){
 			var idx = 0;
 
-			for (var i = 0; i < shipsToSendNum; i++) {
-				ships.push(new SingleShip( config.clickedPlanet, config.destinationPlanet ));
-			}
+			
 
 			function loop(){
 				if ( idx >= ships.length ) return;
@@ -34,5 +48,7 @@ define(function(){
 
 			loop();
 		}
-	}
+	});
+
+	return Ships;
 });
