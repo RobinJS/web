@@ -15,11 +15,12 @@ define(function(){
 		this.isDestination = false;
 
 		var thisPlanetShipsNum = 0;
+		var shape = null;
 		this.text = new createjs.Text(thisPlanetShipsNum, "20px Arial", "#0000ff");
 
 		this.draw = function(){
 			var graphics = new createjs.Graphics().beginFill(color).drawCircle(this.x, this.y, this.size, this.size);
-			var shape = new createjs.Shape(graphics);
+			shape = new createjs.Shape(graphics);
 
 			graphics.regX = this.size / 2;
 			graphics.regY = this.size / 2;
@@ -29,6 +30,14 @@ define(function(){
 			this.text.x = this.x;
 			this.text.y = this.y;
 
+	    	mainStage.addChild(shape);
+	    	mainStage.addChild(this.text);
+
+	    	this.addListeners();
+	    	this.startCreatingShips();
+		};
+
+		this.addListeners = function(){
 			shape.on('mousedown', function(e){
 				config.clickedPlanet = this;
 
@@ -41,7 +50,7 @@ define(function(){
 			shape.addEventListener('mouseover', function(e){
 				if ( config.clickedPlanet === null || this.id === config.clickedPlanet.id ) return;
 
-				config.destinationPlanet = this;
+				// config.destinationPlanet = this;
 				markers.placeDestinationMarker(this.x, this.y);
 			}.bind(this));
 
@@ -57,17 +66,7 @@ define(function(){
 				// this.text.text = thisPlanetShipsNum;
 				
 			}.bind(this));
-
-				// checK for planet under cursor data
-				// send points
-				// countdown points
-				// countup points
-
-	    	mainStage.addChild(shape);
-	    	mainStage.addChild(this.text);
-
-	    	this.startCreatingShips();
-		};
+		}
 
 		this.startCreatingShips = function(){
 			setTimeout(function(){

@@ -31,11 +31,12 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 	}
 
 	mainStage.on('stagemouseup', function(e){
+		config.clickedPlanet = null;
 		mainStage.removeEventListener('stagemousemove', arrow.drawArrow);
 		markers.removeTouchMarker();
 		markers.removeDestinationMarker();
 
-		if ( config.destinationPlanet != null ) {
+		if ( config.destinationPlanet === null ) {
 			config.destinationPlanet.isDestination = findDestinationPlanet( e.stageX, e.stageY );
 
 			if ( config.destinationPlanet.isDestination ) {
