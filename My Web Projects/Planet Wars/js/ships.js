@@ -5,16 +5,12 @@ define(function(){
 	var Ships = function( startPlanet, destinationPlanet ){
 		this.startPlanet = startPlanet;
 		this.destinationPlanet = destinationPlanet;
-		this.ships = {};
+		this.ships = [];
 	};
 
 	$.extend(Ships.prototype, {
 		sendShips: function() {
 			this.createShipsToSend();
-
-			this.ships.forEach(function(ship){
-				ship.send();
-			});
 
 			this.animateShips(function(){
 				config.destinationPlanet.updateShipsNum( config.clickedPlanet.getShipsNum() );
@@ -32,15 +28,14 @@ define(function(){
 		},
 
 		animateShips: function( callback ){
-			var idx = 0;
-
-			
+			var that = this,
+				idx = 0;
 
 			function loop(){
-				if ( idx >= ships.length ) return;
+				if ( idx >= that.ships.length ) return;
 
 				setTimeout(function(){
-					ships[idx].move();
+					that.ships[idx].send();
 					idx++;
 					loop();
 				}, 500);

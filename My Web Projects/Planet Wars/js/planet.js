@@ -19,8 +19,10 @@ define(function(){
 		this.text = new createjs.Text(thisPlanetShipsNum, "20px Arial", "#0000ff");
 
 		this.draw = function(){
-			var graphics = new createjs.Graphics().beginFill(color).drawCircle(this.x, this.y, this.size, this.size);
+			var graphics = new createjs.Graphics().beginFill(color).drawCircle(0, 0, this.size, this.size);
 			shape = new createjs.Shape(graphics);
+			shape.x = this.x;
+			shape.y = this.y;
 
 			graphics.regX = this.size / 2;
 			graphics.regY = this.size / 2;

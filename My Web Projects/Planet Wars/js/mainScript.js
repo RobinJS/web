@@ -10,8 +10,8 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 
 	var planets = [
 		new Planet( 1, 'player', 30, "#ffffff", 70, 70),
-		new Planet( 2, 'opponent', 30, "#ff0000", 400, 400),
-		new Planet( 3, 'empty', 30, "#C3C3C3", 200, 200)
+		new Planet( 2, 'empty', 30, "#C3C3C3", 200, 200),
+		new Planet( 3, 'opponent', 30, "#ff0000", 400, 400)
 	];
 		
 	planets.forEach(function(planet){
@@ -20,14 +20,14 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 
 	
 	function findDestinationPlanet( mouseX, mouseY ){
-		var isDest = {};
+		var destPlanet = false;
 		planets.forEach(function(planet){
 			if ( (mouseX >= (planet.x - planet.size) && mouseX <= (planet.x + planet.size)) && (mouseY >= (planet.y - planet.size) && mouseY <= (planet.y + planet.size)) ) {
-				isDest = planet;
+				destPlanet = planet;
 			}
 		});
 
-		return isDest;
+		return destPlanet;
 	}
 
 	mainStage.on('stagemouseup', function(e){
@@ -37,10 +37,10 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 		markers.removeDestinationMarker();
 		config.line.graphics.clear();
 
-		if ( config.destinationPlanet === null ) {
-			config.destinationPlanet = findDestinationPlanet( e.stageX, e.stageY );
-			var ships = new Ships( config.clickedPlanet, config.destinationPlanet );
-			ships.sendShips();
+		if ( config.destinationPlanet = findDestinationPlanet( e.stageX, e.stageY ) ) {
+			
+			var newGroupOfShips = new Ships( config.clickedPlanet, config.destinationPlanet );
+			newGroupOfShips.sendShips();
 		}
 
 		config.clickedPlanet = null;
