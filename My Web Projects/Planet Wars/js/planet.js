@@ -15,14 +15,14 @@ define(function(){
 		this.isDestination = false;
 
 		var thisPlanetShipsNum = 0;
-		var shape = null;
+		this.shape = null;
 		this.text = new createjs.Text(thisPlanetShipsNum, "20px Arial", "#0000ff");
 
 		this.draw = function(){
 			var graphics = new createjs.Graphics().beginFill(color).drawCircle(0, 0, this.size, this.size);
-			shape = new createjs.Shape(graphics);
-			shape.x = this.x;
-			shape.y = this.y;
+			this.shape = new createjs.Shape(graphics);
+			this.shape.x = this.x;
+			this.shape.y = this.y;
 
 			graphics.regX = this.size / 2;
 			graphics.regY = this.size / 2;
@@ -32,7 +32,7 @@ define(function(){
 			this.text.x = this.x;
 			this.text.y = this.y;
 
-	    	mainStage.addChild(shape);
+	    	mainStage.addChild(this.shape);
 	    	mainStage.addChild(this.text);
 
 	    	this.addListeners();
@@ -40,7 +40,7 @@ define(function(){
 		};
 
 		this.addListeners = function(){
-			shape.on('mousedown', function(e){
+			this.shape.on('mousedown', function(e){
 				config.clickedPlanet = this;
 
 				arrow.setStartPosition( this.x, this.y );
@@ -49,20 +49,20 @@ define(function(){
 				mainStage.addEventListener('stagemousemove', arrow.drawArrow);
 			}.bind(this));
 
-			shape.addEventListener('mouseover', function(e){
+			this.shape.addEventListener('mouseover', function(e){
 				if ( config.clickedPlanet === null || this.id === config.clickedPlanet.id ) return;
 
 				// config.destinationPlanet = this;
 				markers.placeDestinationMarker(this.x, this.y);
 			}.bind(this));
 
-			shape.addEventListener('mouseout', function(e){
+			this.shape.addEventListener('mouseout', function(e){
 				// if ( !this.isDestination ) return;
 
 				markers.removeDestinationMarker(this.x, this.y);
 			}.bind(this));
 
-			shape.on('pressup', function(){
+			this.shape.on('pressup', function(){
 				// this.isDestination = true;
 				// thisPlanetShipsNum += config.clickedPlanet.getShipsNum();
 				// this.text.text = thisPlanetShipsNum;
@@ -95,6 +95,11 @@ define(function(){
 
 			thisPlanetShipsNum = num;
 			this.text.text = thisPlanetShipsNum;
+		};
+
+		this.changeColor = function( color ){
+			this.shape.graphics.beginFill(color);
+			this.shape.graphics = new createjs.Graphics().beginFill(color).drawCircle(0, 0, this.size, this.size);
 		};
 		
 	};

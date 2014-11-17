@@ -8,7 +8,7 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 	// create functionality
 	// create score and hud
 
-	var planets = [
+	window.planets = [
 		new Planet( 1, 'player', 30, "#ffffff", 70, 70),
 		new Planet( 2, 'empty', 30, "#C3C3C3", 200, 200),
 		new Planet( 3, 'opponent', 30, "#ff0000", 400, 400)
@@ -39,8 +39,8 @@ require(["stage", "config", "markers", "destinationArrow", "singleShip", "ships"
 
 		if ( config.destinationPlanet = findDestinationPlanet( e.stageX, e.stageY ) ) {
 			
-			var newGroupOfShips = new Ships( config.clickedPlanet, config.destinationPlanet );
-			newGroupOfShips.sendShips();
+			window.newGroupOfShips = new Ships( config.clickedPlanet, config.destinationPlanet );
+			window.newGroupOfShips.sendShips();
 		}
 
 		config.clickedPlanet = null;

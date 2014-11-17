@@ -18,6 +18,9 @@ define(function(){
 			homePlanet.setShipsNum( homePlanet.getShipsNum() - 1);
 			TweenMax.fromTo( shape, 5, { x: homePlanet.x, y: homePlanet.y }, { x: destinationPlanet.x, y: destinationPlanet.y, ease:Linear.easeNone, onComplete: function(){
 				destinationPlanet.updateShipsNum(1);
+				destinationPlanet.team = homePlanet.team;
+				destinationPlanet.changeColor(homePlanet.color);
+				mainStage.removeChild(shape);
 			}});
 		};
 	};
