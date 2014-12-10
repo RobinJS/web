@@ -13,20 +13,14 @@ require(["stage", "config" ],
 	$('#mainCanvas').css('background-position', strikeFieldLeftOffset + 'px ' + strikeFieldTopOffset + 'px');
 
 	var marker = new createjs.Shape();
-	marker.graphics.setStrokeStyle(1).beginFill("#000").rect(strikeFieldLeftOffset, strikeFieldTopOffset, 50, 50);
+	marker.graphics.setStrokeStyle(1).beginFill('rgba(255, 255, 255, 0.5)').rect(strikeFieldLeftOffset, strikeFieldTopOffset, 50, 50);
 	marker.visible = false;
 	
 
-	// var border = new createjs.Shape();
-	// border.graphics.setStrokeStyle(1).beginStroke("#000").rect(100, 100, 10 * 50, 10 * 50);
-	// mainStage.addChild(border);
+	var strikeFieldHitArea = new createjs.Shape();
+	strikeFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(strikeFieldLeftOffset, strikeFieldTopOffset, fieldWidth, fieldHeight);
 
-	// var container = new createjs.Container();
-	// container.addChild(rect);
-	// container.shadow = 1;
-	// container.x = 100;
-	// container.y = 100;
-
+	mainStage.addChild(strikeFieldHitArea);
 	mainStage.addChild(marker);
 
 	mainStage.on('stagemousemove', function(e) {
@@ -36,14 +30,14 @@ require(["stage", "config" ],
 		marker.y = Math.floor( ( e.stageY / grid) ) * grid - strikeFieldTopOffset;
 	});
 
-	mainStage.on('mouseenter', function(e){
+	strikeFieldHitArea.on('mouseover', function(e){
 		;;;console.log(1);
-		if ( (e.stageX <= strikeFieldLeftOffset || e.stageY <= strikeFieldTopOffset) || (e.stageX >= strikeFieldLeftOffset + fieldWidth || e.stageY >= strikeFieldTopOffset + fieldHeight ) ) return;
+		// if ( (e.stageX <= strikeFieldLeftOffset || e.stageY <= strikeFieldTopOffset) || (e.stageX >= strikeFieldLeftOffset + fieldWidth || e.stageY >= strikeFieldTopOffset + fieldHeight ) ) return;
 		
 		marker.visible = true;
 	});
 
-	mainStage.on('mouseleave', function(){
+	strikeFieldHitArea.on('mouseout', function(){
 		marker.visible = false;
 	});
 
