@@ -1,8 +1,25 @@
- var mainStage = new createjs.Stage("mainCanvas");
- createjs.Ticker.addEventListener("tick", handleTick);
- mainStage.enableMouseOver(10);
+define(function (require) {
+    "use strict";
 
- function handleTick(event) {
+    var Stage = function( canvasID ){
+    	this.stage = new createjs.Stage("mainCanvas");
+    	
+    	this.stage.enableMouseOver(10);
+
+    	createjs.Ticker.useRAF = true;
+
+    	this.handleTick = function(event){
+			this.stage.update();
+    	}.bind(this);
+
+    	createjs.Ticker.addEventListener("tick", this.handleTick);
+    };
+
+    $.extend(Stage.prototype, {
+    	addChild: function( obj ){
+    		this.stage.addChild( obj );
+    	},
+    });
     
-    mainStage.update();
- }
+    return Stage;
+});

@@ -2,22 +2,14 @@ define(function (require) {
     "use strict";
 
     var config = require('config'),
-    	GameScene = require('gameScene');
+    	GameScene = require('gameScene'),
+    	Stage = require('stage');
 
     var GameManager = function(){
-    	var that = this,
-    		currentState = 'intro_splash';
+    	var currentState = 'intro_splash';
 
-    	this.gameScene = new GameScene();
-    	this.mainStage = new createjs.Stage("mainCanvas");
-
-		createjs.Ticker.addEventListener("tick", handleTick);
-		// mainStage.enableMouseOver(10);
-
-		function handleTick(event) {
-			;;;console.log(1);
-			that.mainStage.update();
-		}
+    	this.mainStage = new Stage('mainCanvas');
+    	this.gameScene = new GameScene(this.mainStage);
 
 		switch( currentState ) {
 	        case config.gameStates.INTRO_SPLASH:
