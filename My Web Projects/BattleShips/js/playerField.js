@@ -8,7 +8,7 @@ define(function (require) {
     	this.gridImage = null;
     	this.ships = [];
     	this.shipsByType = ['aircraftCarrier', 'battleship', 'cruiser', 'destroyer', 'destroyer', 'submarine', 'submarine'];
-    	this.initialX = [650, 650, 650, 650, 770, 650, 730];
+    	this.initialX = [750, 750, 750, 750, 870, 750, 830];
     	this.initialY = [250, 320, 390, 460, 460, 530, 530];
     	this.init();
     };

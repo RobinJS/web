@@ -11,7 +11,7 @@ define(function (require) {
 
     	this.mainStage = new Stage('mainCanvas');
     	this.gameScene = new GameScene(this.mainStage);
-    	this.startGameBtn = new Button(750, 650, 790, 665, "START GAME");
+    	this.startGameBtn = new Button(650, 650, 696, 663, "START GAME", 'img/start_btn_bg.png');
     	this.mainStage.addChild(this.startGameBtn);
 
 		switch( currentState ) {

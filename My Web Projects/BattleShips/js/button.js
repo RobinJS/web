@@ -3,12 +3,12 @@ define(function (require) {
 
     var config = require('config');
 
-    var Button = function(backgroundX, backgroundY, textX, textY, text){
-    	var background = new createjs.Bitmap("img/button_bg.png");
+    var Button = function(backgroundX, backgroundY, textX, textY, text, path){
+    	var background = new createjs.Bitmap(path);
         background.x = backgroundX;
         background.y = backgroundY;
 
-        var label = new createjs.Text("", "34px Verdana", "#000");
+        var label = new createjs.Text("", "26px Verdana", "#fff");
         label.x = textX;
         label.y = textY;
         label.text = text;
