@@ -12,6 +12,8 @@ define(function (require) {
     	this.initialY = [250, 320, 390, 460, 460, 530, 530];
     	this.init();
     	this.clickEnabled = false;
+
+    	this.init();
     };
 
     $.extend(PlayerField.prototype, {

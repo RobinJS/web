@@ -10,11 +10,13 @@ define(function (require) {
     	this.image.x = 0;
     	this.image.y = 0;
 
-    	// var clickHandler = function(){
-    	// 	this.move();
-    	// };
-    	
-    	// this.image.addEventListener('click', clickHandler);
+    	var clickHandler = function(){
+    		this.move();
+    	};
+
+    	this.image.addEventListener('click', function(){
+    		alert();
+    	});
     };
 
     $.extend(Ship.prototype, {
