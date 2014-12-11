@@ -13,13 +13,9 @@ define(function (require) {
     	}.bind(this);
 
     	createjs.Ticker.addEventListener("tick", this.handleTick);
-    };
 
-    $.extend(Stage.prototype, {
-    	addChild: function( obj ){
-    		this.stage.addChild( obj );
-    	},
-    });
+        return this.stage;
+    };
     
     return Stage;
 });

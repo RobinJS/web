@@ -1,6 +1,6 @@
 require(["stage", "config", "gameManager" ],
 	function( stage, config, gameManager ) {
-	
+
 	var gameManager = new gameManager();
 
 	return;
@@ -16,31 +16,6 @@ require(["stage", "config", "gameManager" ],
 
 
 	$('#mainCanvas').css('background-position', strikeFieldLeftOffset + 'px ' + strikeFieldTopOffset + 'px');
-
-	var battleFieldBg = new createjs.Bitmap("img/grid.png"),
-		fieldNumbers = [ new createjs.Bitmap("img/field_numbers.png"), new createjs.Bitmap("img/field_numbers.png") ];
-		fieldLetters = [ new createjs.Bitmap("img/field_letters.png"), new createjs.Bitmap("img/field_letters.png") ];
-
-	fieldNumbers[0].x = 50;
-	fieldNumbers[0].y = 200;
-	fieldNumbers[1].x = 650;
-	fieldNumbers[1].y = 200;
-	fieldLetters[0].x = 0;
-	fieldLetters[0].y = 250;
-	fieldLetters[1].x = 600;
-	fieldLetters[1].y = 250;
-
-	mainStage.addChild(fieldNumbers[0]);
-	mainStage.addChild(fieldNumbers[1]);
-	mainStage.addChild(fieldLetters[0]);
-	mainStage.addChild(fieldLetters[1]);
-
-	var battleField = new createjs.Container();
-	battleField.addChild(battleFieldBg);
-	battleField.x = battleFieldLeftOffset;
-	battleField.y = strikeFieldTopOffset;
-
-	mainStage.addChild(battleField);
 
 	var marker = new createjs.Shape();
 	marker.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(strikeFieldLeftOffset, strikeFieldTopOffset, 50, 50);

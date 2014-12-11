@@ -11,9 +11,9 @@ define(function (require) {
     	this.stageBgImage = new createjs.Bitmap("img/ocean_bg.jpg");
 		this.mainStage.addChild(this.stageBgImage);
 
-		this.infoHeader = new InfoHeader( mainStage );
-		this.battlefield = new Battlefield( mainStage );
-		this.strikeField = new StrikeField( mainStage );
+		this.infoHeader = new InfoHeader( this.mainStage );
+		this.battlefield = new Battlefield( this.mainStage );
+		this.strikeField = new StrikeField( this.mainStage );
 
 	/* numbers */
 		this.mapNumbers = [new createjs.Bitmap("img/field_numbers.png"), new createjs.Bitmap("img/field_numbers.png")];
