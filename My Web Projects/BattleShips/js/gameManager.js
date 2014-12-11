@@ -11,8 +11,20 @@ define(function (require) {
 
     	this.mainStage = new Stage('mainCanvas');
     	this.gameScene = new GameScene(this.mainStage);
-    	this.startGameBtn = new Button(650, 650, 696, 663, "START GAME", 'img/start_btn_bg.png');
+
+    	this.startGameBtn = new Button(650, 650, 696, 662, "START GAME", 'img/start_btn_bg.png');
     	this.mainStage.addChild(this.startGameBtn);
+    	this.autoArrangeBtn = new Button(950, 650, 980, 662, "AUTO ARRANGE", 'img/auto_arr_btn_bg.png');
+    	this.mainStage.addChild(this.autoArrangeBtn);
+
+    	this.arrangePannel = new createjs.Container();
+    	this.arrangePannel.addChild(this.gameScene.arrangePannelBg, this.gameScene.arrangeLabel, this.gameScene.infoLabel, this.startGameBtn, this.autoArrangeBtn);
+
+		this.gameScene.playerField.ships.forEach(function(ship){
+			this.arrangePannel.addChild(ship.image);			
+		}.bind(this));
+
+		this.mainStage.addChild(this.arrangePannel);
 
 		switch( currentState ) {
 	        case config.gameStates.ARRANGE_SHIPS:
