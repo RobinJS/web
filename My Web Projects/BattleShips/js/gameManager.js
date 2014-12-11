@@ -17,22 +17,25 @@ define(function (require) {
     	this.autoArrangeBtn = new Button(950, 650, 980, 662, "AUTO ARRANGE", 'img/auto_arr_btn_bg.png');
     	this.mainStage.addChild(this.autoArrangeBtn);
 
-    	this.arrangePannel = new createjs.Container();
-    	this.arrangePannel.addChild(this.gameScene.arrangePannelBg, this.gameScene.arrangeLabel, this.gameScene.infoLabel, this.startGameBtn, this.autoArrangeBtn);
+    	this.arrangepanel = new createjs.Container();
+    	this.arrangepanel.addChild(this.gameScene.arrangepanelBg, this.gameScene.arrangeLabel, this.gameScene.infoLabel, this.startGameBtn, this.autoArrangeBtn);
 
 		this.gameScene.playerField.ships.forEach(function(ship){
-			this.arrangePannel.addChild(ship.image);			
+			this.arrangepanel.addChild(ship.image);			
 		}.bind(this));
 
-		this.mainStage.addChild(this.arrangePannel);
+		this.mainStage.addChild(this.arrangepanel);
 
 		switch( currentState ) {
 	        case config.gameStates.ARRANGE_SHIPS:
-	        	// animate right side down
 	        	// add listeners
 	        	// create functionality for drag, drop, rotate, free areas
 	        	// animate scene hide
-	        	this.gameScene.showArrangePannel(this.arrangePannel);
+	        	this.gameScene.events.pannelShown.addOnce(function(){
+
+	        	});
+	        	
+	        	this.gameScene.showArrangepanel(this.arrangepanel);
 	        break;
 	        case config.gameStates.BATTLE:
 	        	// enable user interraction

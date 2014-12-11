@@ -3,7 +3,8 @@ define(function (require) {
 
     var InfoHeader = require('infoHeader'),
     	PlayerField = require('playerField'),
-    	OpponentField = require('opponentField');
+    	OpponentField = require('opponentField'),
+    	Signal = require('libs/signals.min');
 
     var GameScene = function( mainStage ){
     	this.mainStage = mainStage;
@@ -37,15 +38,15 @@ define(function (require) {
 		this.mainStage.addChild(this.mapLetters[1]);
 	/* end letters */
 
-	/* arrange pannel stuff */
+	/* arrange panel stuff */
 		var arrPanBgWidth = 680,
 			arrPanBgHeight = 770;
 
-		this.arrangePannelBg = new createjs.Shape();
-		this.arrangePannelBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, arrPanBgWidth, arrPanBgHeight);
- 		this.arrangePannelBg.x = 600;
- 		this.arrangePannelBg.y = 0;
- 		this.mainStage.addChild(this.arrangePannelBg);
+		this.arrangepanelBg = new createjs.Shape();
+		this.arrangepanelBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, arrPanBgWidth, arrPanBgHeight);
+ 		this.arrangepanelBg.x = 600;
+ 		this.arrangepanelBg.y = 0;
+ 		this.mainStage.addChild(this.arrangepanelBg);
 
  		this.arrangeLabel = new createjs.Text("ARRANGE YOUR SHIPS", "34px Verdana", "#fff");
  		this.arrangeLabel.x = 710;
@@ -57,9 +58,13 @@ define(function (require) {
  		this.infoLabel.y = 130;
  		this.infoLabel.lineHeight = 35;
  		this.mainStage.addChild(this.infoLabel);
-	/* end arrange pannel stuff */
+	/* end arrange panel stuff */
 
 		this.playerField = new PlayerField( this.mainStage );
+
+		this.events = {
+			pannelShown: new Signal()
+		}
 
     	this.init();
     };
@@ -71,15 +76,15 @@ define(function (require) {
 
 		},
 
-		showArrangePannel: function( pannel ){
+		showArrangepanel: function( panel ){
 			this.opponentField.markerEnabled = false;
-			pannel.y = -770;
-			TweenMax.to(pannel, 2, {
+			panel.y = -770;
+			TweenMax.to(panel, 2, {
 				y: 0
 			});
 		},
 
-		hideArrangePannel: function(){
+		hideArrangepanel: function(){
 			// this.opponentField.markerEnabled = true;
 		}
 	});
