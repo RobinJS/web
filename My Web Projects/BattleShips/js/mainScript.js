@@ -1,5 +1,9 @@
-require(["stage", "config" ],
-	function( stage, config ) {
+require(["stage", "config", "gameManager" ],
+	function( stage, config, gameManager ) {
+	
+	var gameManager = new gameManager();
+
+	return;
 
 	var grid = 50,
 		x = 0,
