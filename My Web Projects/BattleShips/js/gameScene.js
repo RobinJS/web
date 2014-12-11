@@ -71,11 +71,12 @@ define(function (require) {
 
 		},
 
-		showArrangePannel: function(){
-			var that = this;
-
+		showArrangePannel: function( pannel ){
 			this.opponentField.markerEnabled = false;
-			this.playerField.showShipsToArrange();
+			pannel.y = -770;
+			TweenMax.to(pannel, 2, {
+				y: 0
+			});
 		},
 
 		hideArrangePannel: function(){

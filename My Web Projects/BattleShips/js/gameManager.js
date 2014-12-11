@@ -32,7 +32,7 @@ define(function (require) {
 	        	// add listeners
 	        	// create functionality for drag, drop, rotate, free areas
 	        	// animate scene hide
-	        	this.gameScene.showArrangePannel();
+	        	this.gameScene.showArrangePannel(this.arrangePannel);
 	        break;
 	        case config.gameStates.BATTLE:
 	        	// enable user interraction
