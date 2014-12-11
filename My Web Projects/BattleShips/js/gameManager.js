@@ -31,10 +31,10 @@ define(function (require) {
 	        	// add listeners
 	        	// create functionality for drag, drop, rotate, free areas
 	        	// animate scene hide
-	        	this.gameScene.events.pannelShown.addOnce(function(){
+	        	this.gameScene.events.panelShown.addOnce(function(){
+	        		this.gameScene.playerField.enableClick();
+	        	}.bind(this));
 
-	        	});
-	        	
 	        	this.gameScene.showArrangepanel(this.arrangepanel);
 	        break;
 	        case config.gameStates.BATTLE:

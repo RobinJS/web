@@ -4,7 +4,8 @@ define(function (require) {
     var Stage = function( canvasID ){
     	this.stage = new createjs.Stage("mainCanvas");
     	
-    	this.stage.enableMouseOver(10);
+    	this.stage.enableMouseOver(-1);
+     //    this.stage.enableDOMEvents(false);
 
     	createjs.Ticker.useRAF = true;
 

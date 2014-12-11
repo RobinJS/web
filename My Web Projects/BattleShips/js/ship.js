@@ -9,6 +9,12 @@ define(function (require) {
     	this.image = new createjs.Bitmap(config.shipsImgPath[type]);
     	this.image.x = 0;
     	this.image.y = 0;
+
+    	// var clickHandler = function(){
+    	// 	this.move();
+    	// };
+    	
+    	// this.image.addEventListener('click', clickHandler);
     };
 
     $.extend(Ship.prototype, {
@@ -34,6 +40,10 @@ define(function (require) {
     		}
 
     		return size;
+    	},
+
+    	move: function(){
+    		;;;console.log(this.type);
     	}
 
     });

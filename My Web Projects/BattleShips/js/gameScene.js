@@ -63,7 +63,7 @@ define(function (require) {
 		this.playerField = new PlayerField( this.mainStage );
 
 		this.events = {
-			pannelShown: new Signal()
+			panelShown: new Signal()
 		}
 
     	this.init();
@@ -77,10 +77,14 @@ define(function (require) {
 		},
 
 		showArrangepanel: function( panel ){
+			var that = this;
 			this.opponentField.markerEnabled = false;
 			panel.y = -770;
 			TweenMax.to(panel, 2, {
-				y: 0
+				y: 0,
+				onComplete: function(){
+					that.events.panelShown.dispatch();
+				}
 			});
 		},
 

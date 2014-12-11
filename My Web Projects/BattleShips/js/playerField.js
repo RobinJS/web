@@ -11,6 +11,7 @@ define(function (require) {
     	this.initialX = [750, 750, 750, 750, 870, 750, 830];
     	this.initialY = [250, 320, 390, 460, 460, 530, 530];
     	this.init();
+    	this.clickEnabled = false;
     };
 
     $.extend(PlayerField.prototype, {
@@ -29,12 +30,17 @@ define(function (require) {
 				this.ships[i].image.y = this.initialY[i];
 				this.mainStage.addChild(this.ships[i].image);
 			}
+
+			// add listeners
+			// this.ships.forEach(function(ship){
+			// 	ship.addEventListener('mousedown', function(e){
+			// 		;;;console.log(123);
+			// 	});
+			// });
     	},
 
-    	showShipsToArrange: function(){
-    		// this.shipsImages.forEach(function(ship){
-    		// 	ship.visible = true;
-    		// });
+    	enableClick: function(){
+    		this.clickEnabled = true;
     	}
     });
     
