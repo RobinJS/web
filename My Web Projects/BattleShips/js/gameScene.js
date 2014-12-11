@@ -2,8 +2,8 @@ define(function (require) {
     "use strict";
 
     var InfoHeader = require('infoHeader'),
-    	Battlefield = require('battlefield'),
-    	StrikeField = require('strikeField');
+    	PlayerField = require('playerField'),
+    	OpponentField = require('opponentField');
 
     var GameScene = function( mainStage ){
     	this.mainStage = mainStage;
@@ -12,8 +12,8 @@ define(function (require) {
 		this.mainStage.addChild(this.stageBgImage);
 
 		this.infoHeader = new InfoHeader( this.mainStage );
-		this.battlefield = new Battlefield( this.mainStage );
-		this.strikeField = new StrikeField( this.mainStage );
+		this.opponentField = new OpponentField( this.mainStage );
+		
 
 	/* numbers */
 		this.mapNumbers = [new createjs.Bitmap("img/field_numbers.png"), new createjs.Bitmap("img/field_numbers.png")];
@@ -37,14 +37,49 @@ define(function (require) {
 		this.mainStage.addChild(this.mapLetters[1]);
 	/* end letters */
 
+	/* arrange pannel stuff */
+		var arrPanBgWidth = 680,
+			arrPanBgHeight = 770;
+
+		this.arrangePannelBg = new createjs.Shape();
+		this.arrangePannelBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, arrPanBgWidth, arrPanBgHeight);
+ 		this.arrangePannelBg.x = 600;
+ 		this.arrangePannelBg.y = 0;
+ 		this.mainStage.addChild(this.arrangePannelBg);
+
+ 		this.arrangeLabel = new createjs.Text("ARRANGE YOUR SHIPS", "34px Verdana", "#fff");
+ 		this.arrangeLabel.x = 710;
+ 		this.arrangeLabel.y = 60;
+ 		this.mainStage.addChild(this.arrangeLabel);
+
+ 		this.infoLabel = new createjs.Text("Drag and drop ships to the battlefield.\nTap on a ship to rotate it.", "20px Verdana", "#fff");
+ 		this.infoLabel.x = 700;
+ 		this.infoLabel.y = 130;
+ 		this.infoLabel.lineHeight = 35;
+ 		this.mainStage.addChild(this.infoLabel);
+	/* end arrange pannel stuff */
+
+		this.playerField = new PlayerField( this.mainStage );
+
     	this.init();
     };
 
 	$.extend(GameScene.prototype, {
 		init: function(){
-			// create Battlefield
+			// create PlayerField
 			// create Strike field
 
+		},
+
+		showArrangePannel: function(){
+			var that = this;
+
+			this.opponentField.markerEnabled = false;
+			this.playerField.showShipsToArrange();
+		},
+
+		hideArrangePannel: function(){
+			// this.opponentField.markerEnabled = true;
 		}
 	});
     
