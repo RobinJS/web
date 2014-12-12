@@ -7,15 +7,27 @@ define(function (require) {
     	this.type = type;
     	this.size = this.getSize( type );
     	this.image = new createjs.Bitmap(config.shipsImgPath[type]);
+        
+        this.image.regX = this.image.getBounds().width / 2;
+        this.image.regY = this.image.getBounds().height / 2;
     	this.image.x = 0;
     	this.image.y = 0;
+        this.distanceX = 0;
+        this.distanceY = 0;
         this.clickEnabled = false;
 
-    	var clickHandler = function(event){
-    		;;;console.log(11111111111111111111111111111);
-    	};
+    	var clickHandler = function( e ){
+    		if ( !this.clickEnabled ) return;
+
+            this.move( e );
+    	}.bind(this);
 
     	this.image.addEventListener('pressmove', clickHandler);
+
+        this.image.addEventListener('mousedown', function( e ){
+            this.distanceX = this.image.x - e.stageX;
+            this.distanceY = this.image.y - e.stageY;
+        }.bind(this));
 
         // var bitmap;
         //     bitmap = new createjs.Bitmap(config.shipsImgPath[type]);
@@ -53,8 +65,9 @@ define(function (require) {
     		return size;
     	},
 
-    	move: function(){
-    		;;;console.log(this.type);
+    	move: function( e ){
+            this.image.x = e.stageX + this.distanceX;
+    		this.image.y = e.stageY + this.distanceY;
     	}
 
     });

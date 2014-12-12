@@ -33,8 +33,7 @@ define(function (require) {
 	        	// create functionality for drag, drop, rotate, free areas
 	        	// animate scene hide
 	        	this.gameScene.events.panelShown.addOnce(function(){
-	        		// this.gameScene.playerField.createShips();
-	        		// this.gameScene.playerField.enableClick();
+	        		this.gameScene.playerField.enableClick();
 	        	}.bind(this));
 
 	        	this.gameScene.showArrangepanel(this.arrangepanel);
