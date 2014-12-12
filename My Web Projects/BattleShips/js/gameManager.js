@@ -10,6 +10,7 @@ define(function (require) {
     	var currentState = 'arrange_ships';
 
     	this.mainStage = new Stage('mainCanvas');
+
     	this.gameScene = new GameScene(this.mainStage);
 
     	this.startGameBtn = new Button(650, 650, 696, 662, "START GAME", 'img/start_btn_bg.png');
@@ -32,7 +33,8 @@ define(function (require) {
 	        	// create functionality for drag, drop, rotate, free areas
 	        	// animate scene hide
 	        	this.gameScene.events.panelShown.addOnce(function(){
-	        		this.gameScene.playerField.enableClick();
+	        		// this.gameScene.playerField.createShips();
+	        		// this.gameScene.playerField.enableClick();
 	        	}.bind(this));
 
 	        	this.gameScene.showArrangepanel(this.arrangepanel);

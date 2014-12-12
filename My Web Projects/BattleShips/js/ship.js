@@ -12,10 +12,20 @@ define(function (require) {
         this.clickEnabled = false;
 
     	var clickHandler = function(event){
-    		alert();
+    		;;;console.log(11111111111111111111111111111);
     	};
 
     	this.image.addEventListener('pressmove', clickHandler);
+
+        // var bitmap;
+        //     bitmap = new createjs.Bitmap(config.shipsImgPath[type]);
+        //     bitmap.x = 300;
+        //     bitmap.y = 300;
+        //     stage.addChild(bitmap);
+
+        //     bitmap.on("pressmove", function(evt) {
+        //         ;;;console.log(1);
+        //     });
     };
 
     $.extend(Ship.prototype, {

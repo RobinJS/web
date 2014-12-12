@@ -61,6 +61,7 @@ define(function (require) {
 	/* end arrange panel stuff */
 
 		this.playerField = new PlayerField( this.mainStage );
+		// this.playerField.createShips();
 
 		this.events = {
 			panelShown: new Signal()
