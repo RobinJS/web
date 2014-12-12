@@ -10,8 +10,7 @@ define(function (require) {
     	this.shipsByType = ['aircraftCarrier', 'battleship', 'cruiser', 'destroyer', 'destroyer', 'submarine', 'submarine'];
     	this.initialX = [750, 750, 750, 750, 870, 750, 830];
     	this.initialY = [250, 320, 390, 460, 460, 530, 530];
-    	this.init();
-    	this.clickEnabled = false;
+    	// this.clickEnabled = false;
 
     	this.init();
     };
@@ -32,17 +31,13 @@ define(function (require) {
 				this.ships[i].image.y = this.initialY[i];
 				this.mainStage.addChild(this.ships[i].image);
 			}
-
-			// add listeners
-			// this.ships.forEach(function(ship){
-			// 	ship.addEventListener('mousedown', function(e){
-			// 		;;;console.log(123);
-			// 	});
-			// });
     	},
 
     	enableClick: function(){
-    		this.clickEnabled = true;
+    		// this.clickEnabled = true;
+            this.ships.forEach(function(ship){
+                ship.clickEnabled = true;
+            });
     	}
     });
     

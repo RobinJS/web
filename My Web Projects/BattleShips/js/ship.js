@@ -9,14 +9,13 @@ define(function (require) {
     	this.image = new createjs.Bitmap(config.shipsImgPath[type]);
     	this.image.x = 0;
     	this.image.y = 0;
+        this.clickEnabled = false;
 
-    	var clickHandler = function(){
-    		this.move();
+    	var clickHandler = function(event){
+    		alert();
     	};
 
-    	this.image.addEventListener('click', function(){
-    		alert();
-    	});
+    	this.image.addEventListener('pressmove', clickHandler);
     };
 
     $.extend(Ship.prototype, {
