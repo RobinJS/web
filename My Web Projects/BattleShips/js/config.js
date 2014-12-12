@@ -18,7 +18,8 @@ define(function(){
 		arrangeMarkerWidth: 50,
 		arrangeMarkerHeight: 50,
 		fieldWidth: 500,
-		fieldHeight: 500
+		fieldHeight: 500,
+		shipDragging: false
 	};
 
 	return config;

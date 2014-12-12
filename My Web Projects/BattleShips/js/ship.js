@@ -18,7 +18,7 @@ define(function (require) {
 
     	var clickHandler = function( e ){
     		if ( !this.clickEnabled ) return;
-
+            
             this.move( e );
     	}.bind(this);
 
