@@ -6,10 +6,10 @@ define(function (require) {
     var Ship = function( type ){
     	this.type = type;
     	this.size = this.getSize( type );
-    	this.image = new createjs.Bitmap(config.shipsImgPath[type]);
+    	this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
         
-        this.image.regX = this.image.getBounds().width / 2;
-        this.image.regY = this.image.getBounds().height / 2;
+        this.image.regX = config.shipsData[type].width / 2;
+        this.image.regY = config.shipsData[type].height / 2;
     	this.image.x = 0;
     	this.image.y = 0;
         this.distanceX = 0;
@@ -28,16 +28,6 @@ define(function (require) {
             this.distanceX = this.image.x - e.stageX;
             this.distanceY = this.image.y - e.stageY;
         }.bind(this));
-
-        // var bitmap;
-        //     bitmap = new createjs.Bitmap(config.shipsImgPath[type]);
-        //     bitmap.x = 300;
-        //     bitmap.y = 300;
-        //     stage.addChild(bitmap);
-
-        //     bitmap.on("pressmove", function(evt) {
-        //         ;;;console.log(1);
-        //     });
     };
 
     $.extend(Ship.prototype, {

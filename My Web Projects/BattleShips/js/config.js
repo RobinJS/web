@@ -8,13 +8,17 @@ define(function(){
 			CHECK_RESULT: 'check_result',
 			GAME_END: 'game_end'
 		},
-		shipsImgPath: {
-			'aircraftCarrier': 'img/aircraft_carrier_5.png',
-			'battleship': 'img/battleship_4.png',
-			'cruiser': 'img/cruiser_3.png',
-			'destroyer': 'img/destroyer_2.png',
-			'submarine': 'img/submarine_1.png'
-		}
+		shipsData: {
+			'aircraftCarrier': { imagePath: 'img/aircraft_carrier_5.png', width: 250, height: 50 },
+			'battleship': { imagePath: 'img/battleship_4.png', width: 200, height: 50 },
+			'cruiser': { imagePath: 'img/cruiser_3.png', width: 150, height: 50 },
+			'destroyer': { imagePath: 'img/destroyer_2.png', width: 100, height: 50 },
+			'submarine': { imagePath: 'img/submarine_1.png', width: 50, height: 50 }
+		},
+		arrangeMarkerWidth: 50,
+		arrangeMarkerHeight: 50,
+		fieldWidth: 500,
+		fieldHeight: 500
 	};
 
 	return config;

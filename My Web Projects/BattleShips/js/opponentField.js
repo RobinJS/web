@@ -1,6 +1,8 @@
 define(function (require) {
     "use strict";
 
+    var config = require('config');
+
     var OpponentField = function( mainStage ){
     	this.mainStage = mainStage;
     	this.gridImage = null;
@@ -9,8 +11,6 @@ define(function (require) {
     	this.opponentFieldLeftOffset = 650,
     	this.opponentFieldTopOffset = 250,
     	this.squareWidth = 50,
-    	this.fieldWidth = 500,
-		this.fieldHeight = 500;
 
 		this.markerEnabled = false;
 		
@@ -31,7 +31,7 @@ define(function (require) {
 			this.mainStage.addChild(this.marker);
 
 			this.opponentFieldHitArea = new createjs.Shape();
-			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(this.opponentFieldLeftOffset, this.opponentFieldTopOffset, this.fieldWidth, this.fieldHeight);
+			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(this.opponentFieldLeftOffset, this.opponentFieldTopOffset, config.fieldWidth, this.fieldHeight);
 			this.mainStage.addChild(this.opponentFieldHitArea);
     	},
 
@@ -40,7 +40,7 @@ define(function (require) {
     			// check if cursor is outside strike field's bounds
     			if ( !this.markerEnabled ) return;
 
-    			if ( (e.stageX <= this.opponentFieldLeftOffset || e.stageY <= this.opponentFieldTopOffset) || (e.stageX >= this.opponentFieldLeftOffset + this.fieldWidth || e.stageY >= this.opponentFieldTopOffset + this.fieldHeight ) ) return;
+    			if ( (e.stageX <= this.opponentFieldLeftOffset || e.stageY <= this.opponentFieldTopOffset) || (e.stageX >= this.opponentFieldLeftOffset + config.fieldWidth || e.stageY >= this.opponentFieldTopOffset + this.fieldHeight ) ) return;
 
     			this.marker.x = Math.floor( ( e.stageX / this.squareWidth) ) * this.squareWidth - this.opponentFieldLeftOffset;
     			this.marker.y = Math.floor( ( e.stageY / this.squareWidth) ) * this.squareWidth - this.opponentFieldTopOffset;
