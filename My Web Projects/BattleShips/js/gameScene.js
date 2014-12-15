@@ -53,7 +53,7 @@ define(function (require) {
  		this.arrangeLabel.y = 60;
  		this.mainStage.addChild(this.arrangeLabel);
 
- 		this.infoLabel = new createjs.Text("Drag and drop ships to the battlefield.\nTap on a ship to rotate it.", "20px Verdana", "#fff");
+ 		this.infoLabel = new createjs.Text("Drag and drop ships to the battlefield.", "20px Verdana", "#fff");
  		this.infoLabel.x = 700;
  		this.infoLabel.y = 130;
  		this.infoLabel.lineHeight = 35;

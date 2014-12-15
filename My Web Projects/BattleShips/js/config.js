@@ -13,7 +13,12 @@ define(function(){
 			'battleship': { imagePath: 'img/battleship_4.png', width: 200, height: 50 },
 			'cruiser': { imagePath: 'img/cruiser_3.png', width: 150, height: 50 },
 			'destroyer': { imagePath: 'img/destroyer_2.png', width: 100, height: 50 },
-			'submarine': { imagePath: 'img/submarine_1.png', width: 50, height: 50 }
+			'destroyer2': { imagePath: 'img/destroyer_2.png', width: 100, height: 50 },
+			'submarine': { imagePath: 'img/submarine_1.png', width: 50, height: 50 },
+			'submarine2': { imagePath: 'img/submarine_1.png', width: 50, height: 50 }
+		},
+		playerFieldData: {
+			x: 50, y: 250
 		},
 		arrangeMarkerWidth: 50,
 		arrangeMarkerHeight: 50,
