@@ -74,8 +74,7 @@ define(function (require) {
             // check if this position is possible
 
             this.ships.forEach(function(ship, idx){
-                var rotation = 'horizontal', //this.getRotation(),
-                    shipPosition = {};
+                var rotation = 'horizontal'; //this.getRotation(),
 
                 if ( rotation === 'horizontal' ) {
                     // shipPosition = this.horizontalCheckApprove(ship, randPosition);
@@ -89,30 +88,89 @@ define(function (require) {
                     // shipPosition = this.verticalCheckApprove();
                 }
 
-            shipPosition = this.getValidPosition(ship);
+            this.drawShip(ship);
 
-            // var test = new createjs.Shape();
-            // test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.size, 50);
-            // test.x = this.playerFieldLeftOffset + (shipPosition.x * 50);
-            // test.y = this.playerFieldTopOffset + (shipPosition.y * 50);
-            // this.mainStage.addChild(test);
+            
 
             }.bind(this));
         },
 
-        getValidPosition: function( ship ){
-            var randPosition = this.getRandomPosition(),
-                positionsToCheckX = this.getPositionsToCheckX(ship, randPosition),
-                positionsToCheckY = this.getPositionsToCheckY(ship, randPosition);
+        drawShip: function( ship ){
+            var that = this,
+                randPosition = that.getRandomPosition(),
+                positionsToCheckX = null,
+                positionsToCheckY = null,
+                maxPositionToCheckX = null,
+                maxPositionToCheckY = null,
+                allValid = true;
 
-            
-            
-            
+            function loopCheck(){
+                positionsToCheckX = that.getPositionsToCheckX(ship, randPosition),
+                positionsToCheckY = that.getPositionsToCheckY(ship, randPosition),
+                maxPositionToCheckX = Math.max.apply(Math, positionsToCheckX),
+                maxPositionToCheckY = Math.max.apply(Math, positionsToCheckY);
+
+                // break the check if the ship is going to be placed outside the field
+                if ( maxPositionToCheckX > that.field.length || maxPositionToCheckY > that.field.length ) {
+                    // break and get new random position
+                    randPosition = that.getNextPossiblePos( randPosition, ship );
+                    loopCheck();
+                } else {
+                    // check if all squares are free
+                    allValid = checkAllSquares();
+
+                    if ( !allValid ) {
+                        randPosition = that.getNextPossiblePos( randPosition, ship );
+                        loopCheck();
+                    }
+                }
+            }
+
+            loopCheck();
+
+            function checkAllSquares(){
+                var valid = true;
+                for (var y = 0; y < positionsToCheckY.length; y++) {
+                    for (var x = 0; x < positionsToCheckX.length; x++) {
+                        
+                        try {
+                            if ( that.field[ positionsToCheckY[y] ][ positionsToCheckX[x] ] === 1 ) {
+                                valid = false;
+                                break;
+                            }
+                        } catch(e) {
+
+                        }
+                    }
+                }
+
+                return valid;
+            }
 
             ;;;console.log(ship.blocksWidth, ship.blocksHeight, randPosition, positionsToCheckX, positionsToCheckY);
+            
+            // mark positions on field as not free
+            for (var y = 0; y < positionsToCheckY.length; y++) {
+                for (var x = 0; x < positionsToCheckX.length; x++) {
+                    try {
+                        that.field[ positionsToCheckY[y] ][ positionsToCheckX[x] ] = 1;
+                    } catch (e) {
 
-            // Example:
-            /*5 1 Object {x: 8, y: 6} [7, 8, 9, 10, 11, 12, 13] [5, 6, 7]
+                    }
+                }
+            }
+
+            var test = new createjs.Shape();
+            test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
+            test.x = this.playerFieldLeftOffset + (randPosition.x * 50);
+            test.y = this.playerFieldTopOffset + (randPosition.y * 50);
+            this.mainStage.addChild(test);
+
+
+            /* Example:
+
+            5 1 Object {x: 8, y: 6} [7, 8, 9, 10, 11, 12, 13] [5, 6, 7]
+
             4 1 Object {x: 7, y: 7} [6, 7, 8, 9, 10, 11] [6, 7, 8]
             3 1 Object {x: 6, y: 5} [5, 6, 7, 8, 9] [4, 5, 6]
             2 1 Object {x: 5, y: 5} [4, 5, 6, 7] [4, 5, 6]
@@ -124,10 +182,10 @@ define(function (require) {
         getPositionsToCheckX: function( ship, randPosition ){
             var positions = [];
 
-            positions.push(randPosition.y - 1);
+            positions.push(randPosition.x - 1);
 
-            for (var i = 0; i < ship.blocksHeight + 1; i++) {
-                positions.push(randPosition.y + i);
+            for (var i = 0; i < ship.blocksWidth + 1; i++) {
+                positions.push(randPosition.x + i);
             }
 
             return positions;
@@ -136,10 +194,10 @@ define(function (require) {
         getPositionsToCheckY: function( ship, randPosition ){
             var positions = [];
 
-            positions.push(randPosition.x - 1);
+            positions.push(randPosition.y - 1);
 
-            for (var i = 0; i < ship.blocksWidth + 1; i++) {
-                positions.push(randPosition.x + i);
+            for (var i = 0; i < ship.blocksHeight + 1; i++) {
+                positions.push(randPosition.y + i);
             }
 
             return positions;
@@ -150,6 +208,42 @@ define(function (require) {
             position.x = Math.floor(Math.random() * 10);
             position.y = Math.floor(Math.random() * 10);
             return position;
+        },
+
+        getNextPossiblePos: function( randPosition, ship ){
+            var that = this,
+                nextPossiblePos = randPosition,
+                step = 1,
+                lastSquarePosX = 0,
+                lastSquarePosY = 0;
+
+                nextPossiblePos.x++;
+
+            function next(){
+                lastSquarePosX = nextPossiblePos.x + ship.blocksWidth - 1;
+                lastSquarePosY = nextPossiblePos.y + ship.blocksHeight - 1;
+
+                if ( lastSquarePosX > that.field.length - 1 ) {
+                    nextPossiblePos.x = 0;
+                    nextPossiblePos.y++;
+                    next();
+                }
+
+                if ( lastSquarePosY > that.field.length - 1 ) {
+                    nextPossiblePos.y = 0;
+                    nextPossiblePos.x = 0;
+                    next();
+                }
+
+                if ( that.field[ nextPossiblePos.y ][ nextPossiblePos.x ] === 1 ) {
+                    nextPossiblePos.x++;
+                    next();
+                }
+            }
+
+            next();
+
+            return nextPossiblePos;
         },
 
         getRotation: function(){
