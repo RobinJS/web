@@ -8,11 +8,18 @@ define(function (require) {
     	this.type = type;
     	this.size = this.getSize( type );
     	this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
-        
-        this.image.regX = config.shipsData[type].width / 2;
-        this.image.regY = config.shipsData[type].height / 2;
+
+        this.width = config.shipsData[type].width;
+        this.height = config.shipsData[type].height;
+
+        this.blocksWidth = this.size;
+        this.blocksHeight = 1;
+
+        this.image.regX = this.width / 2;
+        this.image.regY = this.height / 2;
     	this.image.x = 0;
     	this.image.y = 0;
+
         this.distanceX = 0;
         this.distanceY = 0;
         this.clickEnabled = false;
