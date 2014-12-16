@@ -15,8 +15,8 @@ define(function (require) {
         this.blocksWidth = this.size;
         this.blocksHeight = 1;
 
-        this.image.regX = this.width / 2;
-        this.image.regY = this.height / 2;
+        // this.image.regX = this.width / 2;
+        // this.image.regY = this.height / 2;
     	this.image.x = 0;
     	this.image.y = 0;
 

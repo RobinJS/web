@@ -74,9 +74,9 @@ define(function (require) {
             // check if this position is possible
 
             this.ships.forEach(function(ship, idx){
-                var rotation = 'horizontal'; //this.getRotation(),
+                ship.rotation = this.getRotation();
 
-                if ( rotation === 'horizontal' ) {
+                if ( ship.rotation === 'horizontal' ) {
                     // shipPosition = this.horizontalCheckApprove(ship, randPosition);
                 } else {
                     // rotate ship
@@ -85,6 +85,7 @@ define(function (require) {
 
                     ship.blocksWidth = oldBlocksHeight;
                     ship.blocksHeight = oldBlocksWidth;
+
                     // shipPosition = this.verticalCheckApprove();
                 }
 
@@ -165,6 +166,14 @@ define(function (require) {
             test.x = this.playerFieldLeftOffset + (randPosition.x * 50);
             test.y = this.playerFieldTopOffset + (randPosition.y * 50);
             this.mainStage.addChild(test);
+
+            ship.image.x = this.playerFieldLeftOffset + (randPosition.x * 50);
+            ship.image.y = this.playerFieldTopOffset + (randPosition.y * 50);
+
+            if ( ship.rotation === 'vertical' ) {
+                ship.image.rotation = 90;
+                ship.image.x += 50;
+            }
 
 
             /* Example:
