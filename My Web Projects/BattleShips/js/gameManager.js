@@ -3,8 +3,7 @@ define(function (require) {
 
     var config = require('config'),
     	GameScene = require('gameScene'),
-    	Stage = require('stage'),
-    	Button = require('button');
+    	Stage = require('stage');
 
     var GameManager = function(){
     	var currentState = 'arrange_ships';
@@ -13,17 +12,14 @@ define(function (require) {
 
     	this.gameScene = new GameScene(this.mainStage);
 
-    	this.startGameBtn = new Button(650, 650, 696, 662, "START GAME", 'img/start_btn_bg.png');
-    	this.mainStage.addChild(this.startGameBtn);
-    	this.autoArrangeBtn = new Button(950, 650, 980, 662, "AUTO ARRANGE", 'img/auto_arr_btn_bg.png');
-    	this.mainStage.addChild(this.autoArrangeBtn);
+    	
 
     	this.arrangepanel = new createjs.Container();
-    	this.arrangepanel.addChild(this.gameScene.arrangepanelBg, this.gameScene.arrangeLabel, this.gameScene.infoLabel, this.startGameBtn, this.autoArrangeBtn);
+    	this.arrangepanel.addChild(this.gameScene.arrangepanelBg, this.gameScene.arrangeLabel, this.gameScene.infoLabel, this.gameScene.startGameBtn.button, this.gameScene.autoArrangeBtn.button);
 
-		this.gameScene.playerField.ships.forEach(function(ship){
-			this.arrangepanel.addChild(ship.image);			
-		}.bind(this));
+		// this.gameScene.playerField.ships.forEach(function(ship){
+		// 	this.arrangepanel.addChild(ship.image);			
+		// }.bind(this));
 
 		this.mainStage.addChild(this.arrangepanel);
 
@@ -34,6 +30,7 @@ define(function (require) {
 	        	// animate scene hide
 	        	this.gameScene.events.panelShown.addOnce(function(){
 	        		this.gameScene.playerField.enableClick();
+	        		this.gameScene.enableButtonsClick();
 	        	}.bind(this));
 
 	        	this.gameScene.showArrangepanel(this.arrangepanel);

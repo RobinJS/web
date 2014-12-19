@@ -4,7 +4,8 @@ define(function (require) {
     var InfoHeader = require('infoHeader'),
     	PlayerField = require('playerField'),
     	OpponentField = require('opponentField'),
-    	Signal = require('libs/signals.min');
+    	Signal = require('libs/signals.min'),
+    	Button = require('button');
 
     var GameScene = function( mainStage ){
     	this.mainStage = mainStage;
@@ -46,19 +47,28 @@ define(function (require) {
 		this.arrangepanelBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, arrPanBgWidth, arrPanBgHeight);
  		this.arrangepanelBg.x = 600;
  		this.arrangepanelBg.y = 0;
- 		this.mainStage.addChild(this.arrangepanelBg);
+ 		// this.mainStage.addChild(this.arrangepanelBg);
 
  		this.arrangeLabel = new createjs.Text("ARRANGE YOUR SHIPS", "34px Verdana", "#fff");
  		this.arrangeLabel.x = 710;
- 		this.arrangeLabel.y = 60;
- 		this.mainStage.addChild(this.arrangeLabel);
+ 		this.arrangeLabel.y = 210;
+ 		// this.mainStage.addChild(this.arrangeLabel);
 
- 		this.infoLabel = new createjs.Text("Drag and drop ships to the battlefield.", "20px Verdana", "#fff");
- 		this.infoLabel.x = 700;
- 		this.infoLabel.y = 130;
+ 		this.infoLabel = new createjs.Text("Drag and drop ships to arrange them. \n Rotate???", "20px Verdana", "#fff");
+ 		this.infoLabel.x = 710;
+ 		this.infoLabel.y = 280;
  		this.infoLabel.lineHeight = 35;
- 		this.mainStage.addChild(this.infoLabel);
+ 		// this.mainStage.addChild(this.infoLabel);
 	/* end arrange panel stuff */
+
+	/* Buttons */
+		this.startGameBtn = new Button(650, 450, 696, 462, "START GAME", '#6acd3c' );
+		this.startGameBtn.clickEnabled = false;
+    	// this.mainStage.addChild(this.startGameBtn);
+    	this.autoArrangeBtn = new Button(950, 450, 980, 462, "AUTO ARRANGE", '#e6993d');
+    	this.autoArrangeBtn.clickEnabled = false;
+    	// this.mainStage.addChild(this.autoArrangeBtn);
+    /* end Buttons */
 
 		this.playerField = new PlayerField( this.mainStage );
 		// this.playerField.createShips();
@@ -74,6 +84,22 @@ define(function (require) {
 		init: function(){
 			// create PlayerField
 			// create Strike field
+			// this.startGameBtn.addEventListener('pressup', function(e){
+			// 	if ( !this.startGameBtn.clickEnabled ) return;
+
+
+			// }.bind(this));
+
+			// this.autoArrangeBtn.addEventListener('pressup', function(e){
+			// 	if ( !this.autoArrangeBtn.clickEnabled ) return;
+
+			// 	;;;console.log(1);
+			// }.bind(this));
+
+			// this.autoArrangeBtn.addEventListener('mouseover', function(e){
+
+			// 	this.autoArrangeBtn.showGlow();
+			// }.bind(this));
 
 		},
 
@@ -91,6 +117,16 @@ define(function (require) {
 
 		hideArrangepanel: function(){
 			// this.opponentField.markerEnabled = true;
+		},
+
+		enableButtonsClick: function(){
+			this.startGameBtn.clickEnabled = true;
+	    	this.autoArrangeBtn.clickEnabled = true;
+		},
+
+		disableButtonsClick: function(){
+			this.startGameBtn.clickEnabled = false;
+	    	this.autoArrangeBtn.clickEnabled = false;
 		}
 	});
     
