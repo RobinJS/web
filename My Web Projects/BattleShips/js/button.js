@@ -5,6 +5,7 @@ define(function (require) {
 
     var Button = function(backgroundX, backgroundY, textX, textY, text, color){
     	var glowGraphics = new createjs.Graphics().setStrokeStyle(5).beginStroke('#1a8fc8').drawRoundRect(0, 0, 265, 56, 10),
+            pressedGraphics = new createjs.Graphics().beginFill('rgba(0, 0, 0, 0.2)').drawRoundRect(0, 0, 265, 56, 10),
             bgGraphics = new createjs.Graphics().beginFill(color).drawRoundRect(0, 0, 265, 56, 10),
             background = new createjs.Shape(bgGraphics);
 
@@ -12,6 +13,11 @@ define(function (require) {
         this.glow.x = backgroundX;
         this.glow.y = backgroundY;
         this.glow.visible = false;
+
+        this.pressedImg = new createjs.Shape(pressedGraphics);
+        this.pressedImg.x = backgroundX;
+        this.pressedImg.y = backgroundY;
+        this.pressedImg.visible = false;
 
         background.x = backgroundX;
         background.y = backgroundY;
@@ -23,9 +29,8 @@ define(function (require) {
         label.text = text;
 
         this.button = new createjs.Container();
-        this.button.addChild( this.glow, background, label);
+        this.button.addChild( this.glow, background, label, this.pressedImg );
 
-        // return button;
     };
 
     $.extend(Button.prototype, {
@@ -34,11 +39,19 @@ define(function (require) {
         },
 
         showGlow: function(){
-            // this.glow.visible = true;
+            this.glow.visible = true;
         },
 
         hideGlow: function(){
-            // this.glow.visible = false;
+            this.glow.visible = false;
+        },
+
+        showPressed: function(){
+            this.pressedImg.visible = true;
+        },
+
+        hidePressed: function(){
+            this.pressedImg.visible = false;
         }
     });
 

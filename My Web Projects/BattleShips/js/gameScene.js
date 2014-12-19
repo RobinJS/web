@@ -47,18 +47,15 @@ define(function (require) {
 		this.arrangepanelBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, arrPanBgWidth, arrPanBgHeight);
  		this.arrangepanelBg.x = 600;
  		this.arrangepanelBg.y = 0;
- 		// this.mainStage.addChild(this.arrangepanelBg);
 
  		this.arrangeLabel = new createjs.Text("ARRANGE YOUR SHIPS", "34px Verdana", "#fff");
  		this.arrangeLabel.x = 710;
  		this.arrangeLabel.y = 210;
- 		// this.mainStage.addChild(this.arrangeLabel);
 
  		this.infoLabel = new createjs.Text("Drag and drop ships to arrange them. \n Rotate???", "20px Verdana", "#fff");
  		this.infoLabel.x = 710;
  		this.infoLabel.y = 280;
  		this.infoLabel.lineHeight = 35;
- 		// this.mainStage.addChild(this.infoLabel);
 	/* end arrange panel stuff */
 
 	/* Buttons */
@@ -84,26 +81,55 @@ define(function (require) {
 		init: function(){
 			// create PlayerField
 			// create Strike field
-			// this.startGameBtn.addEventListener('pressup', function(e){
-			// 	if ( !this.startGameBtn.clickEnabled ) return;
+			this.startGameBtn.addEventListener('mousedown', function(e){
+				this.startGameBtn.showPressed();
+			}.bind(this));
+
+			this.startGameBtn.addEventListener('pressup', function(e){
+				this.startGameBtn.hidePressed();
+
+				if ( !this.startGameBtn.clickEnabled ) return;
 
 
-			// }.bind(this));
+			}.bind(this));
 
-			// this.autoArrangeBtn.addEventListener('pressup', function(e){
-			// 	if ( !this.autoArrangeBtn.clickEnabled ) return;
+			this.startGameBtn.addEventListener('mouseover', function(e){
 
-			// 	;;;console.log(1);
-			// }.bind(this));
+				this.startGameBtn.showGlow();
+			}.bind(this));
 
-			// this.autoArrangeBtn.addEventListener('mouseover', function(e){
+			this.startGameBtn.addEventListener('mouseout', function(e){
 
-			// 	this.autoArrangeBtn.showGlow();
-			// }.bind(this));
+				this.startGameBtn.hideGlow();
+			}.bind(this));
+
+
+			this.autoArrangeBtn.addEventListener('mousedown', function(e){
+				this.autoArrangeBtn.showPressed();
+			}.bind(this));
+
+			this.autoArrangeBtn.addEventListener('pressup', function(e){
+				this.autoArrangeBtn.hidePressed();
+				
+				if ( !this.autoArrangeBtn.clickEnabled ) return;
+
+				
+			}.bind(this));
+
+			this.autoArrangeBtn.addEventListener('mouseover', function(e){
+
+				this.autoArrangeBtn.showGlow();
+			}.bind(this));
+
+			this.autoArrangeBtn.addEventListener('mouseout', function(e){
+
+				this.autoArrangeBtn.hideGlow();
+			}.bind(this));
 
 		},
 
 		showArrangepanel: function( panel ){
+			return;
 			var that = this;
 			this.opponentField.markerEnabled = false;
 			panel.y = -770;
