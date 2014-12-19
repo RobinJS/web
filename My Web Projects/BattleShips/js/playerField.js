@@ -25,7 +25,7 @@ define(function (require) {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
-        this.rotations = ['horizontal', 'vertical'];
+        // this.rotations = ['horizontal', 'vertical'];
     	// this.clickEnabled = false;
 
     	this.init();
@@ -73,25 +73,33 @@ define(function (require) {
             // choose random position
             // check if this position is possible
 
-            this.ships.forEach(function(ship, idx){
-                ship.rotation = this.getRotation();
-
-                if ( ship.rotation === 'horizontal' ) {
-                    // shipPosition = this.horizontalCheckApprove(ship, randPosition);
-                } else {
-                    // rotate ship
-                    var oldBlocksWidth = ship.blocksWidth,
-                        oldBlocksHeight = ship.blocksHeight;
-
-                    ship.blocksWidth = oldBlocksHeight;
-                    ship.blocksHeight = oldBlocksWidth;
-
-                    // shipPosition = this.verticalCheckApprove();
+            // reset field
+            for (var i = 0; i < this.field.length; i++) {
+                for (var j = 0; j < this.field.length; j++) {
+                    this.field[i][j] = 0;
                 }
+            }
+
+            this.ships.forEach(function(ship, idx){
+
+                var rotate = this.toBeRotated();
+
+                if ( rotate ) {
+                    // shipPosition = this.horizontalCheckApprove(ship, randPosition);
+                    ship.rotate();
+                }
+                //  else {
+                //     // rotate ship
+                //     var oldBlocksWidth = ship.blocksWidth,
+                //         oldBlocksHeight = ship.blocksHeight;
+
+                //     ship.blocksWidth = oldBlocksHeight;
+                //     ship.blocksHeight = oldBlocksWidth;
+
+                //     // shipPosition = this.verticalCheckApprove();
+                // }
 
             this.drawShip(ship);
-
-            
 
             }.bind(this));
         },
@@ -161,19 +169,19 @@ define(function (require) {
                 }
             }
 
-            var test = new createjs.Shape();
-            test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
-            test.x = this.playerFieldLeftOffset + (randPosition.x * 50);
-            test.y = this.playerFieldTopOffset + (randPosition.y * 50);
-            this.mainStage.addChild(test);
+            // var test = new createjs.Shape();
+            // test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
+            // test.x = this.playerFieldLeftOffset + (randPosition.x * 50);
+            // test.y = this.playerFieldTopOffset + (randPosition.y * 50);
+            // this.mainStage.addChild(test);
 
             ship.image.x = this.playerFieldLeftOffset + (randPosition.x * 50);
             ship.image.y = this.playerFieldTopOffset + (randPosition.y * 50);
 
-            if ( ship.rotation === 'vertical' ) {
-                ship.image.rotation = 90;
-                ship.image.x += 50;
-            }
+            // if ( ship.rotation === 'vertical' ) {
+            //     ship.image.rotation = 90;
+            //     ship.image.x += 50;
+            // }
 
 
             /* Example:
@@ -255,8 +263,9 @@ define(function (require) {
             return nextPossiblePos;
         },
 
-        getRotation: function(){
-            return this.rotations[Math.floor(Math.random() * 2)]
+        toBeRotated: function(){
+            return Math.floor(Math.random() * 2) === 1 ? true : false;
+            // return this.rotations[Math.floor(Math.random() * 2)]
         },
 
         verticalCheckApprove: function(){

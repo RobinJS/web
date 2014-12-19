@@ -110,10 +110,10 @@ define(function (require) {
 
 			this.autoArrangeBtn.addEventListener('pressup', function(e){
 				this.autoArrangeBtn.hidePressed();
-				
+
 				if ( !this.autoArrangeBtn.clickEnabled ) return;
 
-				
+				this.playerField.autoArrange();
 			}.bind(this));
 
 			this.autoArrangeBtn.addEventListener('mouseover', function(e){
@@ -129,8 +129,9 @@ define(function (require) {
 		},
 
 		showArrangepanel: function( panel ){
-			return;
 			var that = this;
+			that.events.panelShown.dispatch();
+			return;
 			this.opponentField.markerEnabled = false;
 			panel.y = -770;
 			TweenMax.to(panel, 2, {
