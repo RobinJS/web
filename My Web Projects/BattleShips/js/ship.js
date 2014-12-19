@@ -23,6 +23,7 @@ define(function (require) {
         this.distanceX = 0;
         this.distanceY = 0;
         this.clickEnabled = false;
+        this.rotation = 'horizontal';
 
         this.events = {
             createArrangeMarker: new Signal()
@@ -88,7 +89,28 @@ define(function (require) {
     	move: function( e ){
             this.image.x = e.stageX + this.distanceX;
     		this.image.y = e.stageY + this.distanceY;
-    	}
+    	},
+
+        rotate: function(){
+            ;;;console.log(this);
+            if ( this.rotation === 'horizontal' ) {
+                this.rotation = 'vertical';
+                this.image.rotation = 90;
+                this.image.x += 50;
+            } else {
+                this.rotation = 'horizontal';
+                this.image.rotation = 0;
+                this.image.x -= 50;
+            }
+
+            ;;;console.log(this);
+            
+            var oldBlocksWidth = this.blocksWidth,
+                oldBlocksHeight = this.blocksHeight;
+
+            this.blocksWidth = oldBlocksHeight;
+            this.blocksHeight = oldBlocksWidth;
+        }
 
     });
 

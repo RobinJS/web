@@ -82,12 +82,12 @@ define(function (require) {
 
             this.ships.forEach(function(ship, idx){
 
-                var rotate = this.toBeRotated();
+                // var rotate = this.toBeRotated();
 
-                if ( rotate ) {
-                    // shipPosition = this.horizontalCheckApprove(ship, randPosition);
-                    ship.rotate();
-                }
+                // if ( rotate ) {
+                //     // shipPosition = this.horizontalCheckApprove(ship, randPosition);
+                //     ship.rotate();
+                // }
                 //  else {
                 //     // rotate ship
                 //     var oldBlocksWidth = ship.blocksWidth,
@@ -156,7 +156,7 @@ define(function (require) {
                 return valid;
             }
 
-            ;;;console.log(ship.blocksWidth, ship.blocksHeight, randPosition, positionsToCheckX, positionsToCheckY);
+            // ;;;console.log(ship.blocksWidth, ship.blocksHeight, randPosition, positionsToCheckX, positionsToCheckY);
             
             // mark positions on field as not free
             for (var y = 0; y < positionsToCheckY.length; y++) {
@@ -169,17 +169,24 @@ define(function (require) {
                 }
             }
 
-            // var test = new createjs.Shape();
-            // test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
-            // test.x = this.playerFieldLeftOffset + (randPosition.x * 50);
-            // test.y = this.playerFieldTopOffset + (randPosition.y * 50);
-            // this.mainStage.addChild(test);
 
             ship.image.x = this.playerFieldLeftOffset + (randPosition.x * 50);
             ship.image.y = this.playerFieldTopOffset + (randPosition.y * 50);
 
+            var rotate = this.toBeRotated();
+
+            if ( rotate ) {
+                // shipPosition = this.horizontalCheckApprove(ship, randPosition);
+                ship.rotate();
+            }
+
+            var test = new createjs.Shape();
+            test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
+            test.x = this.playerFieldLeftOffset + (randPosition.x * 50);
+            test.y = this.playerFieldTopOffset + (randPosition.y * 50);
+            this.mainStage.addChild(test);
+            
             // if ( ship.rotation === 'vertical' ) {
-            //     ship.image.rotation = 90;
             //     ship.image.x += 50;
             // }
 
