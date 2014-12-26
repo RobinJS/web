@@ -113,7 +113,7 @@ define(function (require) {
             // make all cells around = 1
             // draw ship image
 
-            function checkNextPosition () {
+            function checkNextPosition (y, x) {
                 randPosition.x++;
                 if ( randPosition.x >= that.field.length ) {
                     randPosition.x = 0;
@@ -123,7 +123,12 @@ define(function (require) {
                         randPosition.y = 0;
                     }
                 }
-                console.log('checkNextPosition', that.field);
+
+                if ( that.field[randPosition.y][randPosition.x] === 1 ) {
+                    checkNextPosition();
+                    return;
+                }
+                
                 checkAllSquares();
             }
 
@@ -135,7 +140,8 @@ define(function (require) {
                         }
 
                         if ( that.field[y][x] === 1 ) {
-                            checkNextPosition();
+                            // console.log(y, x);
+                            checkNextPosition(y, x);
                             return;
                         }
 
@@ -144,20 +150,18 @@ define(function (require) {
                         }
                     }
                 }
-                console.log('checkAllSquares', that.field);
             }
 
             function markAllSquaresAsFull() {
                 for (var y = randPosition.y - 1; y <= randPosition.y + ship.blocksHeight; y++) {
                     for (var x = randPosition.x - 1; x <= randPosition.x + ship.blocksWidth; x++) {
-                        if ( y !== -1 || x !== -1 || y !== that.field.length || x !== that.field.length ) {
-                            continue;
+                        if ( y !== -1 && x !== -1 && y < that.field.length && x < that.field.length ) {
+                            that.field[y][x] = 1;
                         }
-
-                        that.field[y][x] = 1;
                     }
                 }
-                console.log('markAllSquaresAsFull', that.field);
+
+                console.log(JSON.stringify(that.field));
             }
 
             function drawShipImage () {
@@ -179,7 +183,7 @@ var a = 0;//
             }
 
             markAllSquaresAsFull();
-            // console.log(this.field);
+            // console.log(JSON.stringify(this.field));
 
             drawShipImage();
 
@@ -332,7 +336,6 @@ var a = 0;//
                 }
             }
 // console.log(position.x, position.y, JSON.stringify(this.field));
-console.log('getValidRandomPosition', this.field);
             return position;
         },
 
