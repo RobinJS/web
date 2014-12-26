@@ -92,7 +92,6 @@ define(function (require) {
     	},
 
         rotate: function(){
-            ;;;console.log(this);
             if ( this.rotation === 'horizontal' ) {
                 this.rotation = 'vertical';
                 this.image.rotation = 90;
@@ -103,7 +102,7 @@ define(function (require) {
                 this.image.x -= 50;
             }
 
-            ;;;console.log(this);
+            ;;;console.log(this.type);
             
             var oldBlocksWidth = this.blocksWidth,
                 oldBlocksHeight = this.blocksHeight;
