@@ -113,7 +113,7 @@ define(function (require) {
             // make all cells around = 1
             // draw ship image
 
-            function checkNextPosition (y, x) {
+            function checkNextPosition () {
                 randPosition.x++;
                 if ( randPosition.x >= that.field.length ) {
                     randPosition.x = 0;
@@ -125,6 +125,7 @@ define(function (require) {
                 }
 
                 if ( that.field[randPosition.y][randPosition.x] === 1 ) {
+                    console.log(randPosition.y, randPosition.x);
                     checkNextPosition();
                     return;
                 }
@@ -135,13 +136,13 @@ define(function (require) {
             function checkAllSquares() {
                 for (var y = randPosition.y - 1; y <= randPosition.y + ship.blocksHeight; y++) {
                     for (var x = randPosition.x - 1; x <= randPosition.x + ship.blocksWidth; x++) {
-                        if ( y === -1 || x === -1 || y === that.field.length || x === that.field.length ) {
+                        if ( y === -1 || x === -1 || y >= that.field.length || x >= that.field.length ) {
                             continue;
                         }
 
                         if ( that.field[y][x] === 1 ) {
                             // console.log(y, x);
-                            checkNextPosition(y, x);
+                            checkNextPosition();
                             return;
                         }
 
@@ -153,15 +154,35 @@ define(function (require) {
             }
 
             function markAllSquaresAsFull() {
-                for (var y = randPosition.y - 1; y <= randPosition.y + ship.blocksHeight; y++) {
-                    for (var x = randPosition.x - 1; x <= randPosition.x + ship.blocksWidth; x++) {
+                // for (var y = randPosition.y - 1; y <= randPosition.y + ship.blocksHeight; y++) {
+                //     for (var x = randPosition.x - 1; x <= randPosition.x + ship.blocksWidth; x++) {
+                //         if ( y !== -1 && x !== -1 && y < that.field.length && x < that.field.length ) {
+                //             that.field[y][x] = 1;
+                //         }
+                //     }
+                // }
+
+                for (var y = randPosition.y; y < randPosition.y + ship.blocksHeight; y++) {
+                    for (var x = randPosition.x; x < randPosition.x + ship.blocksWidth; x++) {
                         if ( y !== -1 && x !== -1 && y < that.field.length && x < that.field.length ) {
                             that.field[y][x] = 1;
                         }
                     }
                 }
 
-                console.log(JSON.stringify(that.field));
+                // console.log(JSON.stringify(that.field));
+                console.log('------------');
+                    console.log(that.field[0]);//
+                    console.log(that.field[1]);//
+                    console.log(that.field[2]);//
+                    console.log(that.field[3]);//
+                    console.log(that.field[4]);//
+                    console.log(that.field[5]);//
+                    console.log(that.field[6]);//
+                    console.log(that.field[7]);//
+                    console.log(that.field[8]);//
+                    console.log(that.field[9]);//
+                console.log('------------');
             }
 
             function drawShipImage () {
