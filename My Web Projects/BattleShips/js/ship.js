@@ -95,15 +95,11 @@ define(function (require) {
             if ( this.rotation === 'horizontal' ) {
                 this.rotation = 'vertical';
                 this.image.rotation = 90;
-                this.image.x += 50;
             } else {
                 this.rotation = 'horizontal';
                 this.image.rotation = 0;
-                this.image.x -= 50;
             }
 
-            ;;;console.log(this.type);
-            
             var oldBlocksWidth = this.blocksWidth,
                 oldBlocksHeight = this.blocksHeight;
 

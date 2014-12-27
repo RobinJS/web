@@ -27,7 +27,7 @@ define(function (require) {
         ];
         // this.rotations = ['horizontal', 'vertical'];
     	// this.clickEnabled = false;
-
+        this.testContainer = new createjs.Container();//
     	this.init();
     };
 
@@ -73,12 +73,15 @@ define(function (require) {
             // choose random position
             // check if this position is possible
 
+this.mainStage.removeChild(this.testContainer);//
+this.testContainer = new createjs.Container();
+
             // reset field
-            // for (var i = 0; i < this.field.length; i++) {
-            //     for (var j = 0; j < this.field.length; j++) {
-            //         this.field[i][j] = 0;
-            //     }
-            // }
+            for (var i = 0; i < this.field.length; i++) {
+                for (var j = 0; j < this.field.length; j++) {
+                    this.field[i][j] = 0;
+                }
+            }
 
             this.ships.forEach(function(ship, idx){
                 var rotate = this.toBeRotated();
@@ -101,6 +104,8 @@ define(function (require) {
                 this.drawShip(ship);
 
             }.bind(this));
+
+            this.mainStage.addChild(this.testContainer);//
         },
 
         drawShip: function( ship ){
@@ -126,7 +131,6 @@ define(function (require) {
 
                 // check if randPosition is not free, or the ship will go outside fields bounds
                 if ( (that.field[randPosition.y][randPosition.x] === 1) || (randPosition.x + ship.blocksWidth - 1 >= that.field.length) || (randPosition.y + ship.blocksHeight - 1 >= that.field.length) ) {
-                    console.log(randPosition.y, randPosition.x);
                     checkNextPosition();
                     return;
                 }
@@ -142,7 +146,6 @@ define(function (require) {
                         }
 
                         if ( that.field[y][x] === 1 ) {
-                            // console.log(y, x);
                             checkNextPosition();
                             return;
                         }
@@ -155,14 +158,6 @@ define(function (require) {
             }
 
             function markAllSquaresAsFull() {
-                // for (var y = randPosition.y - 1; y <= randPosition.y + ship.blocksHeight; y++) {
-                //     for (var x = randPosition.x - 1; x <= randPosition.x + ship.blocksWidth; x++) {
-                //         if ( y !== -1 && x !== -1 && y < that.field.length && x < that.field.length ) {
-                //             that.field[y][x] = 1;
-                //         }
-                //     }
-                // }
-
                 for (var y = randPosition.y; y < randPosition.y + ship.blocksHeight; y++) {
                     for (var x = randPosition.x; x < randPosition.x + ship.blocksWidth; x++) {
                         if ( y !== -1 && x !== -1 && y < that.field.length && x < that.field.length ) {
@@ -171,38 +166,43 @@ define(function (require) {
                     }
                 }
 
-                // console.log(JSON.stringify(that.field));
-                console.log('------------');
-                    console.log(that.field[0]);//
-                    console.log(that.field[1]);//
-                    console.log(that.field[2]);//
-                    console.log(that.field[3]);//
-                    console.log(that.field[4]);//
-                    console.log(that.field[5]);//
-                    console.log(that.field[6]);//
-                    console.log(that.field[7]);//
-                    console.log(that.field[8]);//
-                    console.log(that.field[9]);//
-                console.log('------------');
+                // console.log('------------');
+                //     console.log(that.field[0]);//
+                //     console.log(that.field[1]);//
+                //     console.log(that.field[2]);//
+                //     console.log(that.field[3]);//
+                //     console.log(that.field[4]);//
+                //     console.log(that.field[5]);//
+                //     console.log(that.field[6]);//
+                //     console.log(that.field[7]);//
+                //     console.log(that.field[8]);//
+                //     console.log(that.field[9]);//
+                // console.log('------------');
             }
 
             function drawShipImage () {
+                var rotationOffset = ship.rotation === 'vertical' ? 50 : 0;
+                ship.image.x = that.playerFieldLeftOffset + (randPosition.x * 50) + rotationOffset;
+                ship.image.y = that.playerFieldTopOffset + (randPosition.y * 50);
+
                 var test = new createjs.Shape();
                 test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
                 test.x = that.playerFieldLeftOffset + (randPosition.x * 50);
                 test.y = that.playerFieldTopOffset + (randPosition.y * 50);
-                that.mainStage.addChild(test);
+
+                that.testContainer.addChild(test);
             }
-var a = 0;//
-            while ( !allSquaresFree ) {
-                a++;//
-                if ( a>100 ) {//
-                    break;//
-                }//
+// var a = 0;//
+            // while ( !allSquaresFree ) {
+            //     a++;//
+            //     if ( a>100 ) {//
+            //         console.warn('stack', a);
+            //         break;//
+            //     }//
                 checkAllSquares();
 
                 // move randPosition
-            }
+            // }
 
             markAllSquaresAsFull();
             // console.log(JSON.stringify(this.field));
