@@ -181,16 +181,21 @@ this.testContainer = new createjs.Container();
             }
 
             function drawShipImage () {
-                var rotationOffset = ship.rotation === 'vertical' ? 50 : 0;
+                var rotationOffset = ship.rotationType === 'vertical' ? 50 : 0;
                 ship.image.x = that.playerFieldLeftOffset + (randPosition.x * 50) + rotationOffset;
                 ship.image.y = that.playerFieldTopOffset + (randPosition.y * 50);
 
-                var test = new createjs.Shape();
-                test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
-                test.x = that.playerFieldLeftOffset + (randPosition.x * 50);
-                test.y = that.playerFieldTopOffset + (randPosition.y * 50);
+                // save ship image coordinates after auto arrange
+                ship.arrangedX = ship.image.x;
+                ship.arrangedY = ship.image.y;
+                ship.arrangedRotationType = ship.rotationType;
 
-                that.testContainer.addChild(test);
+                // var test = new createjs.Shape();
+                // test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
+                // test.x = that.playerFieldLeftOffset + (randPosition.x * 50);
+                // test.y = that.playerFieldTopOffset + (randPosition.y * 50);
+
+                // that.testContainer.addChild(test);
             }
 // var a = 0;//
             // while ( !allSquaresFree ) {
@@ -294,7 +299,7 @@ this.testContainer = new createjs.Container();
         //     test.y = this.playerFieldTopOffset + (randPosition.y * 50);
         //     this.mainStage.addChild(test);
             
-        //     // if ( ship.rotation === 'vertical' ) {
+        //     // if ( ship.rotationType === 'vertical' ) {
         //     //     ship.image.x += 50;
         //     // }
 

@@ -15,8 +15,6 @@ define(function (require) {
 
 		this.infoHeader = new InfoHeader( this.mainStage );
 		this.opponentField = new OpponentField( this.mainStage );
-		this.playerField = new PlayerField( this.mainStage );
-		// this.playerField.createShips();
 
 	/* numbers */
 		this.mapNumbers = [new createjs.Bitmap("img/field_numbers.png"), new createjs.Bitmap("img/field_numbers.png")];
@@ -68,7 +66,7 @@ define(function (require) {
     	// this.mainStage.addChild(this.autoArrangeBtn);
     /* end Buttons */
 
-		
+		this.playerField = new PlayerField( this.mainStage );
 
 		this.events = {
 			panelShown: new Signal()

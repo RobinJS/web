@@ -19,11 +19,18 @@ define(function (require) {
         // this.image.regY = this.height / 2;
     	this.image.x = 0;
     	this.image.y = 0;
+        this.rotationType = 'horizontal';
 
-        this.distanceX = 0;
-        this.distanceY = 0;
+        this.arrangedX = this.image.x;
+        this.arrangedY = this.image.y;
+        this.arrangedRotationType = this.rotationType;
+
+        this.pointerDistanceX = 0;
+        this.pointerDistanceY = 0;
         this.clickEnabled = false;
-        this.rotation = 'horizontal';
+
+        this.startX = null;
+        this.startY = null;
 
         this.events = {
             createArrangeMarker: new Signal()
@@ -37,21 +44,29 @@ define(function (require) {
         });
 
         this.image.addEventListener('mousedown', function( e ){
-            this.distanceX = this.image.x - e.stageX;
-            this.distanceY = this.image.y - e.stageY;
+
+            this.startX = Math.floor( e.stageX / config.gridSize) * config.gridSize;
+            this.startY = Math.floor( e.stageY / config.gridSize) * config.gridSize;
+
+            this.pointerDistanceX = this.startX - this.image.x;
+            this.pointerDistanceY = this.startY - this.image.y;
 
             this.events.createArrangeMarker.dispatch( this );
         }.bind(this));
 
         this.image.addEventListener('pressup', function( e ){
             // if pointer outside player field's bounds
-            // if ( e.stageX <= config.playerFieldData.x || e.stageX >= (config.playerFieldData.x + config.fieldWidth) || e.stageY <= config.playerFieldData.y || e.stageY >= (config.playerFieldData.y + config.fieldHeight) ) {
-            //     // return ship at initial position
-            //     this.image.x = config.shipsData[type].initialX;
-            //     this.image.y = config.shipsData[type].initialY;
-            // } else {
+            if ( e.stageX <= config.playerFieldData.x || e.stageX >= (config.playerFieldData.x + config.fieldWidth) || e.stageY <= config.playerFieldData.y || e.stageY >= (config.playerFieldData.y + config.fieldHeight) ) {
+                // return ship at initial position
+                // console.log(this.rotationType, this.arrangedX, this.arrangedY);
+                this.image.x = this.arrangedX;
+                this.image.y = this.arrangedY;
 
-            // }
+
+
+            } else {
+
+            }
         }.bind(this));
     };
 
@@ -87,16 +102,38 @@ define(function (require) {
     	},
 
     	move: function( e ){
-            this.image.x = e.stageX + this.distanceX;
-    		this.image.y = e.stageY + this.distanceY;
+      //       this.image.x = e.stageX + this.pointerDistanceX;
+    		// this.image.y = e.stageY + this.pointerDistanceY;
+
+            if ( e.stageX <= config.playerFieldData.x || e.stageX >= (config.fieldWidth + config.playerFieldData.x) || e.stageY <= config.playerFieldData.y || e.stageY >= (config.fieldHeight + config.playerFieldData.y) ) {
+                return;
+            }
+
+            this.image.x = Math.floor( e.stageX / config.gridSize) * config.gridSize - this.pointerDistanceX;
+            this.image.y = Math.floor( e.stageY / config.gridSize) * config.gridSize - this.pointerDistanceY;
+
+            console.log(this.image.x, this.image.y);
+            // if ( e.stageX % 50 === 49 ) {
+
+            //     // this.image.x = e.stageX - 49 + config.playerFieldData.x;
+            //     this.image.x -= 50;
+                
+            // } else if ( e.stageX % 50 === 1 ) {
+            //     // this.image.x = e.stageX - 1 + config.playerFieldData.x;
+            //     this.image.x += 50;
+            //     // console.log(1);
+            //     console.log(e.stageX  - 1);
+            // }
+
+            // console.log( e.stageX % 50 );
     	},
 
         rotate: function(){
-            if ( this.rotation === 'horizontal' ) {
-                this.rotation = 'vertical';
+            if ( this.rotationType === 'horizontal' ) {
+                this.rotationType = 'vertical';
                 this.image.rotation = 90;
             } else {
-                this.rotation = 'horizontal';
+                this.rotationType = 'horizontal';
                 this.image.rotation = 0;
             }
 

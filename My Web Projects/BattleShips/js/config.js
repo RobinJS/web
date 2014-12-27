@@ -20,6 +20,7 @@ define(function(){
 		playerFieldData: {
 			x: 50, y: 250
 		},
+		gridSize: 50,
 		arrangeMarkerWidth: 50,
 		arrangeMarkerHeight: 50,
 		fieldWidth: 500,
