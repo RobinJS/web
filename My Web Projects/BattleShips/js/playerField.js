@@ -124,7 +124,8 @@ define(function (require) {
                     }
                 }
 
-                if ( that.field[randPosition.y][randPosition.x] === 1 ) {
+                // check if randPosition is not free, or the ship will go outside fields bounds
+                if ( (that.field[randPosition.y][randPosition.x] === 1) || (randPosition.x + ship.blocksWidth - 1 >= that.field.length) || (randPosition.y + ship.blocksHeight - 1 >= that.field.length) ) {
                     console.log(randPosition.y, randPosition.x);
                     checkNextPosition();
                     return;
