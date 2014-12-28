@@ -42,7 +42,7 @@ define(function (require) {
 			var shipsInitialNum = 7;
 
 			for (var i = 0; i < shipsInitialNum; i++) {
-				this.ships[i] = new Ship(this.shipsByType[i]);
+				this.ships[i] = new Ship(this.shipsByType[i], this.field);
 				// this.ships[i].image.x = config.shipsData[ this.shipsByType[i] ].initialX;
 				// this.ships[i].image.y = config.shipsData[ this.shipsByType[i] ].initialY;
 				this.mainStage.addChild(this.ships[i].image);

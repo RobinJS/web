@@ -4,8 +4,9 @@ define(function (require) {
     var config = require('config'),
         Signal = require('libs/signals.min');
 
-    var Ship = function( type ){
+    var Ship = function( type, field ){
     	this.type = type;
+        this.field = field;
     	this.size = this.getSize( type );
     	this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
 
@@ -33,7 +34,7 @@ define(function (require) {
         this.startY = null;
 
         this.events = {
-            createArrangeMarker: new Signal()
+            emptyCellsUnderShip: new Signal()
         };
 
         var that = this;
@@ -51,24 +52,21 @@ define(function (require) {
             this.pointerDistanceX = this.startX - this.image.x;
             this.pointerDistanceY = this.startY - this.image.y;
 
-            this.events.createArrangeMarker.dispatch( this );
+            // this.events.emptyCellsUnderShip.dispatch( this );
+            this.emptyCellsUnderShip();
         }.bind(this));
 
         this.image.addEventListener('pressup', function( e ){
-            // if pointer outside player field's bounds
-            // if ( e.stageX <= config.playerFieldData.x || e.stageX >= (config.playerFieldData.x + config.fieldWidth) || e.stageY <= config.playerFieldData.y || e.stageY >= (config.playerFieldData.y + config.fieldHeight) ) {
-            //     // return ship at initial position
-            //     // console.log(this.rotationType, this.arrangedX, this.arrangedY);
-            //     this.image.x = this.arrangedX;
-            //     this.image.y = this.arrangedY;
-
-
-
-            // } else {
-
-            // }
-
-            // if ship is outside player field's bounds
+            // check if there is another ship under
+            if ( this.overAnotherShip() ) {
+                // return ship to las position
+                this.image.x = this.arrangedX;
+                this.image.y = this.arrangedY;
+            } else {
+                this.arrangedX = this.image.x;
+                this.arrangedY = this.image.y;
+                this.markAllSquaresAsFull();
+            }
             
 
             // console.log(this.image.x + this.blocksWidth * 50, this.image.y + this.blocksHeight * 50);
@@ -120,7 +118,7 @@ define(function (require) {
             this.image.x = nexImageX;
             this.image.y = nexImageY;
 
-            
+
     	},
 
         rotate: function(){
@@ -141,6 +139,80 @@ define(function (require) {
 
         getRotationOffset: function(){
             return this.rotationType === 'vertical' ? 50 : 0;
+        },
+
+        overAnotherShip: function(){
+            var rotationOffset = this.getRotationOffset(),
+                startCellX = (this.image.x - rotationOffset) / config.gridSize - 1,
+                startCellY = (this.image.y - config.playerFieldData.y) / config.gridSize,
+                endCellX = startCellX + this.blocksWidth - 1,
+                endCellY = startCellY + this.blocksHeight - 1,
+                overAnotherShip = false;
+
+                for (var y = startCellY; y <= endCellY; y++) {
+                    for (var x = startCellX; x <= endCellX; x++) {
+                        if ( this.field[y][x] === 1 ) {
+                            overAnotherShip = true;
+                            break;
+                        }
+                    }
+                }
+
+            return overAnotherShip;
+        },
+
+        markAllSquaresAsFull: function(){
+            var rotationOffset = this.getRotationOffset(),
+                startCellX = (this.image.x - rotationOffset) / config.gridSize - 1,
+                startCellY = (this.image.y - config.playerFieldData.y) / config.gridSize,
+                endCellX = startCellX + this.blocksWidth - 1,
+                endCellY = startCellY + this.blocksHeight - 1;
+
+            for (var y = startCellY; y <= endCellY; y++) {
+                for (var x = startCellX; x <= endCellX; x++) {
+                   this.field[y][x] = 1;
+                }
+            }
+
+            // console.log('------------');
+            //     console.log(that.field[0]);//
+            //     console.log(that.field[1]);//
+            //     console.log(that.field[2]);//
+            //     console.log(that.field[3]);//
+            //     console.log(that.field[4]);//
+            //     console.log(that.field[5]);//
+            //     console.log(that.field[6]);//
+            //     console.log(that.field[7]);//
+            //     console.log(that.field[8]);//
+            //     console.log(that.field[9]);//
+            // console.log('------------');
+        },
+
+        emptyCellsUnderShip: function(){
+            var rotationOffset = this.getRotationOffset(),
+                startCellX = (this.image.x - rotationOffset) / config.gridSize - 1,
+                startCellY = (this.image.y - config.playerFieldData.y) / config.gridSize,
+                endCellX = startCellX + this.blocksWidth - 1,
+                endCellY = startCellY + this.blocksHeight - 1;
+
+            for (var y = startCellY; y <= endCellY; y++) {
+                for (var x = startCellX; x <= endCellX; x++) {
+                   this.field[y][x] = 0;
+                }
+            }
+
+            // console.log('------------');
+            //     console.log(that.field[0]);//
+            //     console.log(that.field[1]);//
+            //     console.log(that.field[2]);//
+            //     console.log(that.field[3]);//
+            //     console.log(that.field[4]);//
+            //     console.log(that.field[5]);//
+            //     console.log(that.field[6]);//
+            //     console.log(that.field[7]);//
+            //     console.log(that.field[8]);//
+            //     console.log(that.field[9]);//
+            // console.log('------------');
         }
 
     });
