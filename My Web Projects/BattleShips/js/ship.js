@@ -65,9 +65,9 @@ define(function (require) {
             } else {
                 this.arrangedX = this.image.x;
                 this.arrangedY = this.image.y;
-                this.markAllSquaresAsFull();
             }
             
+            this.markAllSquaresAsFull();
 
             // console.log(this.image.x + this.blocksWidth * 50, this.image.y + this.blocksHeight * 50);
 
@@ -173,19 +173,6 @@ define(function (require) {
                    this.field[y][x] = 1;
                 }
             }
-
-            // console.log('------------');
-            //     console.log(that.field[0]);//
-            //     console.log(that.field[1]);//
-            //     console.log(that.field[2]);//
-            //     console.log(that.field[3]);//
-            //     console.log(that.field[4]);//
-            //     console.log(that.field[5]);//
-            //     console.log(that.field[6]);//
-            //     console.log(that.field[7]);//
-            //     console.log(that.field[8]);//
-            //     console.log(that.field[9]);//
-            // console.log('------------');
         },
 
         emptyCellsUnderShip: function(){
@@ -200,19 +187,6 @@ define(function (require) {
                    this.field[y][x] = 0;
                 }
             }
-
-            // console.log('------------');
-            //     console.log(that.field[0]);//
-            //     console.log(that.field[1]);//
-            //     console.log(that.field[2]);//
-            //     console.log(that.field[3]);//
-            //     console.log(that.field[4]);//
-            //     console.log(that.field[5]);//
-            //     console.log(that.field[6]);//
-            //     console.log(that.field[7]);//
-            //     console.log(that.field[8]);//
-            //     console.log(that.field[9]);//
-            // console.log('------------');
         }
 
     });
