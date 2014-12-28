@@ -181,7 +181,7 @@ this.testContainer = new createjs.Container();
             }
 
             function drawShipImage () {
-                var rotationOffset = ship.rotationType === 'vertical' ? 50 : 0;
+                var rotationOffset = ship.getRotationOffset();
                 ship.image.x = that.playerFieldLeftOffset + (randPosition.x * 50) + rotationOffset;
                 ship.image.y = that.playerFieldTopOffset + (randPosition.y * 50);
 

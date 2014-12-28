@@ -56,17 +56,23 @@ define(function (require) {
 
         this.image.addEventListener('pressup', function( e ){
             // if pointer outside player field's bounds
-            if ( e.stageX <= config.playerFieldData.x || e.stageX >= (config.playerFieldData.x + config.fieldWidth) || e.stageY <= config.playerFieldData.y || e.stageY >= (config.playerFieldData.y + config.fieldHeight) ) {
-                // return ship at initial position
-                // console.log(this.rotationType, this.arrangedX, this.arrangedY);
-                this.image.x = this.arrangedX;
-                this.image.y = this.arrangedY;
+            // if ( e.stageX <= config.playerFieldData.x || e.stageX >= (config.playerFieldData.x + config.fieldWidth) || e.stageY <= config.playerFieldData.y || e.stageY >= (config.playerFieldData.y + config.fieldHeight) ) {
+            //     // return ship at initial position
+            //     // console.log(this.rotationType, this.arrangedX, this.arrangedY);
+            //     this.image.x = this.arrangedX;
+            //     this.image.y = this.arrangedY;
 
 
 
-            } else {
+            // } else {
 
-            }
+            // }
+
+            // if ship is outside player field's bounds
+            
+
+            // console.log(this.image.x + this.blocksWidth * 50, this.image.y + this.blocksHeight * 50);
+
         }.bind(this));
     };
 
@@ -102,30 +108,19 @@ define(function (require) {
     	},
 
     	move: function( e ){
-      //       this.image.x = e.stageX + this.pointerDistanceX;
-    		// this.image.y = e.stageY + this.pointerDistanceY;
+            // check if ship goes outside battlefield's bounds
+            var nexImageX = Math.floor( e.stageX / config.gridSize) * config.gridSize - this.pointerDistanceX,
+                nexImageY = Math.floor( e.stageY / config.gridSize) * config.gridSize - this.pointerDistanceY,
+                rotationOffset = this.getRotationOffset();
 
-            if ( e.stageX <= config.playerFieldData.x || e.stageX >= (config.fieldWidth + config.playerFieldData.x) || e.stageY <= config.playerFieldData.y || e.stageY >= (config.fieldHeight + config.playerFieldData.y) ) {
+            if ( nexImageX < config.playerFieldData.x + rotationOffset || nexImageY < config.playerFieldData.y || nexImageX + this.blocksWidth * config.gridSize - rotationOffset > config.playerFieldData.endX || nexImageY + this.blocksHeight * config.gridSize > config.playerFieldData.endY ) {
                 return;
             }
 
-            this.image.x = Math.floor( e.stageX / config.gridSize) * config.gridSize - this.pointerDistanceX;
-            this.image.y = Math.floor( e.stageY / config.gridSize) * config.gridSize - this.pointerDistanceY;
+            this.image.x = nexImageX;
+            this.image.y = nexImageY;
 
-            console.log(this.image.x, this.image.y);
-            // if ( e.stageX % 50 === 49 ) {
-
-            //     // this.image.x = e.stageX - 49 + config.playerFieldData.x;
-            //     this.image.x -= 50;
-                
-            // } else if ( e.stageX % 50 === 1 ) {
-            //     // this.image.x = e.stageX - 1 + config.playerFieldData.x;
-            //     this.image.x += 50;
-            //     // console.log(1);
-            //     console.log(e.stageX  - 1);
-            // }
-
-            // console.log( e.stageX % 50 );
+            
     	},
 
         rotate: function(){
@@ -142,6 +137,10 @@ define(function (require) {
 
             this.blocksWidth = oldBlocksHeight;
             this.blocksHeight = oldBlocksWidth;
+        },
+
+        getRotationOffset: function(){
+            return this.rotationType === 'vertical' ? 50 : 0;
         }
 
     });

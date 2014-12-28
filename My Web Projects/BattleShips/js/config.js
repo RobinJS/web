@@ -18,7 +18,7 @@ define(function(){
 			'submarine2': { imagePath: 'img/submarine_1.png', width: 50, height: 50 }
 		},
 		playerFieldData: {
-			x: 50, y: 250
+			x: 50, y: 250, endX: 550, endY: 750
 		},
 		gridSize: 50,
 		arrangeMarkerWidth: 50,
