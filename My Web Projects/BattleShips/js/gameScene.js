@@ -51,7 +51,7 @@ define(function (require) {
  		this.arrangeLabel.x = 710;
  		this.arrangeLabel.y = 210;
 
- 		this.infoLabel = new createjs.Text("Drag and drop ships to arrange them. \n Rotate???", "20px Verdana", "#fff");
+ 		this.infoLabel = new createjs.Text("Drag and drop ships to arrange them.", "20px Verdana", "#fff");
  		this.infoLabel.x = 710;
  		this.infoLabel.y = 280;
  		this.infoLabel.lineHeight = 35;
@@ -79,6 +79,8 @@ define(function (require) {
 		init: function(){
 			// create PlayerField
 			// create Strike field
+
+		// start game button
 			this.startGameBtn.addEventListener('mousedown', function(e){
 				this.startGameBtn.showPressed();
 			}.bind(this));
@@ -88,7 +90,7 @@ define(function (require) {
 
 				if ( !this.startGameBtn.clickEnabled ) return;
 
-
+				// this.opponentField.autoArrange();
 			}.bind(this));
 
 			this.startGameBtn.addEventListener('mouseover', function(e){
@@ -100,8 +102,9 @@ define(function (require) {
 
 				this.startGameBtn.hideGlow();
 			}.bind(this));
+		// end start game button
 
-
+		// auto arrange button
 			this.autoArrangeBtn.addEventListener('mousedown', function(e){
 				this.autoArrangeBtn.showPressed();
 			}.bind(this));
@@ -123,6 +126,7 @@ define(function (require) {
 
 				this.autoArrangeBtn.hideGlow();
 			}.bind(this));
+		// end auto arrange button
 
 		},
 

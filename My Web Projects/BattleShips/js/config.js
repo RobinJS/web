@@ -8,6 +8,7 @@ define(function(){
 			CHECK_RESULT: 'check_result',
 			GAME_END: 'game_end'
 		},
+		shipsByType: ['aircraftCarrier', 'battleship', 'cruiser', 'destroyer', 'destroyer2', 'submarine', 'submarine2'],
 		shipsData: {
 			'aircraftCarrier': { imagePath: 'img/aircraft_carrier_5.png', width: 250, height: 50 },
 			'battleship': { imagePath: 'img/battleship_4.png', width: 200, height: 50 },

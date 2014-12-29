@@ -37,12 +37,11 @@ define(function (require) {
             emptyCellsUnderShip: new Signal()
         };
 
-        var that = this;
     	this.image.addEventListener('pressmove', function( e ){
-            if ( !that.clickEnabled ) return;
+            if ( !this.clickEnabled ) return;
             
-            that.move( e );
-        });
+            this.move( e );
+        }.bind(this));
 
         this.image.addEventListener('mousedown', function( e ){
 
@@ -68,9 +67,6 @@ define(function (require) {
             }
             
             this.markAllSquaresAsFull();
-
-            // console.log(this.image.x + this.blocksWidth * 50, this.image.y + this.blocksHeight * 50);
-
         }.bind(this));
     };
 
@@ -117,8 +113,6 @@ define(function (require) {
 
             this.image.x = nexImageX;
             this.image.y = nexImageY;
-
-
     	},
 
         rotate: function(){
