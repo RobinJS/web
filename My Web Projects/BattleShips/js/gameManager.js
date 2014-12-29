@@ -23,35 +23,45 @@ define(function (require) {
 
 		this.mainStage.addChild(this.arrangepanel);
 
-		switch( currentState ) {
-	        case config.gameStates.ARRANGE_SHIPS:
-	        	// add listeners
-	        	// create functionality for drag, drop, rotate, free areas
-	        	// animate scene hide
-	        	this.gameScene.events.panelShown.addOnce(function(){
-	        		this.gameScene.playerField.enableClick();
-	        		this.gameScene.enableButtonsClick();
-	        	}.bind(this));
+		this.gameScene.events.startGame.add(function(){
+			currentState = config.gameStates.BATTLE;
+			this.newState();
+		}.bind(this));
 
-	        	this.gameScene.showArrangepanel(this.arrangepanel);
-	        break;
-	        case config.gameStates.BATTLE:
-	        	// enable user interraction
-	        	// decide which turn it is
-	        break;
-	        case config.gameStates.PLAYERS_TURN:
-	        	// enable user interraction
-	        break;
-	        case config.gameStates.COMPUTERS_TURN:
-	        	// enable user interraction
-	        break;
-	        case config.gameStates.CHECK_RESULT:
-	        	// enable user interraction
-	        break;
-	        case config.gameStates.GAME_END:
-	        	
-	        break;
-	   	}
+		this.newState = function(){
+			switch( currentState ) {
+		        case config.gameStates.ARRANGE_SHIPS:
+		        	// add listeners
+		        	// create functionality for drag, drop, rotate, free areas
+		        	// animate scene hide
+		        	this.gameScene.events.panelShown.addOnce(function(){
+		        		this.gameScene.playerField.enableClick();
+		        		this.gameScene.enableButtonsClick();
+		        	}.bind(this));
+
+		        	this.gameScene.showArrangepanel(this.arrangepanel);
+		        break;
+		        case config.gameStates.BATTLE:
+		        	this.gameScene.hideArrangepanel( this.arrangepanel );
+		        	// enable user interraction
+		        	// decide which turn it is
+		        break;
+		        case config.gameStates.PLAYERS_TURN:
+		        	// enable user interraction
+		        break;
+		        case config.gameStates.COMPUTERS_TURN:
+		        	// enable user interraction
+		        break;
+		        case config.gameStates.CHECK_RESULT:
+		        	// enable user interraction
+		        break;
+		        case config.gameStates.GAME_END:
+		        	
+		        break;
+		   	}
+		};
+
+		
     };
     
     return GameManager;

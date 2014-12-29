@@ -51,7 +51,7 @@ define(function (require) {
  		this.arrangeLabel.x = 710;
  		this.arrangeLabel.y = 210;
 
- 		this.infoLabel = new createjs.Text("Drag and drop ships to arrange them.", "20px Verdana", "#fff");
+ 		this.infoLabel = new createjs.Text("You can drag and drop ships to arrange them.", "20px Verdana", "#fff");
  		this.infoLabel.x = 710;
  		this.infoLabel.y = 280;
  		this.infoLabel.lineHeight = 35;
@@ -69,7 +69,8 @@ define(function (require) {
 		this.playerField = new PlayerField( this.mainStage );
 
 		this.events = {
-			panelShown: new Signal()
+			panelShown: new Signal(),
+			startGame: new Signal()
 		}
 
     	this.init();
@@ -88,9 +89,10 @@ define(function (require) {
 			this.startGameBtn.addEventListener('pressup', function(e){
 				this.startGameBtn.hidePressed();
 
-				if ( !this.startGameBtn.clickEnabled ) return;
+				// if ( !this.startGameBtn.clickEnabled ) return;
 
-				// this.opponentField.autoArrange();
+				this.disableButtonsClick();
+				this.events.startGame.dispatch();
 			}.bind(this));
 
 			this.startGameBtn.addEventListener('mouseover', function(e){
@@ -134,6 +136,7 @@ define(function (require) {
 			var that = this;
 			that.events.panelShown.dispatch();
 			return;
+			console.warn('remove');
 			this.opponentField.markerEnabled = false;
 			panel.y = -770;
 			TweenMax.to(panel, 2, {
@@ -144,8 +147,16 @@ define(function (require) {
 			});
 		},
 
-		hideArrangepanel: function(){
-			// this.opponentField.markerEnabled = true;
+		hideArrangepanel: function( panel ){
+			var that = this;
+			// that.events.panelHidden.dispatch();
+			this.opponentField.markerEnabled = true;
+			TweenMax.to(panel, 2, {
+				y: -770,
+				onComplete: function(){
+					that.events.panelShown.dispatch();
+				}
+			});
 		},
 
 		enableButtonsClick: function(){
