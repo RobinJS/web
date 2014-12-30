@@ -140,8 +140,6 @@ define(function (require) {
 
 		showArrangepanel: function(){
 			var that = this;
-			
-			this.opponentField.markerEnabled = false;
 			TweenMax.to(this.arrangepanel, 2, {
 				y: 0,
 				onComplete: function(){
@@ -152,8 +150,6 @@ define(function (require) {
 
 		hideArrangepanel: function(){
 			var that = this;
-			
-			this.opponentField.markerEnabled = true;
 			TweenMax.to(this.arrangepanel, 2, {
 				y: -770,
 				onComplete: function(){
@@ -165,6 +161,16 @@ define(function (require) {
 		enableButtonsClick: function(){
 			this.startGameBtn.clickEnabled = true;
 	    	this.autoArrangeBtn.clickEnabled = true;
+		},
+
+		enableHitMarker: function(){
+			this.opponentField.markerEnabled = true;
+			this.opponentField.marker.visible = true;
+		},
+
+		disableHitMarker: function(){
+			this.opponentField.markerEnabled = false;
+			this.opponentField.marker.visible = false;
 		},
 
 		disableButtonsClick: function(){

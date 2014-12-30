@@ -7,9 +7,9 @@ define(function (require) {
 
     var GameManager = function(){
     	var currentState = 'arrange_ships';
+    	this.hitPosition = null;
 
     	this.mainStage = new Stage('mainCanvas');
-
     	this.gameScene = new GameScene(this.mainStage);
 
 		this.gameScene.events.startGame.add(function(){
@@ -19,6 +19,12 @@ define(function (require) {
 
 		this.gameScene.events.panelHidden.add(function(){
 			currentState = config.gameStates.PLAYERS_TURN;
+			this.newState();
+		}.bind(this));
+
+		this.gameScene.opponentField.events.positionToCheck.add(function( hitPosition ){
+			this.hitPosition = hitPosition;
+			currentState = config.gameStates.CHECK_RESULT;
 			this.newState();
 		}.bind(this));
 
@@ -44,6 +50,7 @@ define(function (require) {
 		        case config.gameStates.PLAYERS_TURN:
 		        	// mark "your turn"
 		        	this.gameScene.showTurnLabel('player');
+		        	this.gameScene.enableHitMarker();
 		        	// enable user interraction
 
 		        break;
@@ -53,6 +60,7 @@ define(function (require) {
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	// enable user interraction
+		        	console.warn(this.hitPosition);
 		        break;
 		        case config.gameStates.GAME_END:
 		        	

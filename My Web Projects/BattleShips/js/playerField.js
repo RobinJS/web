@@ -8,11 +8,12 @@ define(function (require) {
     var PlayerField = function( mainStage ){
     	this.mainStage = mainStage;
     	this.gridImage = null;
-    	this.ships = [];
         this.marker = null;
-        // this.playerFieldHitArea = null;
         this.playerFieldLeftOffset = config.playerFieldData.x;
         this.playerFieldTopOffset = config.playerFieldData.y;
+        
+    	this.ships = [];
+        this.shipsRemaining = 7;
         this.field = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

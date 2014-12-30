@@ -3,6 +3,7 @@ define(function (require) {
 
     var Ship = require('ship'),
         config = require('config'),
+        Signal = require('libs/signals.min'),
         utils = require('utils');
 
     var OpponentField = function( mainStage ){
@@ -16,6 +17,7 @@ define(function (require) {
 
 		this.markerEnabled = false;
         this.ships = [];
+        this.shipsRemaining = 7;
         this.field = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -28,6 +30,10 @@ define(function (require) {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
+
+        this.events = {
+            positionToCheck: new Signal()
+        };
 		
 		this.init();
 		this.addListeners();
@@ -46,7 +52,7 @@ define(function (require) {
 			this.mainStage.addChild(this.marker);
 
 			this.opponentFieldHitArea = new createjs.Shape();
-			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(this.opponentFieldLeftOffset, this.opponentFieldTopOffset, config.fieldWidth, this.fieldHeight);
+			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(this.opponentFieldLeftOffset, this.opponentFieldTopOffset, config.fieldWidth, config.fieldHeight);
 			this.mainStage.addChild(this.opponentFieldHitArea);
 
             var shipsInitialNum = 7;
@@ -62,30 +68,22 @@ define(function (require) {
     			// check if cursor is outside strike field's bounds
     			if ( !this.markerEnabled ) return;
 
-    			if ( (e.stageX <= this.opponentFieldLeftOffset || e.stageY <= this.opponentFieldTopOffset) || (e.stageX >= this.opponentFieldLeftOffset + config.fieldWidth || e.stageY >= this.opponentFieldTopOffset + this.fieldHeight ) ) return;
+    			if ( (e.stageX <= this.opponentFieldLeftOffset || e.stageY <= this.opponentFieldTopOffset) || (e.stageX >= this.opponentFieldLeftOffset + config.fieldWidth || e.stageY >= this.opponentFieldTopOffset + config.fieldHeight ) ) return;
 
     			this.marker.x = Math.floor( ( e.stageX / this.squareWidth) ) * this.squareWidth - this.opponentFieldLeftOffset;
     			this.marker.y = Math.floor( ( e.stageY / this.squareWidth) ) * this.squareWidth - this.opponentFieldTopOffset;
     		}.bind(this));
 
-    		this.opponentFieldHitArea.on('mouseover', function(e){
+    		this.opponentFieldHitArea.on('click', function(e){
     			if ( !this.markerEnabled ) return;
 
-    			this.marker.visible = true;
-    		}.bind(this));
+                var hitPosition = { x: this.marker.x / config.gridSize, y: this.marker.y / config.gridSize };
 
-    		this.opponentFieldHitArea.on('mouseout', function(){
-    			if ( !this.markerEnabled ) return;
-
-    			this.marker.visible = false;
+    			this.events.positionToCheck.dispatch( hitPosition );
     		}.bind(this));
     	},
 
         autoArrange: function(){
-            // iterate all sips
-            // choose random position
-            // check if this position is possible
-
             // reset field
             for (var i = 0; i < this.field.length; i++) {
                 for (var j = 0; j < this.field.length; j++) {
