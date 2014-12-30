@@ -12,19 +12,13 @@ define(function (require) {
 
     	this.gameScene = new GameScene(this.mainStage);
 
-    	
-
-    	this.arrangepanel = new createjs.Container();
-    	this.arrangepanel.addChild(this.gameScene.arrangepanelBg, this.gameScene.arrangeLabel, this.gameScene.infoLabel, this.gameScene.startGameBtn.button, this.gameScene.autoArrangeBtn.button);
-
-		// this.gameScene.playerField.ships.forEach(function(ship){
-		// 	this.arrangepanel.addChild(ship.image);			
-		// }.bind(this));
-
-		this.mainStage.addChild(this.arrangepanel);
-
 		this.gameScene.events.startGame.add(function(){
 			currentState = config.gameStates.BATTLE;
+			this.newState();
+		}.bind(this));
+
+		this.gameScene.events.panelHidden.add(function(){
+			currentState = config.gameStates.PLAYERS_TURN;
 			this.newState();
 		}.bind(this));
 
@@ -39,18 +33,23 @@ define(function (require) {
 		        		this.gameScene.enableButtonsClick();
 		        	}.bind(this));
 
-		        	this.gameScene.showArrangepanel(this.arrangepanel);
+		        	this.gameScene.showArrangepanel();
 		        break;
 		        case config.gameStates.BATTLE:
-		        	this.gameScene.hideArrangepanel( this.arrangepanel );
+
+		        	this.gameScene.hideArrangepanel();
 		        	// enable user interraction
 		        	// decide which turn it is
 		        break;
 		        case config.gameStates.PLAYERS_TURN:
+		        	// mark "your turn"
+		        	this.gameScene.showTurnLabel('player');
 		        	// enable user interraction
+
 		        break;
 		        case config.gameStates.COMPUTERS_TURN:
 		        	// enable user interraction
+		        	this.gameScene.showTurnLabel('computer');
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	// enable user interraction
@@ -61,7 +60,7 @@ define(function (require) {
 		   	}
 		};
 
-		
+		this.newState();
     };
     
     return GameManager;

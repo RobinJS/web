@@ -7,7 +7,7 @@ define(function (require) {
     	var whiteBgWidth = 500,
     		whiteBgHeight = 120;
 
-    /* shite backgrounds */
+    /* white backgrounds */
     	this.whiteBg = [new createjs.Shape(), new createjs.Shape()];
 
  		this.whiteBg[0].graphics.beginFill("rgba(255, 255, 255, 0.5)").drawRect(0, 0, whiteBgWidth, whiteBgHeight);
@@ -20,7 +20,7 @@ define(function (require) {
 
  		this.mainStage.addChild(this.whiteBg[0]);
 		this.mainStage.addChild(this.whiteBg[1]);
-	/* end shite backgrounds */
+	/* end white backgrounds */
 
 	/* big labels */
 		this.bigLabels = [new createjs.Text("PLAYER", "34px Arial", "#fff"), new createjs.Text("COMPUTER", "34px Arial", "#fff")];
@@ -39,11 +39,11 @@ define(function (require) {
 	/* ships remaining labels */
 		this.shipsRemainingLabel = [new createjs.Text("Ships remaining:", "24px Arial", "#fff"), new createjs.Text("Ships remaining:", "24px Arial", "#fff")];
 		this.shipsRemainingLabel[0].x = 190;
-		this.shipsRemainingLabel[0].y = 80;
+		this.shipsRemainingLabel[0].y = 70;
 		this.shipsRemainingLabel[0].shadow = new createjs.Shadow("#000000", 2, 2, 3);
 
 		this.shipsRemainingLabel[1].x = 795;
-		this.shipsRemainingLabel[1].y = 80;
+		this.shipsRemainingLabel[1].y = 70;
 		this.shipsRemainingLabel[1].shadow = new createjs.Shadow("#000000", 2, 2, 3);
 
 		this.mainStage.addChild(this.shipsRemainingLabel[0]);
@@ -53,15 +53,32 @@ define(function (require) {
 	/* ships remaining text */
 		this.playerShipsRemainText = new createjs.Text("7", "bold 30px Verdana", "#000");
 		this.playerShipsRemainText.x = 380;
-		this.playerShipsRemainText.y = 75;
+		this.playerShipsRemainText.y = 65;
 
 		this.compShipsRemainText = new createjs.Text("7", "bold 30px Verdana", "#000");
 		this.compShipsRemainText.x = 985;
-		this.compShipsRemainText.y = 75;
+		this.compShipsRemainText.y = 65;
 
 		this.mainStage.addChild(this.playerShipsRemainText);
 		this.mainStage.addChild(this.compShipsRemainText);
 	/* end ships remaining text */
+
+	/* player turn labels */
+		this.playerTurnLabel = new createjs.Text("YOUR TURN", "24px Arial", "#31D55A");
+		this.playerTurnLabel.x = 225;
+		this.playerTurnLabel.y = 102;
+		this.playerTurnLabel.visible = false;
+		this.playerTurnLabel.shadow = new createjs.Shadow("#000000", 2, 2, 3);
+
+		this.computerTurnLabel = new createjs.Text("COMPUTER'S TURN", "24px Arial", "#FB7A3C");
+		this.computerTurnLabel.x = 785;
+		this.computerTurnLabel.y = 102;
+		this.computerTurnLabel.visible = false;
+		this.computerTurnLabel.shadow = new createjs.Shadow("#000000", 2, 2, 3);
+
+		this.mainStage.addChild(this.playerTurnLabel);
+		this.mainStage.addChild(this.computerTurnLabel);
+	/* end player turn labels */
 
     };
     

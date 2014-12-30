@@ -68,8 +68,14 @@ define(function (require) {
 
 		this.playerField = new PlayerField( this.mainStage );
 
+		this.arrangepanel = new createjs.Container();
+    	this.arrangepanel.addChild(this.arrangepanelBg, this.arrangeLabel, this.infoLabel, this.startGameBtn.button, this.autoArrangeBtn.button);
+		this.arrangepanel.y = -770;
+		this.mainStage.addChild(this.arrangepanel);
+
 		this.events = {
 			panelShown: new Signal(),
+			panelHidden: new Signal(),
 			startGame: new Signal()
 		}
 
@@ -132,14 +138,11 @@ define(function (require) {
 
 		},
 
-		showArrangepanel: function( panel ){
+		showArrangepanel: function(){
 			var that = this;
-			that.events.panelShown.dispatch();
-			return;
-			console.warn('remove');
+			
 			this.opponentField.markerEnabled = false;
-			panel.y = -770;
-			TweenMax.to(panel, 2, {
+			TweenMax.to(this.arrangepanel, 2, {
 				y: 0,
 				onComplete: function(){
 					that.events.panelShown.dispatch();
@@ -147,14 +150,14 @@ define(function (require) {
 			});
 		},
 
-		hideArrangepanel: function( panel ){
+		hideArrangepanel: function(){
 			var that = this;
-			// that.events.panelHidden.dispatch();
+			
 			this.opponentField.markerEnabled = true;
-			TweenMax.to(panel, 2, {
+			TweenMax.to(this.arrangepanel, 2, {
 				y: -770,
 				onComplete: function(){
-					that.events.panelShown.dispatch();
+					that.events.panelHidden.dispatch();
 				}
 			});
 		},
@@ -167,6 +170,14 @@ define(function (require) {
 		disableButtonsClick: function(){
 			this.startGameBtn.clickEnabled = false;
 	    	this.autoArrangeBtn.clickEnabled = false;
+		},
+
+		showTurnLabel: function( player ){
+			if ( player === 'player' ) {
+				this.infoHeader.playerTurnLabel.visible = true;
+			} else if ( player === 'computer' ){
+				this.infoHeader.computerTurnLabel.visible = true;
+			}
 		}
 	});
     
