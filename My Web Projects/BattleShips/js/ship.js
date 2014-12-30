@@ -34,7 +34,7 @@ define(function (require) {
         this.startY = null;
 
         this.events = {
-            emptyCellsUnderShip: new Signal()
+            emptySectorsUnderShip: new Signal()
         };
 
     	this.image.addEventListener('pressmove', function( e ){
@@ -51,8 +51,8 @@ define(function (require) {
             this.pointerDistanceX = this.startX - this.image.x;
             this.pointerDistanceY = this.startY - this.image.y;
 
-            // this.events.emptyCellsUnderShip.dispatch( this );
-            this.emptyCellsUnderShip();
+            // this.events.emptySectorsUnderShip.dispatch( this );
+            this.emptySectorsUnderShip();
         }.bind(this));
 
         this.image.addEventListener('pressup', function( e ){
@@ -137,14 +137,14 @@ define(function (require) {
 
         overAnotherShip: function(){
             var rotationOffset = this.getRotationOffset(),
-                startCellX = (this.image.x - rotationOffset) / config.gridSize - 1,
-                startCellY = (this.image.y - config.playerFieldData.y) / config.gridSize,
-                endCellX = startCellX + this.blocksWidth - 1,
-                endCellY = startCellY + this.blocksHeight - 1,
+                startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
+                startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
+                endSectorX = startSectorX + this.blocksWidth - 1,
+                endSectorY = startSectorY + this.blocksHeight - 1,
                 overAnotherShip = false;
 
-                for (var y = startCellY; y <= endCellY; y++) {
-                    for (var x = startCellX; x <= endCellX; x++) {
+                for (var y = startSectorY; y <= endSectorY; y++) {
+                    for (var x = startSectorX; x <= endSectorX; x++) {
                         if ( this.field[y][x] === 1 ) {
                             overAnotherShip = true;
                             break;
@@ -157,27 +157,27 @@ define(function (require) {
 
         markAllSquaresAsFull: function(){
             var rotationOffset = this.getRotationOffset(),
-                startCellX = (this.image.x - rotationOffset) / config.gridSize - 1,
-                startCellY = (this.image.y - config.playerFieldData.y) / config.gridSize,
-                endCellX = startCellX + this.blocksWidth - 1,
-                endCellY = startCellY + this.blocksHeight - 1;
+                startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
+                startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
+                endSectorX = startSectorX + this.blocksWidth - 1,
+                endSectorY = startSectorY + this.blocksHeight - 1;
 
-            for (var y = startCellY; y <= endCellY; y++) {
-                for (var x = startCellX; x <= endCellX; x++) {
+            for (var y = startSectorY; y <= endSectorY; y++) {
+                for (var x = startSectorX; x <= endSectorX; x++) {
                    this.field[y][x] = 1;
                 }
             }
         },
 
-        emptyCellsUnderShip: function(){
+        emptySectorsUnderShip: function(){
             var rotationOffset = this.getRotationOffset(),
-                startCellX = (this.image.x - rotationOffset) / config.gridSize - 1,
-                startCellY = (this.image.y - config.playerFieldData.y) / config.gridSize,
-                endCellX = startCellX + this.blocksWidth - 1,
-                endCellY = startCellY + this.blocksHeight - 1;
+                startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
+                startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
+                endSectorX = startSectorX + this.blocksWidth - 1,
+                endSectorY = startSectorY + this.blocksHeight - 1;
 
-            for (var y = startCellY; y <= endCellY; y++) {
-                for (var x = startCellX; x <= endCellX; x++) {
+            for (var y = startSectorY; y <= endSectorY; y++) {
+                for (var x = startSectorX; x <= endSectorX; x++) {
                    this.field[y][x] = 0;
                 }
             }

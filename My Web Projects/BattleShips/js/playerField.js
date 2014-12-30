@@ -114,7 +114,7 @@ this.testContainer = new createjs.Container();//
                 randPosition = utils.getValidRandomPosition( ship, this.field );
 
             // check if ship fits
-            // make all cells around = 1
+            // make all sectors around = 1
             // draw ship image
 
             function drawShipImage () {

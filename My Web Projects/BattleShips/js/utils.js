@@ -6,8 +6,8 @@ define(function(){
 
         getValidRandomPosition: function( ship, field ){
             var position = {},
-                maxX = field.length - ship.blocksWidth,
-                maxY = field.length - ship.blocksHeight;
+                maxX = field.length - (ship.blocksWidth || 10),
+                maxY = field.length - (ship.blocksHeight || 10);
 
             position.x = Math.floor( Math.random() * maxX );
             position.y = Math.floor( Math.random() * maxY );

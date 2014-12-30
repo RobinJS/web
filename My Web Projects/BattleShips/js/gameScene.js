@@ -2,8 +2,6 @@ define(function (require) {
     "use strict";
 
     var InfoHeader = require('infoHeader'),
-    	PlayerField = require('playerField'),
-    	OpponentField = require('opponentField'),
     	Signal = require('libs/signals.min'),
     	Button = require('button');
 
@@ -163,16 +161,6 @@ define(function (require) {
 	    	this.autoArrangeBtn.clickEnabled = true;
 		},
 
-		enableHitMarker: function(){
-			this.opponentField.markerEnabled = true;
-			this.opponentField.marker.visible = true;
-		},
-
-		disableHitMarker: function(){
-			this.opponentField.markerEnabled = false;
-			this.opponentField.marker.visible = false;
-		},
-
 		disableButtonsClick: function(){
 			this.startGameBtn.clickEnabled = false;
 	    	this.autoArrangeBtn.clickEnabled = false;
@@ -183,6 +171,14 @@ define(function (require) {
 				this.infoHeader.playerTurnLabel.visible = true;
 			} else if ( player === 'computer' ){
 				this.infoHeader.computerTurnLabel.visible = true;
+			}
+		},
+
+		hideTurnLabel: function( player ){
+			if ( player === 'player' ) {
+				this.infoHeader.playerTurnLabel.visible = false;
+			} else if ( player === 'computer' ){
+				this.infoHeader.computerTurnLabel.visible = false;
 			}
 		}
 	});

@@ -34,7 +34,7 @@ define(function (require) {
 
         this.events = {
             positionToCheck: new Signal(),
-            cellMarked: new Signal()
+            sectorMarked: new Signal()
         };
 		
 		this.init();
@@ -77,13 +77,12 @@ define(function (require) {
     		}.bind(this));
 
     		this.opponentFieldHitArea.on('click', function(e){
-                // return if already clicked !!!
-                console.warn('start from this');
-                
     			if ( !this.markerEnabled ) return;
 
                 var hitPosition = { x: this.marker.x / config.gridSize, y: this.marker.y / config.gridSize };
-                this.events.positionToCheck.dispatch( hitPosition );
+                if ( this.field[hitPosition.y][hitPosition.x] !== 'x' && this.field[hitPosition.y][hitPosition.x] !== '.') {
+                    this.events.positionToCheck.dispatch( hitPosition );
+                }
     		}.bind(this));
     	},
 
@@ -116,7 +115,7 @@ define(function (require) {
             ship.arrangedRotationType = ship.rotationType;
         },
 
-        checkHittedCell: function( hitPosition ){
+        checkHittedSector: function( hitPosition ){
             if ( this.field[hitPosition.y][hitPosition.x] === 1 ) {
                 this.markAsHit( hitPosition );
             } else if ( this.field[hitPosition.y][hitPosition.x] === 0 ) {
@@ -126,15 +125,24 @@ define(function (require) {
             window.marks = this.hitMarks;
         },
 
+        enableHitMarker: function(){
+            this.markerEnabled = true;
+            this.marker.visible = true;
+        },
+
+        disableHitMarker: function(){
+            this.markerEnabled = false;
+            this.marker.visible = false;
+        },
+
         markAsHit: function( hitPosition ){
             this.field[hitPosition.y][hitPosition.x] = 'x';
             var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
             newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
             newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
-
             this.hitMarks.addChild( newHitMark );
 
-            this.events.cellMarked.dispatch();
+            this.events.sectorMarked.dispatch();
         },
 
         markAsEmpty: function( hitPosition ){
@@ -142,10 +150,42 @@ define(function (require) {
             var newHitMark = new createjs.Bitmap("img/empty_mark.png");
             newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
             newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
-
             this.hitMarks.addChild( newHitMark );
 
-            this.events.cellMarked.dispatch();
+            this.events.sectorMarked.dispatch();
+        },
+
+        makeTurn: function( playerField ){
+            // pick a sector
+            var randPosition = this.getRandomPlayerFieldPosition( playerField );
+
+            
+        },
+
+        getRandomPlayerFieldPosition: function( playerField ){
+            var position = {},
+                maxX = 10,
+                maxY = 10;
+
+            position.x = Math.floor( Math.random() * maxX );
+            position.y = Math.floor( Math.random() * maxY );
+
+            if ( playerField[position.y][position.x] === 'x' || playerField[position.y][position.x] === '.' ) {
+                while ( playerField[position.y][position.x] === 'x' || playerField[position.y][position.x] === '.' ) {
+
+                    position.x++;
+                    if ( position.x >= maxX ) {
+                        position.x = 0;
+                        position.y++;
+
+                        if ( position.y >= maxY ) {
+                            position.y = 0;
+                        }
+                    }
+                }
+            }
+
+            return position;
         }
     });
     

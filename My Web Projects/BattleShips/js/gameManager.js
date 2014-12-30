@@ -3,15 +3,19 @@ define(function (require) {
 
     var config = require('config'),
     	GameScene = require('gameScene'),
-    	Stage = require('stage');
+    	Stage = require('stage'),
+    	PlayerField = require('playerField'),
+    	OpponentField = require('opponentField');
 
     var GameManager = function(){
     	var currentState = 'arrange_ships';
     	this.hitPosition = null;
-    	this.playerTurn = null;
+    	this.playerTurn = 'player';
 
     	this.mainStage = new Stage('mainCanvas');
     	this.gameScene = new GameScene(this.mainStage);
+    	this.opponentField = new OpponentField( this.mainStage );
+    	this.playerField = new PlayerField( this.mainStage );
 
 		this.gameScene.events.startGame.add(function(){
 			currentState = config.gameStates.BATTLE;
@@ -24,17 +28,19 @@ define(function (require) {
 		}.bind(this));
 
 		this.gameScene.opponentField.events.positionToCheck.add(function( hitPosition ){
-			this.gameScene.disableHitMarker();
+			this.opponentField.disableHitMarker();
 			this.hitPosition = hitPosition;
 			currentState = config.gameStates.CHECK_RESULT;
 			this.newState();
 		}.bind(this));
 
-		this.gameScene.opponentField.events.cellMarked.add(function(){
-			this.gameScene.enableHitMarker();
+		this.gameScene.opponentField.events.sectorMarked.add(function(){
+			this.opponentField.enableHitMarker();
+			this.switchPlayerTurn();
+			this.newState();
 		}.bind(this));
 
-		// this.gameScene.playerField.events.cellMarked.add(function(){
+		// this.gameScene.playerField.events.sectorMarked.add(function(){
 			
 		// }.bind(this));
 
@@ -59,16 +65,19 @@ define(function (require) {
 		        break;
 		        case config.gameStates.PLAYERS_TURN:
 		        	// mark "your turn"
+		        	this.gameScene.hideTurnLabel( this.playerTurn );
 		        	this.playerTurn = 'player';
 		        	this.gameScene.showTurnLabel( this.playerTurn );
-		        	this.gameScene.enableHitMarker();
+		        	this.opponentField.enableHitMarker();
 		        	// enable user interraction
 
 		        break;
 		        case config.gameStates.COMPUTERS_TURN:
 		        	// enable user interraction
+		        	this.gameScene.hideTurnLabel( this.playerTurn );
 		        	this.playerTurn = 'computer';
 		        	this.gameScene.showTurnLabel( this.playerTurn );
+		        	this.gameScene.opponentField.makeTurn( this.gameScene.playerField.field );
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	this.hitCheck();
@@ -83,9 +92,17 @@ define(function (require) {
 
 		this.hitCheck = function () {
 			if ( this.playerTurn === 'player' ) {
-				this.gameScene.opponentField.checkHittedCell( this.hitPosition );
+				this.gameScene.opponentField.checkHittedSector( this.hitPosition );
 			} else if ( this.playerTurn === 'computer' ) {
-				this.gameScene.playerField.checkHittedCell( this.hitPosition );
+				this.gameScene.playerField.checkHittedSector( this.hitPosition );
+			}
+		}.bind(this);
+
+		this.switchPlayerTurn = function(){
+			if ( this.playerTurn === 'player' ) {
+				currentState = config.gameStates.COMPUTERS_TURN;
+			} else if ( this.playerTurn === 'computer' ) {
+				currentState = config.gameStates.PLAYERS_TURN;
 			}
 		}.bind(this);
 
