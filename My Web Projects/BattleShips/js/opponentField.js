@@ -11,8 +11,6 @@ define(function (require) {
     	this.gridImage = null;
     	this.marker = null;
 		this.opponentFieldHitArea = null;
-    	this.opponentFieldLeftOffset = 650;
-    	this.opponentFieldTopOffset = 250;
     	this.squareWidth = 50;
 
 		this.markerEnabled = false;
@@ -31,8 +29,12 @@ define(function (require) {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
+        this.hitMarks = new createjs.Container();
+        this.mainStage.addChild( this.hitMarks );
+
         this.events = {
-            positionToCheck: new Signal()
+            positionToCheck: new Signal(),
+            cellMarked: new Signal()
         };
 		
 		this.init();
@@ -42,17 +44,17 @@ define(function (require) {
     $.extend(OpponentField.prototype, {
     	init: function(){
     		this.gridImage = new createjs.Bitmap("img/grid.png");
-			this.gridImage.x = 650
-			this.gridImage.y = 250;
+			this.gridImage.x = config.opponentFiledData.x;
+			this.gridImage.y = config.opponentFiledData.y;
 			this.mainStage.addChild(this.gridImage);
 
 			this.marker = new createjs.Shape();
-			this.marker.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(this.opponentFieldLeftOffset, this.opponentFieldTopOffset, 50, 50);
+			this.marker.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(config.opponentFiledData.x, config.opponentFiledData.y, 50, 50);
 			this.marker.visible = false;
 			this.mainStage.addChild(this.marker);
 
 			this.opponentFieldHitArea = new createjs.Shape();
-			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(this.opponentFieldLeftOffset, this.opponentFieldTopOffset, config.fieldWidth, config.fieldHeight);
+			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(config.opponentFiledData.x, config.opponentFiledData.y, config.fieldWidth, config.fieldHeight);
 			this.mainStage.addChild(this.opponentFieldHitArea);
 
             var shipsInitialNum = 7;
@@ -68,18 +70,20 @@ define(function (require) {
     			// check if cursor is outside strike field's bounds
     			if ( !this.markerEnabled ) return;
 
-    			if ( (e.stageX <= this.opponentFieldLeftOffset || e.stageY <= this.opponentFieldTopOffset) || (e.stageX >= this.opponentFieldLeftOffset + config.fieldWidth || e.stageY >= this.opponentFieldTopOffset + config.fieldHeight ) ) return;
+    			if ( (e.stageX <= config.opponentFiledData.x || e.stageY <= config.opponentFiledData.y) || (e.stageX >= config.opponentFiledData.x + config.fieldWidth || e.stageY >= config.opponentFiledData.y + config.fieldHeight ) ) return;
 
-    			this.marker.x = Math.floor( ( e.stageX / this.squareWidth) ) * this.squareWidth - this.opponentFieldLeftOffset;
-    			this.marker.y = Math.floor( ( e.stageY / this.squareWidth) ) * this.squareWidth - this.opponentFieldTopOffset;
+    			this.marker.x = Math.floor( ( e.stageX / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.x;
+    			this.marker.y = Math.floor( ( e.stageY / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.y;
     		}.bind(this));
 
     		this.opponentFieldHitArea.on('click', function(e){
+                // return if already clicked !!!
+                console.warn('start from this');
+                
     			if ( !this.markerEnabled ) return;
 
                 var hitPosition = { x: this.marker.x / config.gridSize, y: this.marker.y / config.gridSize };
-
-    			this.events.positionToCheck.dispatch( hitPosition );
+                this.events.positionToCheck.dispatch( hitPosition );
     		}.bind(this));
     	},
 
@@ -110,6 +114,38 @@ define(function (require) {
             utils.checkAllSquares( ship, this.field, randPosition );
             utils.markAllSquaresAsFull( ship, this.field, randPosition );
             ship.arrangedRotationType = ship.rotationType;
+        },
+
+        checkHittedCell: function( hitPosition ){
+            if ( this.field[hitPosition.y][hitPosition.x] === 1 ) {
+                this.markAsHit( hitPosition );
+            } else if ( this.field[hitPosition.y][hitPosition.x] === 0 ) {
+                this.markAsEmpty( hitPosition );
+            }
+
+            window.marks = this.hitMarks;
+        },
+
+        markAsHit: function( hitPosition ){
+            this.field[hitPosition.y][hitPosition.x] = 'x';
+            var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
+
+            this.hitMarks.addChild( newHitMark );
+
+            this.events.cellMarked.dispatch();
+        },
+
+        markAsEmpty: function( hitPosition ){
+            this.field[hitPosition.y][hitPosition.x] = '.';
+            var newHitMark = new createjs.Bitmap("img/empty_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
+
+            this.hitMarks.addChild( newHitMark );
+
+            this.events.cellMarked.dispatch();
         }
     });
     

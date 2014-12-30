@@ -21,6 +21,9 @@ define(function(){
 		playerFieldData: {
 			x: 50, y: 250, endX: 550, endY: 750
 		},
+		opponentFiledData: {
+			x: 650, y: 250
+		},
 		gridSize: 50,
 		arrangeMarkerWidth: 50,
 		arrangeMarkerHeight: 50,

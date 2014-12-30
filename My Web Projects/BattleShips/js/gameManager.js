@@ -8,6 +8,7 @@ define(function (require) {
     var GameManager = function(){
     	var currentState = 'arrange_ships';
     	this.hitPosition = null;
+    	this.playerTurn = null;
 
     	this.mainStage = new Stage('mainCanvas');
     	this.gameScene = new GameScene(this.mainStage);
@@ -23,10 +24,19 @@ define(function (require) {
 		}.bind(this));
 
 		this.gameScene.opponentField.events.positionToCheck.add(function( hitPosition ){
+			this.gameScene.disableHitMarker();
 			this.hitPosition = hitPosition;
 			currentState = config.gameStates.CHECK_RESULT;
 			this.newState();
 		}.bind(this));
+
+		this.gameScene.opponentField.events.cellMarked.add(function(){
+			this.gameScene.enableHitMarker();
+		}.bind(this));
+
+		// this.gameScene.playerField.events.cellMarked.add(function(){
+			
+		// }.bind(this));
 
 		this.newState = function(){
 			switch( currentState ) {
@@ -49,24 +59,35 @@ define(function (require) {
 		        break;
 		        case config.gameStates.PLAYERS_TURN:
 		        	// mark "your turn"
-		        	this.gameScene.showTurnLabel('player');
+		        	this.playerTurn = 'player';
+		        	this.gameScene.showTurnLabel( this.playerTurn );
 		        	this.gameScene.enableHitMarker();
 		        	// enable user interraction
 
 		        break;
 		        case config.gameStates.COMPUTERS_TURN:
 		        	// enable user interraction
-		        	this.gameScene.showTurnLabel('computer');
+		        	this.playerTurn = 'computer';
+		        	this.gameScene.showTurnLabel( this.playerTurn );
 		        break;
 		        case config.gameStates.CHECK_RESULT:
+		        	this.hitCheck();
 		        	// enable user interraction
-		        	console.warn(this.hitPosition);
+
 		        break;
 		        case config.gameStates.GAME_END:
 		        	
 		        break;
 		   	}
 		};
+
+		this.hitCheck = function () {
+			if ( this.playerTurn === 'player' ) {
+				this.gameScene.opponentField.checkHittedCell( this.hitPosition );
+			} else if ( this.playerTurn === 'computer' ) {
+				this.gameScene.playerField.checkHittedCell( this.hitPosition );
+			}
+		}.bind(this);
 
 		this.newState();
     };
