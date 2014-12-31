@@ -8,7 +8,6 @@ define(function (require) {
 
     var OpponentField = function( mainStage ){
     	this.mainStage = mainStage;
-    	this.gridImage = null;
     	this.marker = null;
 		this.opponentFieldHitArea = null;
     	this.squareWidth = 50;
@@ -43,11 +42,6 @@ define(function (require) {
 
     $.extend(OpponentField.prototype, {
     	init: function(){
-    		this.gridImage = new createjs.Bitmap("img/grid.png");
-			this.gridImage.x = config.opponentFiledData.x;
-			this.gridImage.y = config.opponentFiledData.y;
-			this.mainStage.addChild(this.gridImage);
-
 			this.marker = new createjs.Shape();
 			this.marker.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(config.opponentFiledData.x, config.opponentFiledData.y, 50, 50);
 			this.marker.visible = false;
@@ -55,7 +49,8 @@ define(function (require) {
 
 			this.opponentFieldHitArea = new createjs.Shape();
 			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(config.opponentFiledData.x, config.opponentFiledData.y, config.fieldWidth, config.fieldHeight);
-			this.mainStage.addChild(this.opponentFieldHitArea);
+			this.opponentFieldHitArea.visible = false;
+            this.mainStage.addChild(this.opponentFieldHitArea);
 
             var shipsInitialNum = 7;
             for (var i = 0; i < shipsInitialNum; i++) {
@@ -122,17 +117,20 @@ define(function (require) {
                 this.markAsEmpty( hitPosition );
             }
 
-            window.marks = this.hitMarks;
+            window.marks = this.hitMarks;//
+            console.warn('remove');//
         },
 
         enableHitMarker: function(){
             this.markerEnabled = true;
             this.marker.visible = true;
+            this.opponentFieldHitArea.visible = true;
         },
 
         disableHitMarker: function(){
             this.markerEnabled = false;
             this.marker.visible = false;
+            this.opponentFieldHitArea.visible = false;
         },
 
         markAsHit: function( hitPosition ){
@@ -141,6 +139,8 @@ define(function (require) {
             newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
             newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
             this.hitMarks.addChild( newHitMark );
+
+            console.warn('check if ship is drawn');//
 
             this.events.sectorMarked.dispatch();
         },
@@ -153,39 +153,6 @@ define(function (require) {
             this.hitMarks.addChild( newHitMark );
 
             this.events.sectorMarked.dispatch();
-        },
-
-        makeTurn: function( playerField ){
-            // pick a sector
-            var randPosition = this.getRandomPlayerFieldPosition( playerField );
-
-            
-        },
-
-        getRandomPlayerFieldPosition: function( playerField ){
-            var position = {},
-                maxX = 10,
-                maxY = 10;
-
-            position.x = Math.floor( Math.random() * maxX );
-            position.y = Math.floor( Math.random() * maxY );
-
-            if ( playerField[position.y][position.x] === 'x' || playerField[position.y][position.x] === '.' ) {
-                while ( playerField[position.y][position.x] === 'x' || playerField[position.y][position.x] === '.' ) {
-
-                    position.x++;
-                    if ( position.x >= maxX ) {
-                        position.x = 0;
-                        position.y++;
-
-                        if ( position.y >= maxY ) {
-                            position.y = 0;
-                        }
-                    }
-                }
-            }
-
-            return position;
         }
     });
     

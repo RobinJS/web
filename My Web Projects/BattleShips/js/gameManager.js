@@ -14,8 +14,12 @@ define(function (require) {
 
     	this.mainStage = new Stage('mainCanvas');
     	this.gameScene = new GameScene(this.mainStage);
-    	this.opponentField = new OpponentField( this.mainStage );
     	this.playerField = new PlayerField( this.mainStage );
+    	this.opponentField = new OpponentField( this.mainStage );
+
+    	this.gameScene.events.playerAutoArrange.add(function(){
+			this.playerField.autoArrange();
+		}.bind(this));
 
 		this.gameScene.events.startGame.add(function(){
 			currentState = config.gameStates.BATTLE;
@@ -27,15 +31,15 @@ define(function (require) {
 			this.newState();
 		}.bind(this));
 
-		this.gameScene.opponentField.events.positionToCheck.add(function( hitPosition ){
+		this.opponentField.events.positionToCheck.add(function( hitPosition ){
 			this.opponentField.disableHitMarker();
 			this.hitPosition = hitPosition;
 			currentState = config.gameStates.CHECK_RESULT;
 			this.newState();
 		}.bind(this));
 
-		this.gameScene.opponentField.events.sectorMarked.add(function(){
-			this.opponentField.enableHitMarker();
+		this.opponentField.events.sectorMarked.add(function(){
+			// this.opponentField.enableHitMarker();
 			this.switchPlayerTurn();
 			this.newState();
 		}.bind(this));
@@ -51,7 +55,7 @@ define(function (require) {
 		        	// create functionality for drag, drop, rotate, free areas
 		        	// animate scene hide
 		        	this.gameScene.events.panelShown.addOnce(function(){
-		        		this.gameScene.playerField.enableClick();
+		        		this.playerField.enableClick();
 		        		this.gameScene.enableButtonsClick();
 		        	}.bind(this));
 
@@ -77,7 +81,7 @@ define(function (require) {
 		        	this.gameScene.hideTurnLabel( this.playerTurn );
 		        	this.playerTurn = 'computer';
 		        	this.gameScene.showTurnLabel( this.playerTurn );
-		        	this.gameScene.opponentField.makeTurn( this.gameScene.playerField.field );
+		        	this.playerField.computersTurn();
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	this.hitCheck();
@@ -92,9 +96,9 @@ define(function (require) {
 
 		this.hitCheck = function () {
 			if ( this.playerTurn === 'player' ) {
-				this.gameScene.opponentField.checkHittedSector( this.hitPosition );
+				this.opponentField.checkHittedSector( this.hitPosition );
 			} else if ( this.playerTurn === 'computer' ) {
-				this.gameScene.playerField.checkHittedSector( this.hitPosition );
+				this.playerField.checkHittedSector( this.hitPosition );
 			}
 		}.bind(this);
 

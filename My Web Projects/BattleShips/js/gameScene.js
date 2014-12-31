@@ -3,16 +3,14 @@ define(function (require) {
 
     var InfoHeader = require('infoHeader'),
     	Signal = require('libs/signals.min'),
+    	config = require('config'),
     	Button = require('button');
 
     var GameScene = function( mainStage ){
     	this.mainStage = mainStage;
-
     	this.stageBgImage = new createjs.Bitmap("img/ocean_bg.jpg");
 		this.mainStage.addChild(this.stageBgImage);
-
 		this.infoHeader = new InfoHeader( this.mainStage );
-		this.opponentField = new OpponentField( this.mainStage );
 
 	/* numbers */
 		this.mapNumbers = [new createjs.Bitmap("img/field_numbers.png"), new createjs.Bitmap("img/field_numbers.png")];
@@ -36,6 +34,18 @@ define(function (require) {
 		this.mainStage.addChild(this.mapLetters[1]);
 	/* end letters */
 
+	/* grid images */
+		this.gridImagePlayer = new createjs.Bitmap("img/grid.png");
+		this.gridImagePlayer.x = config.playerFieldData.x;
+		this.gridImagePlayer.y = config.playerFieldData.y;
+		this.mainStage.addChild(this.gridImagePlayer);
+
+		this.gridImageOpponent = new createjs.Bitmap("img/grid.png");
+		this.gridImageOpponent.x = config.opponentFiledData.x;
+		this.gridImageOpponent.y = config.opponentFiledData.y;
+		this.mainStage.addChild(this.gridImageOpponent);
+	/* end grid images */
+
 	/* arrange panel stuff */
 		var arrPanBgWidth = 680,
 			arrPanBgHeight = 770;
@@ -58,13 +68,11 @@ define(function (require) {
 	/* Buttons */
 		this.startGameBtn = new Button(650, 450, 696, 462, "START GAME", '#6acd3c' );
 		this.startGameBtn.clickEnabled = false;
-    	// this.mainStage.addChild(this.startGameBtn);
     	this.autoArrangeBtn = new Button(950, 450, 980, 462, "AUTO ARRANGE", '#e6993d');
     	this.autoArrangeBtn.clickEnabled = false;
-    	// this.mainStage.addChild(this.autoArrangeBtn);
     /* end Buttons */
 
-		this.playerField = new PlayerField( this.mainStage );
+		// this.playerField = new PlayerField( this.mainStage );
 
 		this.arrangepanel = new createjs.Container();
     	this.arrangepanel.addChild(this.arrangepanelBg, this.arrangeLabel, this.infoLabel, this.startGameBtn.button, this.autoArrangeBtn.button);
@@ -74,7 +82,8 @@ define(function (require) {
 		this.events = {
 			panelShown: new Signal(),
 			panelHidden: new Signal(),
-			startGame: new Signal()
+			startGame: new Signal(),
+			playerAutoArrange: new Signal()
 		}
 
     	this.init();
@@ -82,9 +91,6 @@ define(function (require) {
 
 	$.extend(GameScene.prototype, {
 		init: function(){
-			// create PlayerField
-			// create Strike field
-
 		// start game button
 			this.startGameBtn.addEventListener('mousedown', function(e){
 				this.startGameBtn.showPressed();
@@ -120,7 +126,7 @@ define(function (require) {
 
 				if ( !this.autoArrangeBtn.clickEnabled ) return;
 
-				this.playerField.autoArrange();
+				this.events.playerAutoArrange.dispatch();
 			}.bind(this));
 
 			this.autoArrangeBtn.addEventListener('mouseover', function(e){

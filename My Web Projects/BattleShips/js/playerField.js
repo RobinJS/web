@@ -7,7 +7,6 @@ define(function (require) {
 
     var PlayerField = function( mainStage ){
     	this.mainStage = mainStage;
-    	this.gridImage = null;
         this.marker = null;
         this.playerFieldLeftOffset = config.playerFieldData.x;
         this.playerFieldTopOffset = config.playerFieldData.y;
@@ -34,11 +33,6 @@ define(function (require) {
 
     $.extend(PlayerField.prototype, {
     	init: function(){
-    		this.gridImage = new createjs.Bitmap("img/grid.png");
-			this.gridImage.x = this.playerFieldLeftOffset
-			this.gridImage.y = this.playerFieldTopOffset;
-			this.mainStage.addChild(this.gridImage);
-
 			// create ships and position them before arrange
 			var shipsInitialNum = 7;
 
@@ -72,8 +66,8 @@ define(function (require) {
             // choose random position
             // check if this position is possible
 
-this.mainStage.removeChild(this.testContainer);//
-this.testContainer = new createjs.Container();//
+                this.mainStage.removeChild(this.testContainer);//
+                this.testContainer = new createjs.Container();//
 
             // reset field
             for (var i = 0; i < this.field.length; i++) {
@@ -138,6 +132,47 @@ this.testContainer = new createjs.Container();//
             utils.checkAllSquares( ship, this.field, randPosition );
             utils.markAllSquaresAsFull( ship, this.field, randPosition );
             drawShipImage();
+        },
+
+        computersTurn: function(){
+            console.warn('Start from here.');
+            return;
+            // pick a sector
+            var randPosition = this.getNewPosition( playerField ),
+                result = playerField[randPosition.y][randPosition.x];
+
+            if ( result === 1 ) {
+
+            } else if ( result === 0 ) {
+
+            }
+            
+        },
+
+        getNewPosition: function( playerField ){
+            var position = {},
+                maxX = 10,
+                maxY = 10;
+
+            position.x = Math.floor( Math.random() * maxX );
+            position.y = Math.floor( Math.random() * maxY );
+
+            if ( playerField[position.y][position.x] === 'x' || playerField[position.y][position.x] === '.' ) {
+                while ( playerField[position.y][position.x] === 'x' || playerField[position.y][position.x] === '.' ) {
+
+                    position.x++;
+                    if ( position.x >= maxX ) {
+                        position.x = 0;
+                        position.y++;
+
+                        if ( position.y >= maxY ) {
+                            position.y = 0;
+                        }
+                    }
+                }
+            }
+
+            return position;
         }
     });
     
