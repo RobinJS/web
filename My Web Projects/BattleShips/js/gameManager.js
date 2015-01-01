@@ -22,6 +22,7 @@ define(function (require) {
 		}.bind(this));
 
 		this.gameScene.events.startGame.add(function(){
+			this.playerField.disableShipsClick();
 			currentState = config.gameStates.BATTLE;
 			this.newState();
 		}.bind(this));
@@ -44,6 +45,12 @@ define(function (require) {
 			this.newState();
 		}.bind(this));
 
+		this.playerField.events.sectorMarked.add(function(){
+			// this.opponentField.enableHitMarker();
+			this.switchPlayerTurn();
+			this.newState();
+		}.bind(this));
+
 		// this.gameScene.playerField.events.sectorMarked.add(function(){
 			
 		// }.bind(this));
@@ -55,7 +62,7 @@ define(function (require) {
 		        	// create functionality for drag, drop, rotate, free areas
 		        	// animate scene hide
 		        	this.gameScene.events.panelShown.addOnce(function(){
-		        		this.playerField.enableClick();
+		        		this.playerField.enableShipsClick();
 		        		this.gameScene.enableButtonsClick();
 		        	}.bind(this));
 

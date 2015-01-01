@@ -3,6 +3,7 @@ define(function (require) {
 
     var Ship = require('ship'),
         config = require('config'),
+        Signal = require('libs/signals.min'),
         utils = require('utils');
 
     var PlayerField = function( mainStage ){
@@ -25,6 +26,16 @@ define(function (require) {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
+
+        this.shipsContainer = new createjs.Container();
+        this.mainStage.addChild( this.shipsContainer );
+
+        this.hitMarks = new createjs.Container();
+        this.mainStage.addChild( this.hitMarks );
+
+        this.events = {
+            sectorMarked: new Signal()
+        };
         // this.rotations = ['horizontal', 'vertical'];
     	// this.clickEnabled = false;
         this.testContainer = new createjs.Container();//
@@ -38,7 +49,8 @@ define(function (require) {
 
 			for (var i = 0; i < shipsInitialNum; i++) {
 				this.ships[i] = new Ship(config.shipsByType[i], this.field);
-				this.mainStage.addChild(this.ships[i].image);
+				// this.mainStage.addChild(this.ships[i].image);
+                this.shipsContainer.addChild( this.ships[i].image );
 			}
 
             this.autoArrange();
@@ -54,12 +66,19 @@ define(function (require) {
             // this.mainStage.addChild(this.playerFieldHitArea);
     	},
 
-    	enableClick: function(){
+    	enableShipsClick: function(){
     		// this.clickEnabled = true;
             this.ships.forEach(function(ship){
                 ship.clickEnabled = true;
             });
     	},
+
+        disableShipsClick: function(){
+            // this.clickEnabled = true;
+            this.ships.forEach(function(ship){
+                ship.clickEnabled = false;
+            });
+        },
 
         autoArrange: function(){
             // iterate all sips
@@ -135,18 +154,40 @@ define(function (require) {
         },
 
         computersTurn: function(){
-            console.warn('Start from here.');
-            return;
             // pick a sector
-            var randPosition = this.getNewPosition( playerField ),
-                result = playerField[randPosition.y][randPosition.x];
+            var randPosition = this.getNewPosition( this.field );
 
-            if ( result === 1 ) {
+            this.checkHittedSector( randPosition );
+        },
 
-            } else if ( result === 0 ) {
-
+        checkHittedSector: function( hitPosition ){
+            if ( this.field[hitPosition.y][hitPosition.x] === 1 ) {
+                this.markAsHit( hitPosition );
+            } else if ( this.field[hitPosition.y][hitPosition.x] === 0 ) {
+                this.markAsEmpty( hitPosition );
             }
-            
+        },
+
+        markAsHit: function( hitPosition ){
+            this.field[hitPosition.y][hitPosition.x] = 'x';
+            var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
+            this.hitMarks.addChild( newHitMark );
+
+            console.warn('check if ship is drawn');//
+
+            this.events.sectorMarked.dispatch();
+        },
+
+        markAsEmpty: function( hitPosition ){
+            this.field[hitPosition.y][hitPosition.x] = '.';
+            var newHitMark = new createjs.Bitmap("img/empty_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
+            this.hitMarks.addChild( newHitMark );
+
+            this.events.sectorMarked.dispatch();
         },
 
         getNewPosition: function( playerField ){
