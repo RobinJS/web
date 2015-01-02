@@ -8,19 +8,21 @@ define(function (require) {
     	this.type = type;
         this.field = field;
     	this.size = this.getSize( type );
-    	this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
+        this.sectorsHitted = 0;
+        // this.width = config.shipsData[type].width;
+        // this.height = config.shipsData[type].height;
 
-        this.width = config.shipsData[type].width;
-        this.height = config.shipsData[type].height;
-
-        this.blocksWidth = this.size;
-        this.blocksHeight = 1;
+        this.sectorsWidth = this.size;
+        this.sectorsHeight = 1;
+        this.rotationType = 'horizontal';
+        this.clickEnabled = false;
+        this.sunk = false;
 
         // this.image.regX = this.width / 2;
         // this.image.regY = this.height / 2;
-    	this.image.x = 0;
-    	this.image.y = 0;
-        this.rotationType = 'horizontal';
+        this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
+        this.image.x = 0;
+        this.image.y = 0;
 
         this.arrangedX = this.image.x;
         this.arrangedY = this.image.y;
@@ -28,10 +30,14 @@ define(function (require) {
 
         this.pointerDistanceX = 0;
         this.pointerDistanceY = 0;
-        this.clickEnabled = false;
 
         this.startX = null;
         this.startY = null;
+
+        this.startSectorX = null;
+        this.startSectorY = null;
+        this.endSectorX = null;
+        this.endSectorY = null;
 
         this.events = {
             emptySectorsUnderShip: new Signal()
@@ -66,7 +72,7 @@ define(function (require) {
                 this.arrangedY = this.image.y;
             }
             
-            this.markAllSquaresAsFull();
+            this.markSectorsAsFull();
         }.bind(this));
     };
 
@@ -107,7 +113,7 @@ define(function (require) {
                 nexImageY = Math.floor( e.stageY / config.gridSize) * config.gridSize - this.pointerDistanceY,
                 rotationOffset = this.getRotationOffset();
 
-            if ( nexImageX < config.playerFieldData.x + rotationOffset || nexImageY < config.playerFieldData.y || nexImageX + this.blocksWidth * config.gridSize - rotationOffset > config.playerFieldData.endX || nexImageY + this.blocksHeight * config.gridSize > config.playerFieldData.endY ) {
+            if ( nexImageX < config.playerFieldData.x + rotationOffset || nexImageY < config.playerFieldData.y || nexImageX + this.sectorsWidth * config.gridSize - rotationOffset > config.playerFieldData.endX || nexImageY + this.sectorsHeight * config.gridSize > config.playerFieldData.endY ) {
                 return;
             }
 
@@ -124,11 +130,11 @@ define(function (require) {
                 this.image.rotation = 0;
             }
 
-            var oldBlocksWidth = this.blocksWidth,
-                oldBlocksHeight = this.blocksHeight;
+            var oldBlocksWidth = this.sectorsWidth,
+                oldBlocksHeight = this.sectorsHeight;
 
-            this.blocksWidth = oldBlocksHeight;
-            this.blocksHeight = oldBlocksWidth;
+            this.sectorsWidth = oldBlocksHeight;
+            this.sectorsHeight = oldBlocksWidth;
         },
 
         getRotationOffset: function(){
@@ -139,8 +145,8 @@ define(function (require) {
             var rotationOffset = this.getRotationOffset(),
                 startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
                 startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
-                endSectorX = startSectorX + this.blocksWidth - 1,
-                endSectorY = startSectorY + this.blocksHeight - 1,
+                endSectorX = startSectorX + this.sectorsWidth - 1,
+                endSectorY = startSectorY + this.sectorsHeight - 1,
                 overAnotherShip = false;
 
                 for (var y = startSectorY; y <= endSectorY; y++) {
@@ -155,12 +161,12 @@ define(function (require) {
             return overAnotherShip;
         },
 
-        markAllSquaresAsFull: function(){
+        markSectorsAsFull: function(){
             var rotationOffset = this.getRotationOffset(),
                 startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
                 startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
-                endSectorX = startSectorX + this.blocksWidth - 1,
-                endSectorY = startSectorY + this.blocksHeight - 1;
+                endSectorX = startSectorX + this.sectorsWidth - 1,
+                endSectorY = startSectorY + this.sectorsHeight - 1;
 
             for (var y = startSectorY; y <= endSectorY; y++) {
                 for (var x = startSectorX; x <= endSectorX; x++) {
@@ -173,8 +179,8 @@ define(function (require) {
             var rotationOffset = this.getRotationOffset(),
                 startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
                 startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
-                endSectorX = startSectorX + this.blocksWidth - 1,
-                endSectorY = startSectorY + this.blocksHeight - 1;
+                endSectorX = startSectorX + this.sectorsWidth - 1,
+                endSectorY = startSectorY + this.sectorsHeight - 1;
 
             for (var y = startSectorY; y <= endSectorY; y++) {
                 for (var x = startSectorX; x <= endSectorX; x++) {

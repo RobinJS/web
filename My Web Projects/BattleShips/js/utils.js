@@ -6,8 +6,8 @@ define(function(){
 
         getValidRandomPosition: function( ship, field ){
             var position = {},
-                maxX = field.length - (ship.blocksWidth || 10),
-                maxY = field.length - (ship.blocksHeight || 10);
+                maxX = field.length - (ship.sectorsWidth || 10),
+                maxY = field.length - (ship.sectorsHeight || 10);
 
             position.x = Math.floor( Math.random() * maxX );
             position.y = Math.floor( Math.random() * maxY );
@@ -30,9 +30,9 @@ define(function(){
             return position;
         },
 
-        checkAllSquares: function( ship, field, randPosition ) {
-            for (var y = randPosition.y - 1; y <= randPosition.y + ship.blocksHeight; y++) {
-                for (var x = randPosition.x - 1; x <= randPosition.x + ship.blocksWidth; x++) {
+        checkSectors: function( ship, field, randPosition ) {
+            for (var y = randPosition.y - 1; y <= randPosition.y + ship.sectorsHeight; y++) {
+                for (var x = randPosition.x - 1; x <= randPosition.x + ship.sectorsWidth; x++) {
                     if ( y === -1 || x === -1 || y >= field.length || x >= field.length ) {
                         continue;
                     }
@@ -42,7 +42,7 @@ define(function(){
                         return;
                     }
 
-                    if ( (y === randPosition.y + ship.blocksHeight) && (x === randPosition.x + ship.blocksWidth ) ) {
+                    if ( (y === randPosition.y + ship.sectorsHeight) && (x === randPosition.x + ship.sectorsWidth ) ) {
                         allSquaresFree = true;
                     }
                 }
@@ -61,17 +61,22 @@ define(function(){
             }
 
             // check if randPosition is not free, or the ship will go outside fields bounds
-            if ( (field[randPosition.y][randPosition.x] === 1) || (randPosition.x + ship.blocksWidth - 1 >= field.length) || (randPosition.y + ship.blocksHeight - 1 >= field.length) ) {
+            if ( (field[randPosition.y][randPosition.x] === 1) || (randPosition.x + ship.sectorsWidth - 1 >= field.length) || (randPosition.y + ship.sectorsHeight - 1 >= field.length) ) {
                 this.checkNextPosition( ship, field, randPosition );
                 return;
             }
             
-            this.checkAllSquares( ship, field, randPosition );
+            this.checkSectors( ship, field, randPosition );
         },
 
-        markAllSquaresAsFull: function( ship, field, randPosition ) {
-            for (var y = randPosition.y; y < randPosition.y + ship.blocksHeight; y++) {
-                for (var x = randPosition.x; x < randPosition.x + ship.blocksWidth; x++) {
+        markSectorsAsFull: function( ship, field, randPosition ) {
+            ship.startSectorX = randPosition.x;
+            ship.startSectorY = randPosition.y;
+            ship.endSectorX = randPosition.x + ship.sectorsWidth - 1;
+            ship.endSectorY = randPosition.y + ship.sectorsHeight - 1;
+
+            for (var y = randPosition.y; y < randPosition.y + ship.sectorsHeight; y++) {
+                for (var x = randPosition.x; x < randPosition.x + ship.sectorsWidth; x++) {
                     if ( y !== -1 && x !== -1 && y < field.length && x < field.length ) {
                         field[y][x] = 1;
                     }

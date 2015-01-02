@@ -46,9 +46,11 @@ define(function (require) {
 		}.bind(this));
 
 		this.playerField.events.sectorMarked.add(function(){
+			setTimeout(function(){
+				this.switchPlayerTurn();
+				this.newState();
+			}.bind(this), 500);
 			// this.opponentField.enableHitMarker();
-			this.switchPlayerTurn();
-			this.newState();
 		}.bind(this));
 
 		// this.gameScene.playerField.events.sectorMarked.add(function(){
@@ -61,6 +63,10 @@ define(function (require) {
 		        	// add listeners
 		        	// create functionality for drag, drop, rotate, free areas
 		        	// animate scene hide
+
+		        	// reset marks, etc...
+		        	console.warn('reset');
+		        	
 		        	this.gameScene.events.panelShown.addOnce(function(){
 		        		this.playerField.enableShipsClick();
 		        		this.gameScene.enableButtonsClick();
@@ -85,10 +91,17 @@ define(function (require) {
 		        break;
 		        case config.gameStates.COMPUTERS_TURN:
 		        	// enable user interraction
-		        	this.gameScene.hideTurnLabel( this.playerTurn );
-		        	this.playerTurn = 'computer';
-		        	this.gameScene.showTurnLabel( this.playerTurn );
-		        	this.playerField.computersTurn();
+		        	setTimeout(function(){
+			        	this.gameScene.hideTurnLabel( this.playerTurn );
+			        	this.playerTurn = 'computer';
+		        	}.bind(this), 500);
+
+		        	setTimeout(function(){
+		        		this.gameScene.showTurnLabel( this.playerTurn );
+		        	}.bind(this), 1000);
+		        	setTimeout(function(){
+		        		this.playerField.computersTurn();
+		        	}.bind(this), 1500);
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	this.hitCheck();

@@ -105,8 +105,8 @@ define(function (require) {
                 allSquaresFree = false,
                 randPosition = utils.getValidRandomPosition( ship, this.field );
 
-            utils.checkAllSquares( ship, this.field, randPosition );
-            utils.markAllSquaresAsFull( ship, this.field, randPosition );
+            utils.checkSectors( ship, this.field, randPosition );
+            utils.markSectorsAsFull( ship, this.field, randPosition );
             ship.arrangedRotationType = ship.rotationType;
         },
 
@@ -141,6 +141,19 @@ define(function (require) {
             this.hitMarks.addChild( newHitMark );
 
             console.warn('check if ship is drawn');//
+            // this.checkForSunkShip( hitPosition );
+            this.ships.forEach(function(ship){
+                if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
+                    ship.sectorsHitted++;
+                    // mark in info header 
+                    
+                    // check if ship sunk
+                    if ( ship.sectorsHitted === ship.size ) {
+                        ship.sunk = true;
+                        this.markShipSunk( ship );
+                    }
+                }
+            }.bind(this));
 
             this.events.sectorMarked.dispatch();
         },
@@ -153,6 +166,15 @@ define(function (require) {
             this.hitMarks.addChild( newHitMark );
 
             this.events.sectorMarked.dispatch();
+        },
+
+        markShipSunk: function( ship ){
+            var sunkMark = new createjs.Shape();
+            sunkMark.graphics.setStrokeStyle(1).beginFill('rgba(0, 101, 155, 0.7)').rect(0, 0, ship.sectorsWidth * config.gridSize, ship.sectorsHeight * config.gridSize);
+            
+            sunkMark.x = ship.startSectorX * config.gridSize + config.opponentFiledData.x;
+            sunkMark.y = ship.startSectorY * config.gridSize + config.opponentFiledData.y;
+            this.hitMarks.addChild( sunkMark );
         }
     });
     

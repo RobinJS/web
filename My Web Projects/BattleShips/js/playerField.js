@@ -141,15 +141,15 @@ define(function (require) {
                 ship.arrangedRotationType = ship.rotationType;
 
                 // var test = new createjs.Shape();
-                // test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.blocksWidth, 50 * ship.blocksHeight);
+                // test.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(0, 0, 50 * ship.sectorsWidth, 50 * ship.sectorsHeight);
                 // test.x = that.playerFieldLeftOffset + (randPosition.x * 50);
                 // test.y = that.playerFieldTopOffset + (randPosition.y * 50);
 
                 // that.testContainer.addChild(test);
             }
 
-            utils.checkAllSquares( ship, this.field, randPosition );
-            utils.markAllSquaresAsFull( ship, this.field, randPosition );
+            utils.checkSectors( ship, this.field, randPosition );
+            utils.markSectorsAsFull( ship, this.field, randPosition );
             drawShipImage();
         },
 
