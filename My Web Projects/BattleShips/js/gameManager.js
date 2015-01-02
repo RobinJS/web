@@ -39,13 +39,23 @@ define(function (require) {
 			this.newState();
 		}.bind(this));
 
-		this.opponentField.events.sectorMarked.add(function(){
+		this.opponentField.events.emptySectorMarked.add(function(){
 			// this.opponentField.enableHitMarker();
 			this.switchPlayerTurn();
 			this.newState();
 		}.bind(this));
 
-		this.playerField.events.sectorMarked.add(function(){
+		this.opponentField.events.fullSectorMarked.add(function(){
+			// if ( this.playerTurn === 'player' ) {
+				currentState = config.gameStates.PLAYERS_TURN;
+			// } else if ( this.playerTurn === 'computer' ) {
+			// 	currentState = config.gameStates.COMPUTERS_TURN;
+			// }
+
+			this.newState();
+		}.bind(this));
+
+		this.playerField.events.emptySectorMarked.add(function(){
 			setTimeout(function(){
 				this.switchPlayerTurn();
 				this.newState();
@@ -53,9 +63,33 @@ define(function (require) {
 			// this.opponentField.enableHitMarker();
 		}.bind(this));
 
-		// this.gameScene.playerField.events.sectorMarked.add(function(){
-			
-		// }.bind(this));
+		this.playerField.events.fullSectorMarked.add(function(){
+			// if ( this.playerTurn === 'player' ) {
+			// 	currentState = config.gameStates.PLAYERS_TURN;
+			// } else if ( this.playerTurn === 'computer' ) {
+				currentState = config.gameStates.COMPUTERS_TURN;
+			// }
+
+			this.newState();
+		}.bind(this));
+
+		this.playerField.events.updateShipsRemainingText.add(function(){
+			this.gameScene.infoHeader.updateShipsRemainingText( 'player' );
+		}.bind(this));
+
+		this.opponentField.events.updateShipsRemainingText.add(function(){
+			this.gameScene.infoHeader.updateShipsRemainingText( 'computer' );
+		}.bind(this));
+
+		this.playerField.events.endGame.add(function(){
+			currentState = config.gameStates.GAME_END;
+			this.newState();
+		}.bind(this));
+
+		this.opponentField.events.endGame.add(function(){
+			currentState = config.gameStates.GAME_END;
+			this.newState();
+		}.bind(this));
 
 		this.newState = function(){
 			switch( currentState ) {
@@ -66,7 +100,7 @@ define(function (require) {
 
 		        	// reset marks, etc...
 		        	console.warn('reset');
-		        	
+
 		        	this.gameScene.events.panelShown.addOnce(function(){
 		        		this.playerField.enableShipsClick();
 		        		this.gameScene.enableButtonsClick();
@@ -94,11 +128,9 @@ define(function (require) {
 		        	setTimeout(function(){
 			        	this.gameScene.hideTurnLabel( this.playerTurn );
 			        	this.playerTurn = 'computer';
+		        		this.gameScene.showTurnLabel( this.playerTurn );
 		        	}.bind(this), 500);
 
-		        	setTimeout(function(){
-		        		this.gameScene.showTurnLabel( this.playerTurn );
-		        	}.bind(this), 1000);
 		        	setTimeout(function(){
 		        		this.playerField.computersTurn();
 		        	}.bind(this), 1500);
@@ -109,7 +141,8 @@ define(function (require) {
 
 		        break;
 		        case config.gameStates.GAME_END:
-		        	
+		        	alert("Game Over. The winner is... Start new Game");
+		        	// disable use interaction of field
 		        break;
 		   	}
 		};

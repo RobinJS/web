@@ -34,7 +34,10 @@ define(function (require) {
         this.mainStage.addChild( this.hitMarks );
 
         this.events = {
-            sectorMarked: new Signal()
+            fullSectorMarked: new Signal(),
+            emptySectorMarked: new Signal(),
+            updateShipsRemainingText: new Signal(),
+            endGame: new Signal()
         };
         // this.rotations = ['horizontal', 'vertical'];
     	// this.clickEnabled = false;
@@ -160,36 +163,6 @@ define(function (require) {
             this.checkHittedSector( randPosition );
         },
 
-        checkHittedSector: function( hitPosition ){
-            if ( this.field[hitPosition.y][hitPosition.x] === 1 ) {
-                this.markAsHit( hitPosition );
-            } else if ( this.field[hitPosition.y][hitPosition.x] === 0 ) {
-                this.markAsEmpty( hitPosition );
-            }
-        },
-
-        markAsHit: function( hitPosition ){
-            this.field[hitPosition.y][hitPosition.x] = 'x';
-            var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
-            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
-            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
-            this.hitMarks.addChild( newHitMark );
-
-            console.warn('check if ship is drawn');//
-
-            this.events.sectorMarked.dispatch();
-        },
-
-        markAsEmpty: function( hitPosition ){
-            this.field[hitPosition.y][hitPosition.x] = '.';
-            var newHitMark = new createjs.Bitmap("img/empty_mark.png");
-            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
-            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
-            this.hitMarks.addChild( newHitMark );
-
-            this.events.sectorMarked.dispatch();
-        },
-
         getNewPosition: function( playerField ){
             var position = {},
                 maxX = 10,
@@ -214,6 +187,66 @@ define(function (require) {
             }
 
             return position;
+        },
+
+        checkHittedSector: function( hitPosition ){
+            if ( this.field[hitPosition.y][hitPosition.x] === 1 ) {
+                this.markAsHit( hitPosition );
+            } else if ( this.field[hitPosition.y][hitPosition.x] === 0 ) {
+                this.markAsEmpty( hitPosition );
+            }
+        },
+
+        markAsHit: function( hitPosition ){
+            this.field[hitPosition.y][hitPosition.x] = 'x';
+            var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
+            this.hitMarks.addChild( newHitMark );
+
+            console.warn('check if ship is drawn');//
+            this.ships.forEach(function(ship){
+                if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
+                    ship.sectorsHitted++;
+                    // mark in info header 
+
+                    // check if ship sunk
+                    if ( ship.sectorsHitted === ship.size ) {
+                        ship.sunk = true;
+                        this.shipsRemaining--;
+                        this.events.updateShipsRemainingText.dispatch();
+                        this.markShipSunk( ship );
+
+                        // check if all ships sunk
+                        if ( this.shipsRemaining === 0 ) {
+                            this.events.endGame.dispatch();
+                        }
+                    }
+                }
+            }.bind(this));
+
+
+
+            this.events.fullSectorMarked.dispatch();
+        },
+
+        markAsEmpty: function( hitPosition ){
+            this.field[hitPosition.y][hitPosition.x] = '.';
+            var newHitMark = new createjs.Bitmap("img/empty_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
+            this.hitMarks.addChild( newHitMark );
+
+            this.events.emptySectorMarked.dispatch();
+        },
+
+        markShipSunk: function( ship ){
+            var sunkMark = new createjs.Shape();
+            sunkMark.graphics.setStrokeStyle(1).beginFill('rgba(0, 101, 155, 0.7)').rect(0, 0, ship.sectorsWidth * config.gridSize, ship.sectorsHeight * config.gridSize);
+            
+            sunkMark.x = ship.startSectorX * config.gridSize + config.playerFieldData.x;
+            sunkMark.y = ship.startSectorY * config.gridSize + config.playerFieldData.y;
+            this.hitMarks.addChild( sunkMark );
         }
     });
     

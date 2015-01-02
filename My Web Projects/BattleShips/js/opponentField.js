@@ -14,7 +14,8 @@ define(function (require) {
 
 		this.markerEnabled = false;
         this.ships = [];
-        this.shipsRemaining = 7;
+        this.shipsRemaining = 7; // in reset
+        console.warn('reset');
         this.field = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -33,7 +34,10 @@ define(function (require) {
 
         this.events = {
             positionToCheck: new Signal(),
-            sectorMarked: new Signal()
+            fullSectorMarked: new Signal(),
+            emptySectorMarked: new Signal(),
+            updateShipsRemainingText: new Signal(),
+            endGame: new Signal()
         };
 		
 		this.init();
@@ -146,16 +150,23 @@ define(function (require) {
                 if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
                     ship.sectorsHitted++;
                     // mark in info header 
-                    
+
                     // check if ship sunk
                     if ( ship.sectorsHitted === ship.size ) {
                         ship.sunk = true;
+                        this.shipsRemaining--;
+                        this.events.updateShipsRemainingText.dispatch();
                         this.markShipSunk( ship );
+                        
+                        // check if all ships sunk
+                        if ( this.shipsRemaining === 0 ) {
+                            this.events.endGame.dispatch();
+                        }
                     }
                 }
             }.bind(this));
 
-            this.events.sectorMarked.dispatch();
+            this.events.fullSectorMarked.dispatch();
         },
 
         markAsEmpty: function( hitPosition ){
@@ -165,7 +176,7 @@ define(function (require) {
             newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
             this.hitMarks.addChild( newHitMark );
 
-            this.events.sectorMarked.dispatch();
+            this.events.emptySectorMarked.dispatch();
         },
 
         markShipSunk: function( ship ){

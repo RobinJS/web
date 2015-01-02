@@ -59,7 +59,7 @@ define(function (require) {
  		this.arrangeLabel.x = 710;
  		this.arrangeLabel.y = 210;
 
- 		this.infoLabel = new createjs.Text("You can drag and drop ships to arrange them.", "20px Verdana", "#fff");
+ 		this.infoLabel = new createjs.Text("You can drag and drop ships to arrange them. \n Choose difficulty - easy/normal", "20px Verdana", "#fff");
  		this.infoLabel.x = 710;
  		this.infoLabel.y = 280;
  		this.infoLabel.lineHeight = 35;

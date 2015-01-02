@@ -80,6 +80,14 @@ define(function (require) {
 		this.mainStage.addChild(this.computerTurnLabel);
 	/* end player turn labels */
 
+		this.updateShipsRemainingText = function( player ){
+			if ( player === 'player' ) {
+				this.playerShipsRemainText.text = parseInt(this.playerShipsRemainText.text) - 1;
+			} else if ( player === 'computer' ) {
+				this.compShipsRemainText.text = parseInt(this.compShipsRemainText.text) - 1;
+			}
+		};
+
     };
     
     return InfoHeader;
