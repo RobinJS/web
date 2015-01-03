@@ -33,6 +33,17 @@ define(function (require) {
         this.hitMarks = new createjs.Container();
         this.mainStage.addChild( this.hitMarks );
 
+        this.explosionAnim = new createjs.Sprite(new createjs.SpriteSheet({
+            images: ["./img/explosion.png"],
+            frames: {width: 50, height: 50},
+            animations: {
+                anim:[0, 32, false]
+            }
+        }));
+
+        this.explosionAnim.visible = false;
+        this.mainStage.addChild(this.explosionAnim);
+
         this.events = {
             fullSectorMarked: new Signal(),
             emptySectorMarked: new Signal(),
@@ -198,36 +209,51 @@ define(function (require) {
         },
 
         markAsHit: function( hitPosition ){
-            this.field[hitPosition.y][hitPosition.x] = 'x';
-            var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
-            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
-            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
-            this.hitMarks.addChild( newHitMark );
+            var that = this;
 
-            console.warn('check if ship is drawn');//
-            this.ships.forEach(function(ship){
-                if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
-                    ship.sectorsHitted++;
-                    // mark in info header 
+            function animEndHandler(){
+                that.explosionAnim.removeEventListener('animationend', animEndHandler);
+                that.explosionAnim.visible = false;
 
-                    // check if ship sunk
-                    if ( ship.sectorsHitted === ship.size ) {
-                        ship.sunk = true;
-                        this.shipsRemaining--;
-                        this.events.updateShipsRemainingText.dispatch();
-                        this.markShipSunk( ship );
+                var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
+                newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
+                newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
+                that.hitMarks.addChild( newHitMark );
+                
+                that.ships.forEach(function(ship){
+                    if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
+                        ship.sectorsHitted++;
+                        // mark in info header 
 
-                        // check if all ships sunk
-                        if ( this.shipsRemaining === 0 ) {
-                            this.events.endGame.dispatch();
+                        // check if ship sunk
+                        if ( ship.sectorsHitted === ship.size ) {
+                            ship.sunk = true;
+                            that.shipsRemaining--;
+                            that.events.updateShipsRemainingText.dispatch();
+                            that.markShipSunk( ship );
+                            
+                            // check if all ships sunk
+                            if ( that.shipsRemaining === 0 ) {
+                                that.events.endGame.dispatch();
+                            }
                         }
                     }
-                }
-            }.bind(this));
+                });
 
+                that.events.fullSectorMarked.dispatch();
+            }
 
+            this.field[hitPosition.y][hitPosition.x] = 'x';
 
-            this.events.fullSectorMarked.dispatch();
+            this.explosionAnim.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
+            this.explosionAnim.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
+
+            this.explosionAnim.addEventListener('animationend', animEndHandler);
+            this.explosionAnim.visible = true;
+            this.explosionAnim.gotoAndPlay('anim');
+
+            console.warn('check if ship is drawn');//
+            // this.checkForSunkShip( hitPosition );
         },
 
         markAsEmpty: function( hitPosition ){

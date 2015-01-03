@@ -141,7 +141,7 @@ define(function (require) {
 
 		        break;
 		        case config.gameStates.GAME_END:
-		        	alert("Game Over. The winner is... Start new Game");
+		        	// alert("Game Over. The winner is... Start new Game");
 		        	// disable use interaction of field
 		        break;
 		   	}

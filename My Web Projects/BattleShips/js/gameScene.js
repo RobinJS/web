@@ -52,32 +52,39 @@ define(function (require) {
 
 		this.arrangepanelBg = new createjs.Shape();
 		this.arrangepanelBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, arrPanBgWidth, arrPanBgHeight);
- 		this.arrangepanelBg.x = 600;
+ 		this.arrangepanelBg.x = 0;
  		this.arrangepanelBg.y = 0;
 
  		this.arrangeLabel = new createjs.Text("ARRANGE YOUR SHIPS", "34px Verdana", "#fff");
- 		this.arrangeLabel.x = 710;
+ 		this.arrangeLabel.x = 110;
  		this.arrangeLabel.y = 210;
 
  		this.infoLabel = new createjs.Text("You can drag and drop ships to arrange them. \n Choose difficulty - easy/normal", "20px Verdana", "#fff");
- 		this.infoLabel.x = 710;
+ 		this.infoLabel.x = 110;
  		this.infoLabel.y = 280;
  		this.infoLabel.lineHeight = 35;
 	/* end arrange panel stuff */
 
 	/* Buttons */
-		this.startGameBtn = new Button(650, 450, 696, 462, "START GAME", '#6acd3c' );
+		this.startGameBtn = new Button(50, 450, 96, 462, "START GAME", '#6acd3c' );
 		this.startGameBtn.clickEnabled = false;
-    	this.autoArrangeBtn = new Button(950, 450, 980, 462, "AUTO ARRANGE", '#e6993d');
+    	this.autoArrangeBtn = new Button(350, 450, 380, 462, "AUTO ARRANGE", '#e6993d');
     	this.autoArrangeBtn.clickEnabled = false;
     /* end Buttons */
 
-		// this.playerField = new PlayerField( this.mainStage );
+	/* Game Over splash stuff */
+		
+	/* end Game Over splash stuff */
 
 		this.arrangepanel = new createjs.Container();
     	this.arrangepanel.addChild(this.arrangepanelBg, this.arrangeLabel, this.infoLabel, this.startGameBtn.button, this.autoArrangeBtn.button);
-		this.arrangepanel.y = -770;
+		this.arrangepanel.x = 1300;
 		this.mainStage.addChild(this.arrangepanel);
+
+		this.gameOverSplash = new createjs.Container();
+    	this.gameOverSplash.addChild(this.gameOverSplashBg,);
+		this.gameOverSplash.x = 1300;
+		this.mainStage.addChild(this.gameOverSplash);
 
 		this.events = {
 			panelShown: new Signal(),
@@ -144,8 +151,8 @@ define(function (require) {
 
 		showArrangepanel: function(){
 			var that = this;
-			TweenMax.to(this.arrangepanel, 2, {
-				y: 0,
+			TweenMax.to(this.arrangepanel, 1, {
+				x: 600,
 				onComplete: function(){
 					that.events.panelShown.dispatch();
 				}
@@ -154,8 +161,8 @@ define(function (require) {
 
 		hideArrangepanel: function(){
 			var that = this;
-			TweenMax.to(this.arrangepanel, 2, {
-				y: -770,
+			TweenMax.to(this.arrangepanel, 1, {
+				x: 1300,
 				onComplete: function(){
 					that.events.panelHidden.dispatch();
 				}

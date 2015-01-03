@@ -32,6 +32,27 @@ define(function (require) {
         this.hitMarks = new createjs.Container();
         this.mainStage.addChild( this.hitMarks );
 
+        this.pointerMarker = new createjs.Shape();
+        this.pointerMarker.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(config.opponentFiledData.x, config.opponentFiledData.y, 50, 50);
+        this.pointerMarker.visible = false;
+        this.mainStage.addChild(this.pointerMarker);
+
+        this.opponentFieldHitArea = new createjs.Shape();
+        this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(config.opponentFiledData.x, config.opponentFiledData.y, config.fieldWidth, config.fieldHeight);
+        this.opponentFieldHitArea.visible = false;
+        this.mainStage.addChild(this.opponentFieldHitArea);
+
+        this.explosionAnim = new createjs.Sprite(new createjs.SpriteSheet({
+            images: ["./img/explosion.png"],
+            frames: {width: 50, height: 50},
+            animations: {
+                anim:[0, 32, false]
+            }
+        }));
+
+        this.explosionAnim.visible = false;
+        this.mainStage.addChild(this.explosionAnim);
+
         this.events = {
             positionToCheck: new Signal(),
             fullSectorMarked: new Signal(),
@@ -46,15 +67,7 @@ define(function (require) {
 
     $.extend(OpponentField.prototype, {
     	init: function(){
-			this.marker = new createjs.Shape();
-			this.marker.graphics.setStrokeStyle(1).beginFill('rgba(125, 209, 255, 0.7)').rect(config.opponentFiledData.x, config.opponentFiledData.y, 50, 50);
-			this.marker.visible = false;
-			this.mainStage.addChild(this.marker);
-
-			this.opponentFieldHitArea = new createjs.Shape();
-			this.opponentFieldHitArea.graphics.beginFill('rgba(255, 255, 255, 0.01)').rect(config.opponentFiledData.x, config.opponentFiledData.y, config.fieldWidth, config.fieldHeight);
-			this.opponentFieldHitArea.visible = false;
-            this.mainStage.addChild(this.opponentFieldHitArea);
+			
 
             var shipsInitialNum = 7;
             for (var i = 0; i < shipsInitialNum; i++) {
@@ -71,14 +84,14 @@ define(function (require) {
 
     			if ( (e.stageX <= config.opponentFiledData.x || e.stageY <= config.opponentFiledData.y) || (e.stageX >= config.opponentFiledData.x + config.fieldWidth || e.stageY >= config.opponentFiledData.y + config.fieldHeight ) ) return;
 
-    			this.marker.x = Math.floor( ( e.stageX / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.x;
-    			this.marker.y = Math.floor( ( e.stageY / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.y;
+    			this.pointerMarker.x = Math.floor( ( e.stageX / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.x;
+    			this.pointerMarker.y = Math.floor( ( e.stageY / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.y;
     		}.bind(this));
 
     		this.opponentFieldHitArea.on('click', function(e){
     			if ( !this.markerEnabled ) return;
 
-                var hitPosition = { x: this.marker.x / config.gridSize, y: this.marker.y / config.gridSize };
+                var hitPosition = { x: this.pointerMarker.x / config.gridSize, y: this.pointerMarker.y / config.gridSize };
                 if ( this.field[hitPosition.y][hitPosition.x] !== 'x' && this.field[hitPosition.y][hitPosition.x] !== '.') {
                     this.events.positionToCheck.dispatch( hitPosition );
                 }
@@ -127,46 +140,65 @@ define(function (require) {
 
         enableHitMarker: function(){
             this.markerEnabled = true;
-            this.marker.visible = true;
+            this.pointerMarker.visible = true;
             this.opponentFieldHitArea.visible = true;
         },
 
         disableHitMarker: function(){
             this.markerEnabled = false;
-            this.marker.visible = false;
+            this.pointerMarker.visible = false;
             this.opponentFieldHitArea.visible = false;
         },
 
         markAsHit: function( hitPosition ){
+            var that = this;
+
+            function animEndHandler(){
+                that.explosionAnim.removeEventListener('animationend', animEndHandler);
+                that.explosionAnim.visible = false;
+
+                var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
+                newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
+                newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
+                that.hitMarks.addChild( newHitMark );
+                
+                that.ships.forEach(function(ship){
+                    if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
+                        ship.sectorsHitted++;
+                        // mark in info header 
+
+                        // check if ship sunk
+                        if ( ship.sectorsHitted === ship.size ) {
+                            ship.sunk = true;
+                            that.shipsRemaining--;
+                            that.events.updateShipsRemainingText.dispatch();
+                            that.markShipSunk( ship );
+                            
+                            // check if all ships sunk
+                            if ( that.shipsRemaining === 0 ) {
+                                that.events.endGame.dispatch();
+                            }
+                        }
+                    }
+                });
+
+                that.enableHitMarker();
+                that.events.fullSectorMarked.dispatch();
+            }
+
+            this.disableHitMarker();
+
             this.field[hitPosition.y][hitPosition.x] = 'x';
-            var newHitMark = new createjs.Bitmap("img/hitted_mark.png");
-            newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
-            newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
-            this.hitMarks.addChild( newHitMark );
+
+            this.explosionAnim.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
+            this.explosionAnim.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
+
+            this.explosionAnim.addEventListener('animationend', animEndHandler);
+            this.explosionAnim.visible = true;
+            this.explosionAnim.gotoAndPlay('anim');
 
             console.warn('check if ship is drawn');//
             // this.checkForSunkShip( hitPosition );
-            this.ships.forEach(function(ship){
-                if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
-                    ship.sectorsHitted++;
-                    // mark in info header 
-
-                    // check if ship sunk
-                    if ( ship.sectorsHitted === ship.size ) {
-                        ship.sunk = true;
-                        this.shipsRemaining--;
-                        this.events.updateShipsRemainingText.dispatch();
-                        this.markShipSunk( ship );
-                        
-                        // check if all ships sunk
-                        if ( this.shipsRemaining === 0 ) {
-                            this.events.endGame.dispatch();
-                        }
-                    }
-                }
-            }.bind(this));
-
-            this.events.fullSectorMarked.dispatch();
         },
 
         markAsEmpty: function( hitPosition ){
