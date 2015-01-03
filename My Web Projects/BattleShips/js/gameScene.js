@@ -93,11 +93,11 @@ define(function (require) {
 
 		this.gameOverSplash = new createjs.Container();
     	this.gameOverSplash.addChild(this.gameOverSplashBg, this.gameOverLabel, this.winnerLabel);
-		// this.gameOverSplash.x = 1300;
+		this.gameOverSplash.y = -this.mainStage.canvas.height;
 		this.mainStage.addChild(this.gameOverSplash);
 
 		// window.show = this.showWinSplah( 'player' );
-		window.show = this.showWinSplah( 'computer' );
+		// window.show = this.showWinSplah( 'computer' );
 
 		this.events = {
 			panelShown: new Signal(),
@@ -170,6 +170,8 @@ define(function (require) {
 					that.events.panelShown.dispatch();
 				}
 			});
+
+			this.showWinSplah();
 		},
 
 		hideArrangepanel: function(){
@@ -216,7 +218,23 @@ define(function (require) {
 			}
 
 			this.winnerLabel.text = winner + " is the winner!"
-		}
+
+			TweenMax.to(this.gameOverSplash, 1, {
+				x: 0,
+				onComplete: function(){
+					// that.events.panelShown.dispatch();
+				}
+			});
+		},
+
+		hideWinSplah: function( winner ){
+			TweenMax.to(this.gameOverSplash, 1, {
+				x: -this.mainStage.canvas.height,
+				onComplete: function(){
+					// that.events.panelShown.dispatch();
+				}
+			});
+		},
 	});
     
     return GameScene;
