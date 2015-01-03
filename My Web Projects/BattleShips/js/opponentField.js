@@ -4,7 +4,8 @@ define(function (require) {
     var Ship = require('ship'),
         config = require('config'),
         Signal = require('libs/signals.min'),
-        utils = require('utils');
+        utils = require('utils'),
+        soundPlayer = require('soundPlayer');
 
     var OpponentField = function( mainStage ){
     	this.mainStage = mainStage;
@@ -52,6 +53,17 @@ define(function (require) {
 
         this.explosionAnim.visible = false;
         this.mainStage.addChild(this.explosionAnim);
+
+        this.waterSplashAnim = new createjs.Sprite(new createjs.SpriteSheet({
+            images: ["./img/water_splash.png"],
+            frames: {width: 50, height: 50},
+            animations: {
+                anim: { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], next: false, speed: 0.5 }
+            }
+        }));
+
+        this.waterSplashAnim.visible = false;
+        this.mainStage.addChild(this.waterSplashAnim);
 
         this.events = {
             positionToCheck: new Signal(),
@@ -195,6 +207,8 @@ define(function (require) {
 
             this.explosionAnim.addEventListener('animationend', animEndHandler);
             this.explosionAnim.visible = true;
+
+            soundPlayer.playExplosionSound();
             this.explosionAnim.gotoAndPlay('anim');
 
             console.warn('check if ship is drawn');//
@@ -202,13 +216,32 @@ define(function (require) {
         },
 
         markAsEmpty: function( hitPosition ){
-            this.field[hitPosition.y][hitPosition.x] = '.';
-            var newHitMark = new createjs.Bitmap("img/empty_mark.png");
-            newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
-            newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
-            this.hitMarks.addChild( newHitMark );
+            var that = this;
 
-            this.events.emptySectorMarked.dispatch();
+            function animEndHandler(){
+                that.waterSplashAnim.removeEventListener('animationend', animEndHandler);
+                that.waterSplashAnim.visible = false;
+
+                var newHitMark = new createjs.Bitmap("img/empty_mark.png");
+                newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
+                newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
+                that.hitMarks.addChild( newHitMark );
+                
+                that.enableHitMarker();
+                that.events.emptySectorMarked.dispatch();
+            }
+
+            this.disableHitMarker();
+
+            this.field[hitPosition.y][hitPosition.x] = '.';
+
+            this.waterSplashAnim.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
+            this.waterSplashAnim.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
+
+            this.waterSplashAnim.addEventListener('animationend', animEndHandler);
+            this.waterSplashAnim.visible = true;
+            soundPlayer.playWateronSound();
+            this.waterSplashAnim.gotoAndPlay('anim');
         },
 
         markShipSunk: function( ship ){

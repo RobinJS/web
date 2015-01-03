@@ -73,7 +73,17 @@ define(function (require) {
     /* end Buttons */
 
 	/* Game Over splash stuff */
-		
+		this.gameOverSplashBg = new createjs.Shape();
+		this.gameOverSplashBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, this.mainStage.canvas.width, this.mainStage.canvas.height);
+ 		this.gameOverSplashBg.x = 0;
+ 		this.gameOverSplashBg.y = 0;
+
+ 		this.gameOverLabel = new createjs.Text("GAME OVER", "38px Verdana", "#fff");
+ 		this.gameOverLabel.x = this.mainStage.canvas.width / 2 - 150;
+ 		this.gameOverLabel.y = 210;
+
+ 		this.winnerLabel = new createjs.Text("", "28px Verdana", "#fff");
+ 		this.winnerLabel.y = 300;
 	/* end Game Over splash stuff */
 
 		this.arrangepanel = new createjs.Container();
@@ -82,9 +92,12 @@ define(function (require) {
 		this.mainStage.addChild(this.arrangepanel);
 
 		this.gameOverSplash = new createjs.Container();
-    	this.gameOverSplash.addChild(this.gameOverSplashBg,);
-		this.gameOverSplash.x = 1300;
+    	this.gameOverSplash.addChild(this.gameOverSplashBg, this.gameOverLabel, this.winnerLabel);
+		// this.gameOverSplash.x = 1300;
 		this.mainStage.addChild(this.gameOverSplash);
+
+		// window.show = this.showWinSplah( 'player' );
+		window.show = this.showWinSplah( 'computer' );
 
 		this.events = {
 			panelShown: new Signal(),
@@ -193,6 +206,16 @@ define(function (require) {
 			} else if ( player === 'computer' ){
 				this.infoHeader.computerTurnLabel.visible = false;
 			}
+		},
+
+		showWinSplah: function( winner ){
+			if ( winner === 'player' ) {
+				this.winnerLabel.x = this.mainStage.canvas.width / 2 - 175;
+			} else if ( winner === 'computer' ){
+ 				this.winnerLabel.x = this.mainStage.canvas.width / 2 - 200;
+			}
+
+			this.winnerLabel.text = winner + " is the winner!"
 		}
 	});
     

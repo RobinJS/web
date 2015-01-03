@@ -8,7 +8,9 @@ define(function (require) {
     	OpponentField = require('opponentField');
 
     var GameManager = function(){
-    	var currentState = 'arrange_ships';
+    	var currentState = 'arrange_ships',
+    	winner = null;
+
     	this.hitPosition = null;
     	this.playerTurn = 'player';
 
@@ -82,11 +84,13 @@ define(function (require) {
 		}.bind(this));
 
 		this.playerField.events.endGame.add(function(){
+			winner = 'computer';
 			currentState = config.gameStates.GAME_END;
 			this.newState();
 		}.bind(this));
 
 		this.opponentField.events.endGame.add(function(){
+			winner = 'player';
 			currentState = config.gameStates.GAME_END;
 			this.newState();
 		}.bind(this));
@@ -125,6 +129,8 @@ define(function (require) {
 		        break;
 		        case config.gameStates.COMPUTERS_TURN:
 		        	// enable user interraction
+		        	this.opponentField.disableHitMarker();
+
 		        	setTimeout(function(){
 			        	this.gameScene.hideTurnLabel( this.playerTurn );
 			        	this.playerTurn = 'computer';
@@ -133,7 +139,7 @@ define(function (require) {
 
 		        	setTimeout(function(){
 		        		this.playerField.computersTurn();
-		        	}.bind(this), 1500);
+		        	}.bind(this), 1000);
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	this.hitCheck();
@@ -143,6 +149,7 @@ define(function (require) {
 		        case config.gameStates.GAME_END:
 		        	// alert("Game Over. The winner is... Start new Game");
 		        	// disable use interaction of field
+		        	this.gameScene.showWinSplah( winner );
 		        break;
 		   	}
 		};
