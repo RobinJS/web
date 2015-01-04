@@ -46,11 +46,11 @@ define(function (require) {
             this.glow.visible = false;
         },
 
-        showPressed: function(){
+        showPressedImg: function(){
             this.pressedImg.visible = true;
         },
 
-        hidePressed: function(){
+        hidePressedImg: function(){
             this.pressedImg.visible = false;
         }
     });

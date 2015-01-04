@@ -37,8 +37,31 @@ define(function (require) {
 		}.bind(this));
 
 		this.gameScene.events.playAgain.add(function(){
+			this.reset();
 			this.gameScene.hideWinSplah();
 			currentState = config.gameStates.ARRANGE_SHIPS;
+			this.newState();
+		}.bind(this));
+
+		this.playerField.events.emptySectorMarked.add(function(){
+			setTimeout(function(){
+				this.switchPlayerTurn();
+				this.newState();
+			}.bind(this), 500);
+		}.bind(this));
+
+		this.playerField.events.fullSectorMarked.add(function(){
+			currentState = config.gameStates.COMPUTERS_TURN;
+			this.newState();
+		}.bind(this));
+
+		this.playerField.events.updateShipsRemainingText.add(function(){
+			this.gameScene.infoHeader.updateShipsRemainingText( 'player' );
+		}.bind(this));
+
+		this.playerField.events.endGame.add(function(){
+			winner = 'computer';
+			currentState = config.gameStates.GAME_OVER;
 			this.newState();
 		}.bind(this));
 
@@ -50,93 +73,47 @@ define(function (require) {
 		}.bind(this));
 
 		this.opponentField.events.emptySectorMarked.add(function(){
-			// this.opponentField.enableHitMarker();
 			this.switchPlayerTurn();
 			this.newState();
 		}.bind(this));
 
 		this.opponentField.events.fullSectorMarked.add(function(){
-			// if ( this.playerTurn === 'player' ) {
-				currentState = config.gameStates.PLAYERS_TURN;
-			// } else if ( this.playerTurn === 'computer' ) {
-			// 	currentState = config.gameStates.COMPUTERS_TURN;
-			// }
-
+			currentState = config.gameStates.PLAYERS_TURN;
 			this.newState();
-		}.bind(this));
-
-		this.playerField.events.emptySectorMarked.add(function(){
-			setTimeout(function(){
-				this.switchPlayerTurn();
-				this.newState();
-			}.bind(this), 500);
-			// this.opponentField.enableHitMarker();
-		}.bind(this));
-
-		this.playerField.events.fullSectorMarked.add(function(){
-			// if ( this.playerTurn === 'player' ) {
-			// 	currentState = config.gameStates.PLAYERS_TURN;
-			// } else if ( this.playerTurn === 'computer' ) {
-				currentState = config.gameStates.COMPUTERS_TURN;
-			// }
-
-			this.newState();
-		}.bind(this));
-
-		this.playerField.events.updateShipsRemainingText.add(function(){
-			this.gameScene.infoHeader.updateShipsRemainingText( 'player' );
 		}.bind(this));
 
 		this.opponentField.events.updateShipsRemainingText.add(function(){
 			this.gameScene.infoHeader.updateShipsRemainingText( 'computer' );
 		}.bind(this));
 
-		this.playerField.events.endGame.add(function(){
-			winner = 'computer';
-			currentState = config.gameStates.GAME_END;
-			this.newState();
-		}.bind(this));
-
 		this.opponentField.events.endGame.add(function(){
 			winner = 'player';
-			currentState = config.gameStates.GAME_END;
+			currentState = config.gameStates.GAME_OVER;
 			this.newState();
 		}.bind(this));
 
 		this.newState = function(){
 			switch( currentState ) {
 		        case config.gameStates.ARRANGE_SHIPS:
-		        	// add listeners
-		        	// create functionality for drag, drop, rotate, free areas
-		        	// animate scene hide
-
-		        	// reset marks, etc...
-		        	console.warn('reset');
-
 		        	this.gameScene.events.panelShown.addOnce(function(){
 		        		this.playerField.enableShipsClick();
 		        		this.gameScene.enableButtonsClick();
 		        	}.bind(this));
 
+		        	this.playerField.autoArrange();
+		        	this.opponentField.autoArrange();
 		        	this.gameScene.showArrangepanel();
 		        break;
 		        case config.gameStates.BATTLE:
-
 		        	this.gameScene.hideArrangepanel();
-		        	// enable user interraction
-		        	// decide which turn it is
 		        break;
 		        case config.gameStates.PLAYERS_TURN:
-		        	// mark "your turn"
 		        	this.gameScene.hideTurnLabel( this.playerTurn );
 		        	this.playerTurn = 'player';
 		        	this.gameScene.showTurnLabel( this.playerTurn );
 		        	this.opponentField.enableHitMarker();
-		        	// enable user interraction
-
 		        break;
 		        case config.gameStates.COMPUTERS_TURN:
-		        	// enable user interraction
 		        	this.opponentField.disableHitMarker();
 
 		        	setTimeout(function(){
@@ -151,12 +128,10 @@ define(function (require) {
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	this.hitCheck();
-		        	// enable user interraction
-
 		        break;
-		        case config.gameStates.GAME_END:
-		        	// alert("Game Over. The winner is... Start new Game");
-		        	// disable use interaction of field
+		        case config.gameStates.GAME_OVER:
+		        	this.opponentField.disableHitMarker();
+		        	this.gameScene.hideTurnLabel( this.playerTurn );
 		        	this.gameScene.showWinSplah( winner );
 		        break;
 		   	}
@@ -177,6 +152,12 @@ define(function (require) {
 				currentState = config.gameStates.PLAYERS_TURN;
 			}
 		}.bind(this);
+
+		this.reset = function(){
+			this.opponentField.reset();
+			this.playerField.reset();
+			this.gameScene.reset();
+		};
 
 		this.newState();
     };

@@ -6,7 +6,7 @@ define(function(){
 			PLAYERS_TURN: 'players_turn',
 			COMPUTERS_TURN: 'computerss_turn',
 			CHECK_RESULT: 'check_result',
-			GAME_END: 'game_end'
+			GAME_OVER: 'game_over'
 		},
 		shipsByType: ['aircraftCarrier', 'battleship', 'cruiser', 'destroyer', 'destroyer2', 'submarine', 'submarine2'],
 		shipsData: {

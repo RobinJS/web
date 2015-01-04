@@ -88,6 +88,11 @@ define(function (require) {
 			}
 		};
 
+		this.reset = function(){
+			this.playerShipsRemainText.text = "7";
+			this.compShipsRemainText.text = "7";
+		};
+
     };
     
     return InfoHeader;

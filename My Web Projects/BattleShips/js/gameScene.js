@@ -40,7 +40,6 @@ define(function (require) {
 		this.mapNumbers[0].y = 200;
 		this.mapNumbers[1].x = 650;
 		this.mapNumbers[1].y = 200;
-
 		this.mainStage.addChild(this.mapNumbers[0]);
 		this.mainStage.addChild(this.mapNumbers[1]);
 	/* end numbers */
@@ -51,7 +50,6 @@ define(function (require) {
 		this.mapLetters[0].y = 250;
 		this.mapLetters[1].x = 600;
 		this.mapLetters[1].y = 250;
-
 		this.mainStage.addChild(this.mapLetters[0]);
 		this.mainStage.addChild(this.mapLetters[1]);
 	/* end letters */
@@ -106,6 +104,7 @@ define(function (require) {
  		this.winnerLabel.y = 300;
 
  		this.playAgainBtn = new Button(470, 450, 525, 462, "PLAY AGAIN", '#6acd3c' );
+ 		this.playAgainBtn.button.alpha = 0;
 		this.playAgainBtn.clickEnabled = false;
 	/* end Game Over splash stuff */
 
@@ -133,36 +132,31 @@ define(function (require) {
 		addListeners: function(){
 		// start game button
 			this.startGameBtn.addEventListener('mousedown', function(e){
-				this.startGameBtn.showPressed();
+				this.startGameBtn.showPressedImg();
 			}.bind(this));
 
 			this.startGameBtn.addEventListener('pressup', function(e){
-				this.startGameBtn.hidePressed();
-
-				// if ( !this.startGameBtn.clickEnabled ) return;
-
+				this.startGameBtn.hidePressedImg();
 				this.disableButtonsClick();
 				this.events.startGame.dispatch();
 			}.bind(this));
 
 			this.startGameBtn.addEventListener('mouseover', function(e){
-
 				this.startGameBtn.showGlow();
 			}.bind(this));
 
 			this.startGameBtn.addEventListener('mouseout', function(e){
-
 				this.startGameBtn.hideGlow();
 			}.bind(this));
 		// end start game button
 
 		// auto arrange button
 			this.autoArrangeBtn.addEventListener('mousedown', function(e){
-				this.autoArrangeBtn.showPressed();
+				this.autoArrangeBtn.showPressedImg();
 			}.bind(this));
 
 			this.autoArrangeBtn.addEventListener('pressup', function(e){
-				this.autoArrangeBtn.hidePressed();
+				this.autoArrangeBtn.hidePressedImg();
 
 				if ( !this.autoArrangeBtn.clickEnabled ) return;
 
@@ -170,37 +164,30 @@ define(function (require) {
 			}.bind(this));
 
 			this.autoArrangeBtn.addEventListener('mouseover', function(e){
-
 				this.autoArrangeBtn.showGlow();
 			}.bind(this));
 
 			this.autoArrangeBtn.addEventListener('mouseout', function(e){
-
 				this.autoArrangeBtn.hideGlow();
 			}.bind(this));
 		// end auto arrange button
 
 		// play again button
 			this.playAgainBtn.addEventListener('mousedown', function(e){
-				this.playAgainBtn.showPressed();
+				this.playAgainBtn.showPressedImg();
 			}.bind(this));
 
 			this.playAgainBtn.addEventListener('pressup', function(e){
-				this.playAgainBtn.hidePressed();
-
-				// if ( !this.playAgainBtn.clickEnabled ) return;
-
+				this.playAgainBtn.hidePressedImg();
 				this.disableButtonsClick();
 				this.events.playAgain.dispatch();
 			}.bind(this));
 
 			this.playAgainBtn.addEventListener('mouseover', function(e){
-
 				this.playAgainBtn.showGlow();
 			}.bind(this));
 
 			this.playAgainBtn.addEventListener('mouseout', function(e){
-
 				this.playAgainBtn.hideGlow();
 			}.bind(this));
 		// end play again button
@@ -281,6 +268,8 @@ define(function (require) {
 		},
 
 		showWinSplah: function( winner ){
+			var that = this;
+
 			if ( winner === 'player' ) {
 				this.winnerLabel.x = this.mainStage.canvas.width / 2 - 175;
 			} else if ( winner === 'computer' ){
@@ -288,10 +277,12 @@ define(function (require) {
 			}
 
 			this.winnerLabel.text = winner + " is the winner!"
+			this.playAgainBtn.button.alpha = 0;
+
 			TweenMax.to(this.gameOverSplash, 1, {
 				y: 0,
 				onComplete: function(){
-					// that.events.panelShown.dispatch();
+					that.animatePlayAgainBtn();
 				}
 			});
 		},
@@ -303,6 +294,16 @@ define(function (require) {
 					// that.events.panelShown.dispatch();
 				}
 			});
+		},
+
+		animatePlayAgainBtn: function(){
+			TweenMax.to(this.playAgainBtn.button, 1, {
+				alpha: 1
+			});
+		},
+
+		reset: function(){
+			this.infoHeader.reset();
 		}
 	});
     

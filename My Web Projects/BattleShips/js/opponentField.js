@@ -9,14 +9,11 @@ define(function (require) {
 
     var OpponentField = function( mainStage ){
     	this.mainStage = mainStage;
-    	this.marker = null;
-		this.opponentFieldHitArea = null;
-    	this.squareWidth = 50;
 
 		this.markerEnabled = false;
         this.ships = [];
-        this.shipsRemaining = 7; // in reset
-        console.warn('reset');
+        this.shipsRemaining = 7;
+
         this.field = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -79,14 +76,10 @@ define(function (require) {
 
     $.extend(OpponentField.prototype, {
     	init: function(){
-			
-
             var shipsInitialNum = 7;
             for (var i = 0; i < shipsInitialNum; i++) {
                 this.ships[i] = new Ship(config.shipsByType[i], this.field);
             }
-
-            this.autoArrange();
     	},
 
     	addListeners: function(){
@@ -96,8 +89,8 @@ define(function (require) {
 
     			if ( (e.stageX <= config.opponentFiledData.x || e.stageY <= config.opponentFiledData.y) || (e.stageX >= config.opponentFiledData.x + config.fieldWidth || e.stageY >= config.opponentFiledData.y + config.fieldHeight ) ) return;
 
-    			this.pointerMarker.x = Math.floor( ( e.stageX / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.x;
-    			this.pointerMarker.y = Math.floor( ( e.stageY / this.squareWidth) ) * this.squareWidth - config.opponentFiledData.y;
+    			this.pointerMarker.x = Math.floor( ( e.stageX / config.gridSize) ) * config.gridSize - config.opponentFiledData.x;
+    			this.pointerMarker.y = Math.floor( ( e.stageY / config.gridSize) ) * config.gridSize - config.opponentFiledData.y;
     		}.bind(this));
 
     		this.opponentFieldHitArea.on('click', function(e){
@@ -111,12 +104,7 @@ define(function (require) {
     	},
 
         autoArrange: function(){
-            // reset field
-            for (var i = 0; i < this.field.length; i++) {
-                for (var j = 0; j < this.field.length; j++) {
-                    this.field[i][j] = 0;
-                }
-            }
+            this.clearField();
 
             this.ships.forEach(function(ship, idx){
                 var rotate = utils.toBeRotated();
@@ -145,9 +133,6 @@ define(function (require) {
             } else if ( this.field[hitPosition.y][hitPosition.x] === 0 ) {
                 this.markAsEmpty( hitPosition );
             }
-
-            window.marks = this.hitMarks;//
-            console.warn('remove');//
         },
 
         enableHitMarker: function(){
@@ -173,11 +158,13 @@ define(function (require) {
                 newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
                 newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
                 that.hitMarks.addChild( newHitMark );
-                
+
+                that.enableHitMarker();
+                that.events.fullSectorMarked.dispatch();
+
                 that.ships.forEach(function(ship){
                     if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
                         ship.sectorsHitted++;
-                        // mark in info header 
 
                         // check if ship sunk
                         if ( ship.sectorsHitted === ship.size ) {
@@ -193,9 +180,6 @@ define(function (require) {
                         }
                     }
                 });
-
-                that.enableHitMarker();
-                that.events.fullSectorMarked.dispatch();
             }
 
             this.disableHitMarker();
@@ -206,13 +190,11 @@ define(function (require) {
             this.explosionAnim.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
 
             this.explosionAnim.addEventListener('animationend', animEndHandler);
+
             this.explosionAnim.visible = true;
 
             soundPlayer.playExplosionSound();
             this.explosionAnim.gotoAndPlay('anim');
-
-            console.warn('check if ship is drawn');//
-            // this.checkForSunkShip( hitPosition );
         },
 
         markAsEmpty: function( hitPosition ){
@@ -251,6 +233,24 @@ define(function (require) {
             sunkMark.x = ship.startSectorX * config.gridSize + config.opponentFiledData.x;
             sunkMark.y = ship.startSectorY * config.gridSize + config.opponentFiledData.y;
             this.hitMarks.addChild( sunkMark );
+        },
+
+        clearField: function(){
+            for (var i = 0; i < this.field.length; i++) {
+                for (var j = 0; j < this.field.length; j++) {
+                    this.field[i][j] = 0;
+                }
+            }
+        },
+
+        reset: function(){
+            this.hitMarks.removeAllChildren();
+            this.shipsRemaining = 7;
+
+            this.ships.forEach(function(ship){
+                ship.sectorsHitted = 0;
+                ship.sunk = false;
+            });
         }
     });
     
