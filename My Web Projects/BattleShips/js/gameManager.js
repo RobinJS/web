@@ -19,6 +19,8 @@ define(function (require) {
     	this.playerField = new PlayerField( this.mainStage );
     	this.opponentField = new OpponentField( this.mainStage );
 
+    	this.gameScene.addGameOverSplash();
+
     	this.gameScene.events.playerAutoArrange.add(function(){
 			this.playerField.autoArrange();
 		}.bind(this));
@@ -31,6 +33,12 @@ define(function (require) {
 
 		this.gameScene.events.panelHidden.add(function(){
 			currentState = config.gameStates.PLAYERS_TURN;
+			this.newState();
+		}.bind(this));
+
+		this.gameScene.events.playAgain.add(function(){
+			this.gameScene.hideWinSplah();
+			currentState = config.gameStates.ARRANGE_SHIPS;
 			this.newState();
 		}.bind(this));
 

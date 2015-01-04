@@ -4,13 +4,35 @@ define(function (require) {
     var InfoHeader = require('infoHeader'),
     	Signal = require('libs/signals.min'),
     	config = require('config'),
-    	Button = require('button');
+    	Button = require('button'),
+    	soundPlayer = require('soundPlayer');
 
     var GameScene = function( mainStage ){
     	this.mainStage = mainStage;
     	this.stageBgImage = new createjs.Bitmap("img/ocean_bg.jpg");
 		this.mainStage.addChild(this.stageBgImage);
 		this.infoHeader = new InfoHeader( this.mainStage );
+
+	/* sound icons */
+		this.soundIcon = new createjs.Bitmap("img/sound.png");
+		this.soundIcon.visible = true;
+
+		this.muteIcon = new createjs.Bitmap("img/mute.png");
+		this.muteIcon.y = 6;
+		this.muteIcon.visible = false;
+
+		this.soundButtonHitArea = new createjs.Shape();
+		this.soundButtonHitArea.graphics.beginFill('rgba(255, 255, 255, 0.05)').rect(0, 0, 64, 58);
+
+		this.soundButton = new createjs.Container();
+		this.soundButton.addChild( this.soundIcon, this.muteIcon, this.soundButtonHitArea );
+		this.soundButton.alpha = 0.7;
+		this.soundButton.x = 1180;
+		this.soundButton.y = 50;
+		this.soundButton.soundIcon = this.soundIcon;
+		this.soundButton.muteIcon = this.muteIcon;
+		this.mainStage.addChild(this.soundButton);
+	/* end sound icons */
 
 	/* numbers */
 		this.mapNumbers = [new createjs.Bitmap("img/field_numbers.png"), new createjs.Bitmap("img/field_numbers.png")];
@@ -56,21 +78,19 @@ define(function (require) {
  		this.arrangepanelBg.y = 0;
 
  		this.arrangeLabel = new createjs.Text("ARRANGE YOUR SHIPS", "34px Verdana", "#fff");
- 		this.arrangeLabel.x = 110;
+ 		this.arrangeLabel.x = 130;
  		this.arrangeLabel.y = 210;
 
- 		this.infoLabel = new createjs.Text("You can drag and drop ships to arrange them. \n Choose difficulty - easy/normal", "20px Verdana", "#fff");
- 		this.infoLabel.x = 110;
+ 		this.infoLabel = new createjs.Text("You can drag and drop your ships to arrange them.", "20px Verdana", "#fff");
+ 		this.infoLabel.x = 70;
  		this.infoLabel.y = 280;
  		this.infoLabel.lineHeight = 35;
-	/* end arrange panel stuff */
 
-	/* Buttons */
 		this.startGameBtn = new Button(50, 450, 96, 462, "START GAME", '#6acd3c' );
 		this.startGameBtn.clickEnabled = false;
-    	this.autoArrangeBtn = new Button(350, 450, 380, 462, "AUTO ARRANGE", '#e6993d');
+    	this.autoArrangeBtn = new Button(360, 450, 390, 462, "AUTO ARRANGE", '#e6993d');
     	this.autoArrangeBtn.clickEnabled = false;
-    /* end Buttons */
+	/* end arrange panel stuff */
 
 	/* Game Over splash stuff */
 		this.gameOverSplashBg = new createjs.Shape();
@@ -84,6 +104,9 @@ define(function (require) {
 
  		this.winnerLabel = new createjs.Text("", "28px Verdana", "#fff");
  		this.winnerLabel.y = 300;
+
+ 		this.playAgainBtn = new Button(470, 450, 525, 462, "PLAY AGAIN", '#6acd3c' );
+		this.playAgainBtn.clickEnabled = false;
 	/* end Game Over splash stuff */
 
 		this.arrangepanel = new createjs.Container();
@@ -92,25 +115,22 @@ define(function (require) {
 		this.mainStage.addChild(this.arrangepanel);
 
 		this.gameOverSplash = new createjs.Container();
-    	this.gameOverSplash.addChild(this.gameOverSplashBg, this.gameOverLabel, this.winnerLabel);
+    	this.gameOverSplash.addChild(this.gameOverSplashBg, this.gameOverLabel, this.winnerLabel, this.playAgainBtn.button);
 		this.gameOverSplash.y = -this.mainStage.canvas.height;
-		this.mainStage.addChild(this.gameOverSplash);
-
-		// window.show = this.showWinSplah( 'player' );
-		// window.show = this.showWinSplah( 'computer' );
-
+		
 		this.events = {
 			panelShown: new Signal(),
 			panelHidden: new Signal(),
 			startGame: new Signal(),
-			playerAutoArrange: new Signal()
+			playerAutoArrange: new Signal(),
+			playAgain: new Signal()
 		}
 
-    	this.init();
+    	this.addListeners();
     };
 
 	$.extend(GameScene.prototype, {
-		init: function(){
+		addListeners: function(){
 		// start game button
 			this.startGameBtn.addEventListener('mousedown', function(e){
 				this.startGameBtn.showPressed();
@@ -160,6 +180,52 @@ define(function (require) {
 			}.bind(this));
 		// end auto arrange button
 
+		// play again button
+			this.playAgainBtn.addEventListener('mousedown', function(e){
+				this.playAgainBtn.showPressed();
+			}.bind(this));
+
+			this.playAgainBtn.addEventListener('pressup', function(e){
+				this.playAgainBtn.hidePressed();
+
+				// if ( !this.playAgainBtn.clickEnabled ) return;
+
+				this.disableButtonsClick();
+				this.events.playAgain.dispatch();
+			}.bind(this));
+
+			this.playAgainBtn.addEventListener('mouseover', function(e){
+
+				this.playAgainBtn.showGlow();
+			}.bind(this));
+
+			this.playAgainBtn.addEventListener('mouseout', function(e){
+
+				this.playAgainBtn.hideGlow();
+			}.bind(this));
+		// end play again button
+
+		// sound button
+			this.soundButtonHitArea.addEventListener('pressup', function(e){
+				if ( this.soundButton.soundIcon.visible ) {
+					this.soundButton.soundIcon.visible = false;
+					this.soundButton.muteIcon.visible = true;
+					soundPlayer.disableSounds();
+				} else if ( this.soundButton.muteIcon.visible ) {
+					this.soundButton.muteIcon.visible = false;
+					this.soundButton.soundIcon.visible = true;
+					soundPlayer.enableSounds();
+				}
+			}.bind(this));
+
+			this.soundButtonHitArea.addEventListener('mouseover', function(e){
+				this.soundButton.alpha = 1;
+			}.bind(this));
+
+			this.soundButtonHitArea.addEventListener('mouseout', function(e){
+				this.soundButton.alpha = 0.7;
+			}.bind(this));
+		// end sound button
 		},
 
 		showArrangepanel: function(){
@@ -170,8 +236,6 @@ define(function (require) {
 					that.events.panelShown.dispatch();
 				}
 			});
-
-			this.showWinSplah();
 		},
 
 		hideArrangepanel: function(){
@@ -187,11 +251,13 @@ define(function (require) {
 		enableButtonsClick: function(){
 			this.startGameBtn.clickEnabled = true;
 	    	this.autoArrangeBtn.clickEnabled = true;
+	    	this.playAgainBtn.clickEnabled = true;
 		},
 
 		disableButtonsClick: function(){
 			this.startGameBtn.clickEnabled = false;
 	    	this.autoArrangeBtn.clickEnabled = false;
+	    	this.playAgainBtn.clickEnabled = false;
 		},
 
 		showTurnLabel: function( player ){
@@ -210,6 +276,10 @@ define(function (require) {
 			}
 		},
 
+		addGameOverSplash: function(){
+			this.mainStage.addChild(this.gameOverSplash);
+		},
+
 		showWinSplah: function( winner ){
 			if ( winner === 'player' ) {
 				this.winnerLabel.x = this.mainStage.canvas.width / 2 - 175;
@@ -218,9 +288,8 @@ define(function (require) {
 			}
 
 			this.winnerLabel.text = winner + " is the winner!"
-
 			TweenMax.to(this.gameOverSplash, 1, {
-				x: 0,
+				y: 0,
 				onComplete: function(){
 					// that.events.panelShown.dispatch();
 				}
@@ -229,12 +298,12 @@ define(function (require) {
 
 		hideWinSplah: function( winner ){
 			TweenMax.to(this.gameOverSplash, 1, {
-				x: -this.mainStage.canvas.height,
+				y: -this.mainStage.canvas.height,
 				onComplete: function(){
 					// that.events.panelShown.dispatch();
 				}
 			});
-		},
+		}
 	});
     
     return GameScene;
