@@ -12,6 +12,11 @@ define(function (require) {
         this.marker = null;
         this.playerFieldLeftOffset = config.playerFieldData.x;
         this.playerFieldTopOffset = config.playerFieldData.y;
+        this.shipFound = false;
+        this.shipSearchInterrupted = false;
+        this.lastHitPos = {};
+        this.lastDirection = '';
+        this.directions = [ 'up', 'right', 'down', 'left' ];
         
     	this.ships = [];
         this.shipsRemaining = 7;
@@ -126,8 +131,12 @@ define(function (require) {
         },
 
         computersTurn: function(){
-            var randPosition = this.getNewPosition( this.field );
-            this.checkHittedSector( randPosition );
+            if ( !this.shipFound ) {
+                var randPosition = this.getNewPosition( this.field );
+                this.checkHittedSector( randPosition );
+            } else {
+                this.searchForShipParts();
+            }
         },
 
         getNewPosition: function( playerField ){
@@ -158,8 +167,19 @@ define(function (require) {
 
         checkHittedSector: function( hitPosition ){
             if ( this.field[hitPosition.y][hitPosition.x] === 1 ) {
+                if ( this.shipSearchInterrupted ) {
+                    this.shipSearchInterrupted = false;
+                }
+
+                this.shipFound = true;
+                this.lastHitPos.x = hitPosition.x;
+                this.lastHitPos.y = hitPosition.y;
                 this.markAsHit( hitPosition );
             } else if ( this.field[hitPosition.y][hitPosition.x] === 0 ) {
+                if ( this.shipFound ) {
+                    this.shipSearchInterrupted = true;
+                }
+
                 this.markAsEmpty( hitPosition );
             }
         },
@@ -179,7 +199,6 @@ define(function (require) {
                 that.ships.forEach(function(ship){
                     if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
                         ship.sectorsHitted++;
-                        // mark in info header 
 
                         // check if ship sunk
                         if ( ship.sectorsHitted === ship.size ) {
@@ -208,6 +227,44 @@ define(function (require) {
             this.explosionAnim.visible = true;
             soundPlayer.playExplosionSound();
             this.explosionAnim.gotoAndPlay('anim');
+        },
+
+        searchForShipParts: function(){
+            var that = this,
+                 newHitPosition = {};
+
+            newHitPosition.x = this.lastHitPos.x;
+            newHitPosition.y = this.lastHitPos.y;
+
+            if ( this.lastDirection === '' || this.shipSearchInterrupted ) {
+                this.lastDirection = this.getNewDirection();
+            }
+
+            function check(){
+                console.log('checking position -- ' + that.lastDirection);
+                switch( that.lastDirection ){
+                    case 'up': newHitPosition.y -= 1; break;
+                    case 'right': newHitPosition.x += 1; break;//
+                    case 'down': newHitPosition.y += 1; break;
+                    case 'left': newHitPosition.x -= 1; break;//
+                }
+
+                if ( newHitPosition.x < 0 || newHitPosition.x > 9 || newHitPosition.y < 0 || newHitPosition.y > 9 ) {
+                    // newHitPosition is outside field
+                    that.lastDirection = '';
+                    that.searchForShipParts();
+                } else if ( that.field[newHitPosition.y][newHitPosition.x] === 'x' ){
+                    // newHitPosition already hitted
+                    check();
+                } else if ( that.field[newHitPosition.y][newHitPosition.x] === '.' ){
+                    that.lastDirection = '';
+                    that.searchForShipParts();
+                } else {
+                    that.checkHittedSector( newHitPosition );
+                }
+            }
+            
+            check();
         },
 
         markAsEmpty: function( hitPosition ){
@@ -243,6 +300,39 @@ define(function (require) {
             sunkMark.x = ship.startSectorX * config.gridSize + config.playerFieldData.x;
             sunkMark.y = ship.startSectorY * config.gridSize + config.playerFieldData.y;
             this.hitMarks.addChild( sunkMark );
+
+            this.shipFound = false;
+            this.lastHitPos = {};
+            this.lastDirection = '';
+            this.directions = [ 'up', 'right', 'down', 'left' ];
+        },
+
+        getNewDirection: function(){
+            if ( this.shipSearchInterrupted ) {
+                // check if the opposite direction is available
+                var oppositeDirectionIndex = this.getOppositeDirectionIndex();
+
+                if ( oppositeDirectionIndex !== -1 ) {
+                    return this.directions.splice( oppositeDirectionIndex, 1 ).toString();
+                }
+            }
+
+            // get any available direction
+            var idx = Math.floor(Math.random() * this.directions.length );
+            return this.directions.splice( idx, 1 ).toString();
+        },
+
+        getOppositeDirectionIndex: function(){
+            var newDir = null;
+
+            switch( this.lastDirection ){
+                case 'up': newDir = 'down'; break;
+                case 'right': newDir = 'left'; break;
+                case 'down': newDir = 'up'; break;
+                case 'left': newDir = 'right'; break;
+            }
+
+            return this.directions.indexOf( newDir );
         },
 
         clearField: function(){
