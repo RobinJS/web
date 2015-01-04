@@ -159,10 +159,7 @@ define(function (require) {
                 newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
                 that.hitMarks.addChild( newHitMark );
 
-                that.enableHitMarker();
-                that.events.fullSectorMarked.dispatch();
-
-                that.ships.forEach(function(ship){
+                that.ships.forEach(function(ship, idx){
                     if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
                         ship.sectorsHitted++;
 
@@ -172,11 +169,15 @@ define(function (require) {
                             that.shipsRemaining--;
                             that.events.updateShipsRemainingText.dispatch();
                             that.markShipSunk( ship );
-                            
-                            // check if all ships sunk
-                            if ( that.shipsRemaining === 0 ) {
-                                that.events.endGame.dispatch();
-                            }
+                        }
+                    }
+
+                    if ( idx === that.ships.length - 1 ) {
+                        // check if all ships sunk
+                        if ( that.shipsRemaining === 0 ) {
+                            that.events.endGame.dispatch();
+                        } else {
+                            that.events.fullSectorMarked.dispatch();
                         }
                     }
                 });
@@ -209,7 +210,6 @@ define(function (require) {
                 newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
                 that.hitMarks.addChild( newHitMark );
                 
-                that.enableHitMarker();
                 that.events.emptySectorMarked.dispatch();
             }
 
@@ -221,6 +221,7 @@ define(function (require) {
             this.waterSplashAnim.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
 
             this.waterSplashAnim.addEventListener('animationend', animEndHandler);
+
             this.waterSplashAnim.visible = true;
             soundPlayer.playWateronSound();
             this.waterSplashAnim.gotoAndPlay('anim');

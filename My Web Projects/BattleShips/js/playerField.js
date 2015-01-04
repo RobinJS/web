@@ -196,7 +196,7 @@ define(function (require) {
                 newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
                 that.hitMarks.addChild( newHitMark );
                 
-                that.ships.forEach(function(ship){
+                that.ships.forEach(function(ship, idx){
                     if ( (hitPosition.x >= ship.startSectorX && hitPosition.x <= ship.endSectorX) && (hitPosition.y >= ship.startSectorY && hitPosition.y <= ship.endSectorY) ) {
                         ship.sectorsHitted++;
 
@@ -206,16 +206,18 @@ define(function (require) {
                             that.shipsRemaining--;
                             that.events.updateShipsRemainingText.dispatch();
                             that.markShipSunk( ship );
-                            
-                            // check if all ships sunk
-                            if ( that.shipsRemaining === 0 ) {
-                                that.events.endGame.dispatch();
-                            }
+                        }
+                    }
+
+                    if ( idx === that.ships.length - 1 ) {
+                        // check if all ships sunk
+                        if ( that.shipsRemaining === 0 ) {
+                            that.events.endGame.dispatch();
+                        } else {
+                            that.events.fullSectorMarked.dispatch();
                         }
                     }
                 });
-
-                that.events.fullSectorMarked.dispatch();
             }
 
             this.field[hitPosition.y][hitPosition.x] = 'x';
@@ -224,6 +226,7 @@ define(function (require) {
             this.explosionAnim.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
 
             this.explosionAnim.addEventListener('animationend', animEndHandler);
+
             this.explosionAnim.visible = true;
             soundPlayer.playExplosionSound();
             this.explosionAnim.gotoAndPlay('anim');
@@ -241,12 +244,11 @@ define(function (require) {
             }
 
             function check(){
-                console.log('checking position -- ' + that.lastDirection);
                 switch( that.lastDirection ){
                     case 'up': newHitPosition.y -= 1; break;
-                    case 'right': newHitPosition.x += 1; break;//
+                    case 'right': newHitPosition.x += 1; break;
                     case 'down': newHitPosition.y += 1; break;
-                    case 'left': newHitPosition.x -= 1; break;//
+                    case 'left': newHitPosition.x -= 1; break;
                 }
 
                 if ( newHitPosition.x < 0 || newHitPosition.x > 9 || newHitPosition.y < 0 || newHitPosition.y > 9 ) {
@@ -288,6 +290,7 @@ define(function (require) {
             this.waterSplashAnim.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
 
             this.waterSplashAnim.addEventListener('animationend', animEndHandler);
+
             this.waterSplashAnim.visible = true;
             soundPlayer.playWateronSound();
             this.waterSplashAnim.gotoAndPlay('anim');
