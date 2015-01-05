@@ -80,8 +80,26 @@ define(function (require) {
 				this.ships[i] = new Ship(config.shipsByType[i], this.field);
                 this.ships[i].image.visible = true;
                 this.shipsContainer.addChild( this.ships[i].image );
+                this.ships[i].events.showAvailableSectors.add(function(i){
+                    this.showAvailableSectors( this.ships[i] );
+                }.bind(this, i));
 			}
     	},
+
+        showAvailableSectors: function( ship ){
+            for (var y = 0; y < this.field.length; y++) {
+                for (var x = 0; x < this.field.length; x++) {
+                    var sectorIsFree = this.sectorIsFree( this.field[y][x] );
+                    if ( sectorIsFree ) {
+                        // create Shape and add it to Container
+                    }
+                }
+            }
+        },
+
+        sectorIsFree: function(){
+
+        },
 
     	enableShipsClick: function(){
             this.ships.forEach(function(ship){

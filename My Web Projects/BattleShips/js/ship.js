@@ -40,7 +40,8 @@ define(function (require) {
         this.endSectorY = null;
 
         this.events = {
-            emptySectorsUnderShip: new Signal()
+            emptySectorsUnderShip: new Signal(),
+            showAvailableSectors: new Signal()
         };
 
     	this.image.addEventListener('pressmove', function( e ){
@@ -50,6 +51,7 @@ define(function (require) {
         }.bind(this));
 
         this.image.addEventListener('mousedown', function( e ){
+            // show available sectors
 
             this.startX = Math.floor( e.stageX / config.gridSize) * config.gridSize;
             this.startY = Math.floor( e.stageY / config.gridSize) * config.gridSize;
@@ -59,9 +61,13 @@ define(function (require) {
 
             // this.events.emptySectorsUnderShip.dispatch( this );
             this.emptySectorsUnderShip();
+            this.events.showAvailableSectors.dispatch();
         }.bind(this));
 
         this.image.addEventListener('pressup', function( e ){
+            // check if ship is dropped over available area
+
+
             // check if there is another ship under
             if ( this.overAnotherShip() ) {
                 // return ship to las position
