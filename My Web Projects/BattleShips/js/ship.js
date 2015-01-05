@@ -41,7 +41,8 @@ define(function (require) {
 
         this.events = {
             emptySectorsUnderShip: new Signal(),
-            showAvailableSectors: new Signal()
+            showAvailableSectors: new Signal(),
+            hideAvailableSectors: new Signal()
         };
 
     	this.image.addEventListener('pressmove', function( e ){
@@ -51,7 +52,6 @@ define(function (require) {
         }.bind(this));
 
         this.image.addEventListener('mousedown', function( e ){
-            // show available sectors
 
             this.startX = Math.floor( e.stageX / config.gridSize) * config.gridSize;
             this.startY = Math.floor( e.stageY / config.gridSize) * config.gridSize;
@@ -61,12 +61,18 @@ define(function (require) {
 
             // this.events.emptySectorsUnderShip.dispatch( this );
             this.emptySectorsUnderShip();
+
+            // show available sectors
+            console.warn('only in ARRANGE_SHIPS state');
             this.events.showAvailableSectors.dispatch();
         }.bind(this));
 
         this.image.addEventListener('pressup', function( e ){
-            // check if ship is dropped over available area
+            console.warn('only in ARRANGE_SHIPS state');
+            this.events.hideAvailableSectors.dispatch();
 
+            // check if ship is dropped over available area
+            // code to be added...
 
             // check if there is another ship under
             if ( this.overAnotherShip() ) {

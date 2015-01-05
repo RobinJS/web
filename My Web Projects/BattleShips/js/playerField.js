@@ -34,6 +34,9 @@ define(function (require) {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
+        this.availableSectors = new createjs.Container();
+        this.mainStage.addChild(this.availableSectors);
+
         this.shipsContainer = new createjs.Container();
         this.mainStage.addChild( this.shipsContainer );
 
@@ -80,25 +83,64 @@ define(function (require) {
 				this.ships[i] = new Ship(config.shipsByType[i], this.field);
                 this.ships[i].image.visible = true;
                 this.shipsContainer.addChild( this.ships[i].image );
+
                 this.ships[i].events.showAvailableSectors.add(function(i){
                     this.showAvailableSectors( this.ships[i] );
+                }.bind(this, i));
+
+                this.ships[i].events.hideAvailableSectors.add(function(i){
+                    this.availableSectors.removeAllChildren();
                 }.bind(this, i));
 			}
     	},
 
         showAvailableSectors: function( ship ){
+            // iterate all field sectors to find which are available (the ship can fit there)
             for (var y = 0; y < this.field.length; y++) {
                 for (var x = 0; x < this.field.length; x++) {
-                    var sectorIsFree = this.sectorIsFree( this.field[y][x] );
-                    if ( sectorIsFree ) {
-                        // create Shape and add it to Container
+                    var sectorIsAvailable = this.sectorIsAvailable( x, y );
+                    if ( sectorIsAvailable ) {
+                        // create Shape and add it to available sectors Container
+                        var availableSector = new createjs.Shape();
+                        availableSector.graphics.setStrokeStyle(1).beginFill('rgba(71, 216, 79, 1)').beginStroke('#fff').rect(0, 0, config.gridSize, config.gridSize );
+                        availableSector.x = x * config.gridSize + config.playerFieldData.x;
+                        availableSector.y = y * config.gridSize + config.playerFieldData.y;
+                        this.availableSectors.addChild( availableSector );
                     }
                 }
             }
         },
 
-        sectorIsFree: function(){
+        sectorIsAvailable: function( currentSectorX, currentSectorY ){
+            var startX = currentSectorX - 1,
+                endX = currentSectorX + 1,
+                startY = currentSectorY - 1,
+                endY = currentSectorY + 1,
+                sectorsToCheck = 9;
 
+            // check all surrounding sectors
+            for (var y = startY; y <= endY; y++) {
+                for (var x = startX; x <= endX; x++) {
+
+                    if ( y >= 0 && y < this.field.length && x >= 0 && x < this.field.length ) {
+                        var sector = this.field[y][x];
+                        
+                        if ( sector == 1 || sector === 'x' || sector === '.' ) {
+                            y = endY;
+                            x = endX;
+                            break;
+                        }
+                    }
+                    
+                    sectorsToCheck--;
+                }
+            }
+
+            if ( sectorsToCheck === 0 ) {
+                return true;
+            }
+
+            return false;
         },
 
     	enableShipsClick: function(){
