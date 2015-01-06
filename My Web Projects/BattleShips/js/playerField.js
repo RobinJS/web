@@ -34,8 +34,8 @@ define(function (require) {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
-        this.availableSectors = new createjs.Container();
-        this.mainStage.addChild(this.availableSectors);
+        this.availableArea = new createjs.Container();
+        this.mainStage.addChild(this.availableArea);
 
         this.shipsContainer = new createjs.Container();
         this.mainStage.addChild( this.shipsContainer );
@@ -84,17 +84,19 @@ define(function (require) {
                 this.ships[i].image.visible = true;
                 this.shipsContainer.addChild( this.ships[i].image );
 
-                this.ships[i].events.showAvailableSectors.add(function(i){
-                    this.showAvailableSectors( this.ships[i] );
+                this.ships[i].events.showAvailableArea.add(function(i){
+                    this.showAvailableArea( this.ships[i] );
                 }.bind(this, i));
 
-                this.ships[i].events.hideAvailableSectors.add(function(i){
-                    this.availableSectors.removeAllChildren();
+                this.ships[i].events.hideAvailableArea.add(function(i){
+                    this.availableArea.removeAllChildren();
+                    this.ships[i].availableSectors = [];
                 }.bind(this, i));
 			}
     	},
 
-        showAvailableSectors: function( ship ){
+        showAvailableArea: function( ship ){
+            var availableSectors = [];
             // iterate all field sectors to find which are available (the ship can fit there)
             for (var y = 0; y < this.field.length; y++) {
                 for (var x = 0; x < this.field.length; x++) {
@@ -105,7 +107,10 @@ define(function (require) {
                         availableSector.graphics.setStrokeStyle(1).beginFill('rgba(71, 216, 79, 1)').beginStroke('#fff').rect(0, 0, config.gridSize, config.gridSize );
                         availableSector.x = x * config.gridSize + config.playerFieldData.x;
                         availableSector.y = y * config.gridSize + config.playerFieldData.y;
-                        this.availableSectors.addChild( availableSector );
+                        
+                        availableSectors.push( '' + y + x );
+                        this.availableArea.addChild( availableSector );
+                        ship.availableSectors = availableSectors;
                     }
                 }
             }

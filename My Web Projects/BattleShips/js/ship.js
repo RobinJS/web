@@ -9,8 +9,7 @@ define(function (require) {
         this.field = field;
     	this.size = this.getSize( type );
         this.sectorsHitted = 0;
-        // this.width = config.shipsData[type].width;
-        // this.height = config.shipsData[type].height;
+        this.availableSectors = [];
 
         this.sectorsWidth = this.size;
         this.sectorsHeight = 1;
@@ -18,8 +17,6 @@ define(function (require) {
         this.clickEnabled = false;
         this.sunk = false;
 
-        // this.image.regX = this.width / 2;
-        // this.image.regY = this.height / 2;
         this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
         this.image.x = 0;
         this.image.y = 0;
@@ -41,8 +38,8 @@ define(function (require) {
 
         this.events = {
             emptySectorsUnderShip: new Signal(),
-            showAvailableSectors: new Signal(),
-            hideAvailableSectors: new Signal()
+            showAvailableArea: new Signal(),
+            hideAvailableArea: new Signal()
         };
 
     	this.image.addEventListener('pressmove', function( e ){
@@ -52,39 +49,32 @@ define(function (require) {
         }.bind(this));
 
         this.image.addEventListener('mousedown', function( e ){
-
+            if ( !this.clickEnabled ) return;
             this.startX = Math.floor( e.stageX / config.gridSize) * config.gridSize;
             this.startY = Math.floor( e.stageY / config.gridSize) * config.gridSize;
 
             this.pointerDistanceX = this.startX - this.image.x;
             this.pointerDistanceY = this.startY - this.image.y;
 
-            // this.events.emptySectorsUnderShip.dispatch( this );
             this.emptySectorsUnderShip();
-
-            // show available sectors
-            console.warn('only in ARRANGE_SHIPS state');
-            this.events.showAvailableSectors.dispatch();
+            this.events.showAvailableArea.dispatch();
         }.bind(this));
 
         this.image.addEventListener('pressup', function( e ){
-            console.warn('only in ARRANGE_SHIPS state');
-            this.events.hideAvailableSectors.dispatch();
+            if ( !this.clickEnabled ) return;
 
             // check if ship is dropped over available area
-            // code to be added...
-
-            // check if there is another ship under
-            if ( this.overAnotherShip() ) {
-                // return ship to las position
-                this.image.x = this.arrangedX;
-                this.image.y = this.arrangedY;
-            } else {
+            if ( this.validDrop() ) {
                 this.arrangedX = this.image.x;
                 this.arrangedY = this.image.y;
+                this.markSectorsAsFull();
+            } else {
+                // return ship to lass position
+                this.image.x = this.arrangedX;
+                this.image.y = this.arrangedY;
             }
             
-            this.markSectorsAsFull();
+            this.events.hideAvailableArea.dispatch();
         }.bind(this));
     };
 
@@ -119,6 +109,29 @@ define(function (require) {
     		return size;
     	},
 
+        validDrop: function(){
+            // iterate ship sectors
+            var rotationOffset = this.getRotationOffset(),
+                startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
+                startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
+                endSectorX = startSectorX + this.sectorsWidth - 1,
+                endSectorY = startSectorY + this.sectorsHeight - 1,
+                canBeDropped = true;
+
+                for (var y = startSectorY; y <= endSectorY; y++) {
+                    for (var x = startSectorX; x <= endSectorX; x++) {
+                        var sectorCode = '' + y + x;
+
+                        if ( this.availableSectors.indexOf( sectorCode ) === -1 ) {
+                            canBeDropped = false;
+                            break;
+                        }
+                    }
+                }
+
+            return canBeDropped;
+        },
+
     	move: function( e ){
             // check if ship goes outside battlefield's bounds
             var nexImageX = Math.floor( e.stageX / config.gridSize) * config.gridSize - this.pointerDistanceX,
@@ -151,26 +164,6 @@ define(function (require) {
 
         getRotationOffset: function(){
             return this.rotationType === 'vertical' ? 50 : 0;
-        },
-
-        overAnotherShip: function(){
-            var rotationOffset = this.getRotationOffset(),
-                startSectorX = (this.image.x - rotationOffset) / config.gridSize - 1,
-                startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
-                endSectorX = startSectorX + this.sectorsWidth - 1,
-                endSectorY = startSectorY + this.sectorsHeight - 1,
-                overAnotherShip = false;
-
-                for (var y = startSectorY; y <= endSectorY; y++) {
-                    for (var x = startSectorX; x <= endSectorX; x++) {
-                        if ( this.field[y][x] === 1 ) {
-                            overAnotherShip = true;
-                            break;
-                        }
-                    }
-                }
-
-            return overAnotherShip;
         },
 
         markSectorsAsFull: function(){
