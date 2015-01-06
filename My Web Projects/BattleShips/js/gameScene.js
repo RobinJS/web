@@ -80,7 +80,7 @@ define(function (require) {
  		this.arrangeLabel.x = 130;
  		this.arrangeLabel.y = 150;
 
- 		this.infoLabel = new createjs.Text("You can drag and drop your ships to arrange them. \n Click on ship, then click on rotation icon to rotate it.", "20px Verdana", "#fff");
+ 		this.infoLabel = new createjs.Text("You can drag and drop your ships to arrange them.\nClick on ship, then click on rotation icon to rotate it.", "20px Verdana", "#fff");
  		this.infoLabel.x = 70;
  		this.infoLabel.y = 220;
  		this.infoLabel.lineHeight = 35;
@@ -105,8 +105,8 @@ define(function (require) {
 		this.rotateButton.regY = rotationIconWidthHeight / 2;
 		this.rotateButton.scaleX = 0.8;
 		this.rotateButton.scaleY = 0.8;
-		this.rotateButton.x = -50;
-		this.rotateButton.y = 180;
+		this.rotateButton.x = 90;
+		this.rotateButton.y = 350;
 		this.rotateButton.soundIcon = this.soundIcon;
 		this.rotateButton.muteIcon = this.muteIcon;
 	/* end arrange panel stuff */
@@ -143,7 +143,8 @@ define(function (require) {
 			panelHidden: new Signal(),
 			startGame: new Signal(),
 			playerAutoArrange: new Signal(),
-			playAgain: new Signal()
+			playAgain: new Signal(),
+			tryToRotateShip: new Signal()
 		}
 
     	this.addListeners();
@@ -242,6 +243,7 @@ define(function (require) {
 			}.bind(this));
 
 			this.rotateButton.addEventListener('pressup', function(e){
+				this.events.tryToRotateShip.dispatch();
 				this.rotateButton.scaleX = 0.8;
 				this.rotateButton.scaleY = 0.8;
 			}.bind(this));

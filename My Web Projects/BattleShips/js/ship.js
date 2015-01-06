@@ -39,7 +39,8 @@ define(function (require) {
         this.events = {
             emptySectorsUnderShip: new Signal(),
             showAvailableArea: new Signal(),
-            hideAvailableArea: new Signal()
+            hideAvailableArea: new Signal(),
+            lastClickedShip: new Signal()
         };
 
     	this.image.addEventListener('pressmove', function( e ){
@@ -74,6 +75,7 @@ define(function (require) {
                 this.image.y = this.arrangedY;
             }
             
+            this.events.lastClickedShip.dispatch();
             this.events.hideAvailableArea.dispatch();
         }.bind(this));
     };

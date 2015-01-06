@@ -20,7 +20,9 @@ define(function (require) {
     	this.opponentField = new OpponentField( this.mainStage );
 
     	this.gameScene.addGameOverSplash();
+    	// this.addRotationListeners();
 
+    /* gameScene listeners */
     	this.gameScene.events.playerAutoArrange.add(function(){
 			this.playerField.autoArrange();
 		}.bind(this));
@@ -43,6 +45,12 @@ define(function (require) {
 			this.newState();
 		}.bind(this));
 
+		this.gameScene.events.tryToRotateShip.add(function(){
+			this.playerField.tryToRotateShip();
+		}.bind(this));
+	/* end gameScene listeners */
+
+	/* playerField listeners */
 		this.playerField.events.emptySectorMarked.add(function(){
 			setTimeout(function(){
 				this.switchPlayerTurn();
@@ -64,7 +72,9 @@ define(function (require) {
 			currentState = config.gameStates.GAME_OVER;
 			this.newState();
 		}.bind(this));
+	/* end playerField listeners */
 
+	/* opponentField listeners */
 		this.opponentField.events.positionToCheck.add(function( hitPosition ){
 			this.opponentField.disableHitMarker();
 			this.hitPosition = hitPosition;
@@ -91,6 +101,7 @@ define(function (require) {
 			currentState = config.gameStates.GAME_OVER;
 			this.newState();
 		}.bind(this));
+	/* end opponentField listeners */
 
 		this.newState = function(){
 			switch( currentState ) {
@@ -152,6 +163,15 @@ define(function (require) {
 				currentState = config.gameStates.PLAYERS_TURN;
 			}
 		}.bind(this);
+
+		this.addRotationListeners = (function(){
+			var that = this;
+			this.playerField.ships.forEach(function( ship ){
+				ship.events.lastClickedShip.add(function(ship){
+					that.playerField.lastClickedShip = ship;
+				}.bind(this, ship));
+			});
+		}.bind(this)());
 
 		this.reset = function(){
 			this.opponentField.reset();

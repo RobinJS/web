@@ -20,6 +20,7 @@ define(function (require) {
         
     	this.ships = [];
         this.shipsRemaining = 7;
+        this.lastClickedShip = null;
 
         this.field = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -247,6 +248,11 @@ define(function (require) {
 
                 this.markAsEmpty( hitPosition );
             }
+        },
+
+        tryToRotateShip: function(){
+            var testShip = jQuery.extend(true, {}, this.lastClickedShip);
+            debugger;
         },
 
         markAsHit: function( hitPosition ){
