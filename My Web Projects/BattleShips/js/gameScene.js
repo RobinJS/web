@@ -68,7 +68,8 @@ define(function (require) {
 
 	/* arrange panel stuff */
 		var arrPanBgWidth = 680,
-			arrPanBgHeight = 770;
+			arrPanBgHeight = 770,
+			rotationIconWidthHeight = 64;
 
 		this.arrangepanelBg = new createjs.Shape();
 		this.arrangepanelBg.graphics.beginFill("rgba(0, 0, 0, 0.8)").drawRect(0, 0, arrPanBgWidth, arrPanBgHeight);
@@ -77,17 +78,37 @@ define(function (require) {
 
  		this.arrangeLabel = new createjs.Text("ARRANGE YOUR SHIPS", "34px Verdana", "#fff");
  		this.arrangeLabel.x = 130;
- 		this.arrangeLabel.y = 210;
+ 		this.arrangeLabel.y = 150;
 
- 		this.infoLabel = new createjs.Text("You can drag and drop your ships to arrange them.", "20px Verdana", "#fff");
+ 		this.infoLabel = new createjs.Text("You can drag and drop your ships to arrange them. \n Click on ship, then click on rotation icon to rotate it.", "20px Verdana", "#fff");
  		this.infoLabel.x = 70;
- 		this.infoLabel.y = 280;
+ 		this.infoLabel.y = 220;
  		this.infoLabel.lineHeight = 35;
 
 		this.startGameBtn = new Button(50, 450, 96, 462, "START GAME", '#6acd3c' );
 		this.startGameBtn.clickEnabled = false;
+
     	this.autoArrangeBtn = new Button(360, 450, 390, 462, "AUTO ARRANGE", '#e6993d');
     	this.autoArrangeBtn.clickEnabled = false;
+
+    	this.rotateIcon = new createjs.Bitmap("img/rotate.png");
+		this.rotateIcon.visible = true;
+
+		this.rotateButtonHitArea = new createjs.Shape();
+		this.rotateButtonHitArea.graphics.beginFill('rgba(255, 255, 255, 0.05)').rect(0, 0, rotationIconWidthHeight, rotationIconWidthHeight);
+
+		this.rotateButton = new createjs.Container();
+		this.rotateButton.addChild( this.rotateIcon, this.rotateButtonHitArea );
+		this.rotateButton.alpha = 0.7;
+		
+		this.rotateButton.regX = rotationIconWidthHeight / 2;
+		this.rotateButton.regY = rotationIconWidthHeight / 2;
+		this.rotateButton.scaleX = 0.8;
+		this.rotateButton.scaleY = 0.8;
+		this.rotateButton.x = -50;
+		this.rotateButton.y = 180;
+		this.rotateButton.soundIcon = this.soundIcon;
+		this.rotateButton.muteIcon = this.muteIcon;
 	/* end arrange panel stuff */
 
 	/* Game Over splash stuff */
@@ -109,7 +130,7 @@ define(function (require) {
 	/* end Game Over splash stuff */
 
 		this.arrangepanel = new createjs.Container();
-    	this.arrangepanel.addChild(this.arrangepanelBg, this.arrangeLabel, this.infoLabel, this.startGameBtn.button, this.autoArrangeBtn.button);
+    	this.arrangepanel.addChild(this.arrangepanelBg, this.arrangeLabel, this.infoLabel, this.startGameBtn.button, this.autoArrangeBtn.button, this.rotateButton);
 		this.arrangepanel.x = 1300;
 		this.mainStage.addChild(this.arrangepanel);
 
@@ -213,6 +234,26 @@ define(function (require) {
 				this.soundButton.alpha = 0.7;
 			}.bind(this));
 		// end sound button
+
+		// rotate button
+			this.rotateButton.addEventListener('mousedown', function(e){
+				this.rotateButton.scaleX = 0.7;
+				this.rotateButton.scaleY = 0.7;
+			}.bind(this));
+
+			this.rotateButton.addEventListener('pressup', function(e){
+				this.rotateButton.scaleX = 0.8;
+				this.rotateButton.scaleY = 0.8;
+			}.bind(this));
+
+			this.rotateButton.addEventListener('mouseover', function(e){
+				this.rotateButton.alpha = 1;
+			}.bind(this));
+
+			this.rotateButton.addEventListener('mouseout', function(e){
+				this.rotateButton.alpha = 0.7;
+			}.bind(this));
+		// end rotate button
 		},
 
 		showArrangepanel: function(){
@@ -239,12 +280,14 @@ define(function (require) {
 			this.startGameBtn.clickEnabled = true;
 	    	this.autoArrangeBtn.clickEnabled = true;
 	    	this.playAgainBtn.clickEnabled = true;
+	    	this.autoArrangeBtn.clickEnabled = true;
 		},
 
 		disableButtonsClick: function(){
 			this.startGameBtn.clickEnabled = false;
 	    	this.autoArrangeBtn.clickEnabled = false;
 	    	this.playAgainBtn.clickEnabled = false;
+	    	this.autoArrangeBtn.clickEnabled = false;
 		},
 
 		showTurnLabel: function( player ){
