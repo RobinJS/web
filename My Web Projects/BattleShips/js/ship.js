@@ -149,19 +149,23 @@ define(function (require) {
     	},
 
         rotate: function(){
-            if ( this.rotationType === 'horizontal' ) {
-                this.rotationType = 'vertical';
-                this.image.rotation = 90;
-            } else {
-                this.rotationType = 'horizontal';
-                this.image.rotation = 0;
-            }
-
             var oldBlocksWidth = this.sectorsWidth,
                 oldBlocksHeight = this.sectorsHeight;
 
             this.sectorsWidth = oldBlocksHeight;
             this.sectorsHeight = oldBlocksWidth;
+
+            if ( this.rotationType === 'horizontal' ) {
+                this.rotationType = 'vertical';
+                this.image.rotation = 90;
+                this.endSectorX = this.startSectorX;
+                this.endSectorY = this.startSectorY + this.sectorsHeight - 1;
+            } else {
+                this.rotationType = 'horizontal';
+                this.image.rotation = 0;
+                this.endSectorX = this.startSectorX + this.sectorsWidth - 1;
+                this.endSectorY = this.startSectorY;
+            }
         },
 
         getRotationOffset: function(){
