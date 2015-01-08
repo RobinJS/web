@@ -129,9 +129,7 @@ define(function (require) {
 		        	this.playerTurn = 'computer';
 	        		this.gameScene.showTurnLabel( this.playerTurn );
 
-		        	setTimeout(function(){
-		        		this.playerField.computersTurn();
-		        	}.bind(this), 500);
+	        		this.playerField.computersTurn();
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	this.hitCheck();
