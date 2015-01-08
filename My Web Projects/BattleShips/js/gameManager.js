@@ -52,10 +52,8 @@ define(function (require) {
 
 	/* playerField listeners */
 		this.playerField.events.emptySectorMarked.add(function(){
-			setTimeout(function(){
-				this.switchPlayerTurn();
-				this.newState();
-			}.bind(this), 500);
+			this.switchPlayerTurn();
+			this.newState();
 		}.bind(this));
 
 		this.playerField.events.fullSectorMarked.add(function(){
@@ -127,15 +125,13 @@ define(function (require) {
 		        case config.gameStates.COMPUTERS_TURN:
 		        	this.opponentField.disableHitMarker();
 
-		        	setTimeout(function(){
-			        	this.gameScene.hideTurnLabel( this.playerTurn );
-			        	this.playerTurn = 'computer';
-		        		this.gameScene.showTurnLabel( this.playerTurn );
-		        	}.bind(this), 500);
+		        	this.gameScene.hideTurnLabel( this.playerTurn );
+		        	this.playerTurn = 'computer';
+	        		this.gameScene.showTurnLabel( this.playerTurn );
 
 		        	setTimeout(function(){
 		        		this.playerField.computersTurn();
-		        	}.bind(this), 1000);
+		        	}.bind(this), 500);
 		        break;
 		        case config.gameStates.CHECK_RESULT:
 		        	this.hitCheck();

@@ -54,6 +54,8 @@ define(function (require) {
             }
         }));
 
+        this.explosionAnim.frameRate = 60;
+
         this.explosionAnim.visible = false;
         this.mainStage.addChild(this.explosionAnim);
 

@@ -44,7 +44,7 @@ define(function (require) {
             images: ["./img/explosion.png"],
             frames: {width: 50, height: 50},
             animations: {
-                anim:[0, 32, false]
+                anim:[0, 32, false, 1.5]
             }
         }));
 
