@@ -68,6 +68,7 @@ define(function (require) {
             if ( this.validDrop() ) {
                 this.arrangedX = this.image.x;
                 this.arrangedY = this.image.y;
+
                 this.markSectorsAsFull();
             } else {
                 // return ship to lass position
@@ -178,6 +179,11 @@ define(function (require) {
                 startSectorY = (this.image.y - config.playerFieldData.y) / config.gridSize,
                 endSectorX = startSectorX + this.sectorsWidth - 1,
                 endSectorY = startSectorY + this.sectorsHeight - 1;
+
+            this.startSectorX = startSectorX;
+            this.startSectorY = startSectorY;
+            this.endSectorX = endSectorX;
+            this.endSectorY = endSectorY;
 
             for (var y = startSectorY; y <= endSectorY; y++) {
                 for (var x = startSectorX; x <= endSectorX; x++) {

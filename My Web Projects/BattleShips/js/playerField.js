@@ -21,6 +21,7 @@ define(function (require) {
     	this.ships = [];
         this.shipsRemaining = 7;
         this.lastClickedShip = null;
+        this.cantRotateShadowTimeout = null;
 
         this.field = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -43,6 +44,9 @@ define(function (require) {
 
         this.hitMarks = new createjs.Container();
         this.mainStage.addChild( this.hitMarks );
+
+        this.cantRotateShadow = new createjs.Container();
+        this.mainStage.addChild( this.cantRotateShadow );
 
         this.explosionAnim = new createjs.Sprite(new createjs.SpriteSheet({
             images: ["./img/explosion.png"],
@@ -165,6 +169,7 @@ define(function (require) {
 
         autoArrange: function(){
             this.clearField();
+            this.lastClickedShip = null;
 
             this.ships.forEach(function(ship, idx){
                 var rotate = utils.toBeRotated();
@@ -253,10 +258,13 @@ define(function (require) {
         },
 
         tryToRotateShip: function(){
-            var testShipParams = this.createTestShipParams();
-            // ;;;console.log(testShipParams);
-            var canBeDropped = true;
-;;;debugger;
+            if ( this.lastClickedShip === null ) {
+                return;
+            }
+
+            var testShipParams = this.createTestShipParams(),
+                canBeDropped = true;
+
             for (var y = testShipParams.startY; y <= testShipParams.endY; y++) {
                 for (var x = testShipParams.startX; x <= testShipParams.endX; x++) {
                     var sectorCode = "" + y + x;
@@ -269,35 +277,38 @@ define(function (require) {
                 }
             }
 
-            ;;;console.log(canBeDropped);
-
-
-
             
-            // var sunkMark = new createjs.Shape();
-            // sunkMark.graphics.setStrokeStyle(1).beginFill('rgba(0, 101, 155, 0.7)').rect(0, 0, this.lastClickedShip.sectorsHeight * config.gridSize, this.lastClickedShip.sectorsWidth * config.gridSize);
-            // sunkMark.x = testShipParams.startX * config.gridSize + config.playerFieldData.x;
-            // sunkMark.y = testShipParams.startY * config.gridSize + config.playerFieldData.y;
-            // this.hitMarks.addChild( sunkMark );
-
-            // var testShip = jQuery.extend(true, {}, this.lastClickedShip);
-            // testShip.rotate();
 
             // check if ship is dropped over available area
-            // if ( testShip.validDrop() ) {
+            if ( canBeDropped ) {
                 // this.arrangedX = this.image.x;
                 // this.arrangedY = this.image.y;
                 // this.markSectorsAsFull();
                 // ;;;console.log(1);
-            // } else {
-                // return ship to lass position
-                // this.image.x = this.arrangedX;
-                // this.image.y = this.arrangedY;
-                // ;;;console.log(2);
-            // }
+                this.lastClickedShip.rotate();
+            } else {
+                this.showCantRotateShadow( testShipParams );
+            }
             
             // this.events.lastClickedShip.dispatch();
             // this.events.hideAvailableArea.dispatch();
+        },
+
+        showCantRotateShadow: function( testShipParams ){
+            if ( this.cantRotateShadow.children.length !== 0 ) {
+                this.cantRotateShadow.removeAllChildren();
+            }
+
+            var cantRotateShadowImage = new createjs.Shape();
+            cantRotateShadowImage.graphics.setStrokeStyle(1).beginFill('rgba(255, 43, 43, 0.7)').rect(0, 0, this.lastClickedShip.sectorsHeight * config.gridSize, this.lastClickedShip.sectorsWidth * config.gridSize);
+            cantRotateShadowImage.x = testShipParams.startX * config.gridSize + config.playerFieldData.x;
+            cantRotateShadowImage.y = testShipParams.startY * config.gridSize + config.playerFieldData.y;
+            this.cantRotateShadow.addChild( cantRotateShadowImage );
+
+            clearTimeout(this.cantRotateShadowTimeout);
+            this.cantRotateShadowTimeout = setTimeout(function(){
+                this.cantRotateShadow.removeAllChildren();
+            }.bind(this), 600);
         },
 
         createTestShipParams: function(){
@@ -308,7 +319,7 @@ define(function (require) {
                 newEndSectorX = this.lastClickedShip.startSectorX;
                 newEndSectorY = this.lastClickedShip.startSectorY + this.lastClickedShip.sectorsWidth - 1;
             } else {
-                newEndSectorX = this.lastClickedShip.startSectorX + this.lastClickedShip.sectorsWidth - 1;
+                newEndSectorX = this.lastClickedShip.startSectorX + this.lastClickedShip.sectorsHeight - 1;
                 newEndSectorY = this.lastClickedShip.startSectorY;
             }
 
@@ -485,6 +496,7 @@ define(function (require) {
         reset: function(){
             this.hitMarks.removeAllChildren();
             this.shipsRemaining = 7;
+            this.lastClickedShip = null;
 
             this.ships.forEach(function(ship){
                 ship.sectorsHitted = 0;
