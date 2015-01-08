@@ -91,7 +91,7 @@ define(function (require) {
 
                 this.ships[i].events.hideAvailableArea.add(function(i){
                     this.availableArea.removeAllChildren();
-                    this.ships[i].availableSectors = [];
+                    // this.ships[i].availableSectors = [];
                 }.bind(this, i));
 			}
     	},
@@ -115,6 +115,8 @@ define(function (require) {
                     }
                 }
             }
+
+            ;;;console.log(ship.type, availableSectors);
         },
 
         sectorIsAvailable: function( currentSectorX, currentSectorY ){
@@ -251,8 +253,71 @@ define(function (require) {
         },
 
         tryToRotateShip: function(){
-            var testShip = jQuery.extend(true, {}, this.lastClickedShip);
-            debugger;
+            var testShipParams = this.createTestShipParams();
+            // ;;;console.log(testShipParams);
+            var canBeDropped = true;
+;;;debugger;
+            for (var y = testShipParams.startY; y <= testShipParams.endY; y++) {
+                for (var x = testShipParams.startX; x <= testShipParams.endX; x++) {
+                    var sectorCode = "" + y + x;
+
+                    if ( this.lastClickedShip.availableSectors.indexOf( sectorCode ) === -1 ) {
+                        canBeDropped = false;
+                        y = testShipParams.endY;
+                        x = testShipParams.endX;
+                    }
+                }
+            }
+
+            ;;;console.log(canBeDropped);
+
+
+
+            
+            // var sunkMark = new createjs.Shape();
+            // sunkMark.graphics.setStrokeStyle(1).beginFill('rgba(0, 101, 155, 0.7)').rect(0, 0, this.lastClickedShip.sectorsHeight * config.gridSize, this.lastClickedShip.sectorsWidth * config.gridSize);
+            // sunkMark.x = testShipParams.startX * config.gridSize + config.playerFieldData.x;
+            // sunkMark.y = testShipParams.startY * config.gridSize + config.playerFieldData.y;
+            // this.hitMarks.addChild( sunkMark );
+
+            // var testShip = jQuery.extend(true, {}, this.lastClickedShip);
+            // testShip.rotate();
+
+            // check if ship is dropped over available area
+            // if ( testShip.validDrop() ) {
+                // this.arrangedX = this.image.x;
+                // this.arrangedY = this.image.y;
+                // this.markSectorsAsFull();
+                // ;;;console.log(1);
+            // } else {
+                // return ship to lass position
+                // this.image.x = this.arrangedX;
+                // this.image.y = this.arrangedY;
+                // ;;;console.log(2);
+            // }
+            
+            // this.events.lastClickedShip.dispatch();
+            // this.events.hideAvailableArea.dispatch();
+        },
+
+        createTestShipParams: function(){
+            var newEndSectorX = -1,
+                newEndSectorY = -1;
+
+            if ( this.lastClickedShip.rotationType === 'horizontal' ) {
+                newEndSectorX = this.lastClickedShip.startSectorX;
+                newEndSectorY = this.lastClickedShip.startSectorY + this.lastClickedShip.sectorsWidth - 1;
+            } else {
+                newEndSectorX = this.lastClickedShip.startSectorX + this.lastClickedShip.sectorsWidth - 1;
+                newEndSectorY = this.lastClickedShip.startSectorY;
+            }
+
+            return {
+                startX: this.lastClickedShip.startSectorX,
+                startY: this.lastClickedShip.startSectorY,
+                endX: newEndSectorX,
+                endY: newEndSectorY
+            };
         },
 
         markAsHit: function( hitPosition ){
