@@ -10,8 +10,6 @@ define(function (require) {
     var PlayerField = function( mainStage ){
     	this.mainStage = mainStage;
         this.marker = null;
-        this.playerFieldLeftOffset = config.playerFieldData.x;
-        this.playerFieldTopOffset = config.playerFieldData.y;
         this.shipFound = false;
         this.shipSearchInterrupted = false;
         this.lastHitPos = {};
@@ -119,8 +117,6 @@ define(function (require) {
                     }
                 }
             }
-
-            ;;;console.log(ship.type, availableSectors);
         },
 
         sectorIsAvailable: function( currentSectorX, currentSectorY ){
@@ -189,8 +185,8 @@ define(function (require) {
 
             function drawShipImage () {
                 var rotationOffset = ship.getRotationOffset();
-                ship.image.x = that.playerFieldLeftOffset + (randPosition.x * 50) + rotationOffset;
-                ship.image.y = that.playerFieldTopOffset + (randPosition.y * 50);
+                ship.image.x = config.playerFieldData.x + (randPosition.x * 50) + rotationOffset;
+                ship.image.y = config.playerFieldData.y + (randPosition.y * 50);
 
                 // save ship image coordinates after auto arrange
                 ship.arrangedX = ship.image.x;
@@ -285,7 +281,12 @@ define(function (require) {
                 // this.arrangedY = this.image.y;
                 // this.markSectorsAsFull();
                 // ;;;console.log(1);
+                this.lastClickedShip.emptySectorsUnderShip();
                 this.lastClickedShip.rotate();
+                this.lastClickedShip.arrangedX = this.lastClickedShip.image.x;
+                this.lastClickedShip.arrangedY = this.lastClickedShip.image.y;
+
+                this.lastClickedShip.markSectorsAsFull();
             } else {
                 this.showCantRotateShadow( testShipParams );
             }

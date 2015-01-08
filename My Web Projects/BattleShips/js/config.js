@@ -25,8 +25,6 @@ define(function(){
 			x: 650, y: 250
 		},
 		gridSize: 50,
-		arrangeMarkerWidth: 50,
-		arrangeMarkerHeight: 50,
 		fieldWidth: 500,
 		fieldHeight: 500,
 		shipDragging: false

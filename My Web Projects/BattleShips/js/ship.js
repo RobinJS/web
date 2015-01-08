@@ -18,6 +18,8 @@ define(function (require) {
         this.sunk = false;
 
         this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
+        // this.image.regX = 25;
+        // this.image.regY = 25;
         this.image.x = 0;
         this.image.y = 0;
 
@@ -159,11 +161,13 @@ define(function (require) {
             if ( this.rotationType === 'horizontal' ) {
                 this.rotationType = 'vertical';
                 this.image.rotation = 90;
+                this.image.x += 50;
                 this.endSectorX = this.startSectorX;
                 this.endSectorY = this.startSectorY + this.sectorsHeight - 1;
             } else {
                 this.rotationType = 'horizontal';
                 this.image.rotation = 0;
+                this.image.x -= 50;
                 this.endSectorX = this.startSectorX + this.sectorsWidth - 1;
                 this.endSectorY = this.startSectorY;
             }
