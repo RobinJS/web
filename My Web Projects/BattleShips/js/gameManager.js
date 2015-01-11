@@ -168,8 +168,8 @@ define(function (require) {
 		}.bind(this)());
 
 		this.saveResultInStorage = function(){
-			var currentPoints = localStorage.getItem( winner ) !== null ? localStorage.getItem( winner ) : 0;
-			localStorage.setItem(winner, parseInt(currentPoints) + 1);
+			var currentPoints = sessionStorage[winner] !== undefined ? sessionStorage[winner] : 0;
+			sessionStorage[winner] = parseInt(currentPoints) + 1;
 		};
 
 		this.reset = function(){

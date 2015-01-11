@@ -327,8 +327,8 @@ define(function (require) {
 
 		showWinSplah: function( winner ){
 			var that = this,
-				playerWins = localStorage.getItem( 'player' ) !== null ? localStorage.getItem( 'player' ) : 0,
-				computerWins = localStorage.getItem( 'computer' ) !== null ? localStorage.getItem( 'Computer' ) : 0;
+				playerWins = sessionStorage.player !== undefined ? sessionStorage.player : 0,
+				computerWins = sessionStorage.computer !== undefined ? sessionStorage.computer : 0;
 
 			if ( winner === 'player' ) {
 				this.winnerLabel.x = this.mainStage.canvas.width / 2 - 175;
