@@ -1,0 +1,103 @@
+<div class="webProjectsPage">
+    <h1>My web projects</h1>
+    <p class="generalInfo">The first part of this section represents my <a href="#personal-projects">personal projects</a>. Most of them are a result of my own initiative. They are arranged chronologically (except the last one), the project heading the list being the most recent one.</p>
+    <p class="generalInfo">When I started making websites, I was using WYSIWYG software. Today I prefer writing everything by myself (except for the libraries I use to improve functionality), because the code looks and works better.</p>
+    <p class="generalInfo">The second part represents my <a href="#homework">homework at Telerik Academy</a>. It contains dozens of solutions to small problems.</p>
+    <section>
+        <h2 id="personal-projects">Personal projects</h2>
+        <ul>
+			<li>
+                <a href="projects/web/SheepsAndRams/game.html">
+                    <img src="images/sheepsAndRams.jpg" alt="Sheeps and Rams game" />
+                    <span>
+                        <img src="images/sheepsAndRams.jpg" alt="Sheeps and Rams game" /></span>
+                </a>
+                <h3>Sheeps and Rams game</h3>
+                <p>One more implementation of the popular guessing game. The purpouse of making this games was to try out how "local storage" works.</p>
+            </li>
+			<li>
+                <a href="projects/web/rps/rock-paper-scissors.html">
+                    <img src="images/rps.jpg" alt="Rock, Paper, Scissors game" />
+                    <span>
+                        <img src="images/rps.jpg" alt="Rock, Paper, Scissors game" /></span>
+                </a>
+                <h3>Rock, Paper, Scissors game</h3>
+                <p>Just a small game, but I played a little more with the JavaScript code in order to make some improvements. I had to prevent some bugs that appeared in situations like clicking the "start new game" button before the current bet is over. The rest of the code arranges the game logic.</p>
+            </li>
+            <li>
+                <a href="index.html">
+                    <img src="images/portfolio-site.jpg" alt="Portfolio website" />
+                    <span>
+                        <img src="images/portfolio-site.jpg" alt="Portfolio website" /></span>
+                </a>
+                <h3>Portfolio website</h3>
+                <p>In this project I used Ajax for the first time. There is also a lot of jQuery code. The design was my idea. I didn't make it in .psd in advance. I just wrote down some ideas on paper and started working on them, following new ideas during the process. Here I also used PIE for IE CSS3 rendering, HTML5 shiv and jQuery custom content scroller.</p>
+            </li>
+            <li>
+                <a href="projects/web/watt/watt.html">
+                    <img src="images/watt-admin.jpg" alt="watt-admin" />
+                    <span>
+                        <img src="images/watt-admin.jpg" alt="watt-admin" /></span>
+                </a>
+                <h3>Watt admin</h3>
+                <p>I made this, because I wanted to exercise the slice and dice process. I found this free PSD template at <a href="http://www.free-psd.co/free-psd-website-templates/347-watt-admin" title="free-psd.co">free-psd.co</a>.</p>
+            </li>
+            <li>
+                <a href="projects/web/tetris/tetris.html">
+                    <img src="images/tetris.jpg" alt="Tetris" />
+                    <span>
+                        <img src="images/tetris.jpg" alt="tetris" /></span>
+                </a>
+                <h3>Tetris</h3>
+                <p>One day in the summer of 2013 I dared myself to make a JavaScript game. After almost two weeks of work the game was completed. I know table tags should not be used for organizing the page, but this time it was a game and I found it easier this way. After testing the code with Chrome's dev tools I found some weaknesses and fixed many bugs.</p>
+            </li>
+            <li>
+                <a href="projects/web/bafs/bafs.html">
+                    <img src="images/bafs.jpg" alt="BAFS" />
+                    <span>
+                        <img src="images/bafs.jpg" alt="BAFS" /></span>
+                </a>
+                <h3>Biologically Active Food Supplements</h3>
+                <p>This is my largest project so far. It consists of about 90 pages. Basically I used a free CSS template, which I modified a little. I made this website in 2010 and kept improving it for many months. Nowadays I look at the code I had worked on and laugh at myself, because it is messy. If I had time, I would change many things. It used to be on its own server, but now you can take a look at it following the image link.</p>
+            </li>
+            <li>
+                <a href="http://robi-g.hit.bg/">
+                    <img src="images/robi-g.jpg" alt="Robi G" />
+                    <span>
+                        <img src="images/robi-g.jpg" alt="Robi G Ltd" /></span>
+                </a>
+                <h3>Robi-G</h3>
+                <p>This website represents a Bulgarian firm. The design and the images are my idea.</p>
+            </li>
+            <li>
+                <a href="http://unbeso.free.bg/">
+                    <img src="images/un-beso.jpg" alt="Un Beso" />
+                    <span>
+                        <img src="images/un-beso.jpg" alt="Un Beso" /></span>
+                </a>
+                <h3>Un Beso</h3>
+                <p>My first website. In 2008 the dance courses I was attending inspired me to share the joy of Latin music and culture with my friends by making an online radio. I added some content throughout the coming months.</p>
+            </li>
+            <li>
+                <a href="projects/web/learning-resources/learning-resources.html">
+                    <img src="images/online-resources.jpg" alt="Online Resources" />
+                    <span>
+                        <img src="images/online-resources.jpg" alt="Online Resources" /></span>
+                </a>
+                <h3>Learning resources</h3>
+                <p>One day this small page may be a good information resource for developers. Up to this point I have been collecting information for personal usage. Of course, the information, being on this server, is accessible to anyone.</p>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2 id="homework">Telerik Academy homework</h2>
+        <p>Take a look at my web homework at <a href="https://github.com/RobinJS/web/tree/master/Homework%20Telerik%20Acad">GitHub</a>. It contains HTML, CSS and JavaScript code.</p>
+    </section>
+    <script>
+        (function ($) {
+            $(".webProjectsPage section ul li p").mCustomScrollbar({
+                theme: "light-thick"
+            });
+        })(jQuery);
+    </script>
+</div>
