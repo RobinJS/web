@@ -11,6 +11,5 @@ requirejs.config({
 require([ 'jquery', 'easeljs', 'TweenMax', 'signals', "gameManager" ],
 	function( $, createjs, TweenMax, signals, gameManager ) {
 
-	// var gameManager = new gameManager();
-	window.gameManager = new gameManager();
+	var gameManager = new gameManager();
 });

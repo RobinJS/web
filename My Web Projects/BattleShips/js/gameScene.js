@@ -31,6 +31,7 @@ define(function (require) {
 		this.soundButton.y = 50;
 		this.soundButton.soundIcon = this.soundIcon;
 		this.soundButton.muteIcon = this.muteIcon;
+		this.soundButton.mouseEnabled = false;
 		this.mainStage.addChild(this.soundButton);
 	/* end sound icons */
 
@@ -173,6 +174,7 @@ define(function (require) {
 			this.startGameBtn.addEventListener('pressup', function(e){
 				this.startGameBtn.hidePressedImg();
 				this.disableButtonsClick();
+				this.soundButton.mouseEnabled = true;
 				this.events.startGame.dispatch();
 			}.bind(this));
 
@@ -215,6 +217,7 @@ define(function (require) {
 			this.playAgainBtn.addEventListener('pressup', function(e){
 				this.playAgainBtn.hidePressedImg();
 				this.disableButtonsClick();
+				this.soundButton.mouseEnabled = true;
 				this.events.playAgain.dispatch();
 			}.bind(this));
 
@@ -348,6 +351,8 @@ define(function (require) {
 					that.animatePlayAgainBtn();
 				}
 			});
+
+			this.soundButton.mouseEnabled = false;
 		},
 
 		hideWinSplah: function( winner ){
