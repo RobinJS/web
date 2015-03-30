@@ -8,6 +8,16 @@
     <meta content="index, follow" name="robots">
 	<meta http-equiv="cache-control" content="no-cache" /> 
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+    	window.onload = function(){
+		var width = window.innerWidth;
+
+		if ( width < 1280 ) {
+			var scale = 1 / (1280 / width);
+			$('#mainCanvas').css('-webkit-transform', 'scale(' + scale + ')');
+		}
+	};
+    </script>
 </head>
 <body>
 	<canvas id="mainCanvas" width="1280" height="770"></canvas>
