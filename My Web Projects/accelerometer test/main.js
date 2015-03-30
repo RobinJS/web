@@ -6,13 +6,9 @@ function preload() {
     game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
     game.scale.setScreenSize();
 
-    // game.load.image('bullet', 'assets/games/invaders/bullet.png');
-    // game.load.image('enemyBullet', 'assets/games/invaders/enemy-bullet.png');
-    game.load.spritesheet('enemy', 'img/enemy.png', 32, 32);
+    game.load.spritesheet('enemy', 'img/enemy.png', 24, 24);
+    game.load.spritesheet('health', 'img/health.png', 24, 24);
     game.load.image('player', 'img/player.png');
-    // game.load.spritesheet('kaboom', 'assets/games/invaders/explode.png', 128, 128);
-    // game.load.image('starfield', 'assets/games/invaders/starfield.png');
-    // game.load.image('background', 'assets/games/starstruck/background2.png');
 
 
 
@@ -22,23 +18,12 @@ var player;
 var enemies;
 var move = false;
 var step = 0;
-var text;
+var scoreText;
+var livesText;
 var str = "";
-// var aliens;
-// var bullets;
-// var bulletTime = 0;
-// var cursors;
-// var fireButton;
-// var explosions;
-// var starfield;
-// var score = 0;
-// var scoreString = '';
-// var scoreText;
-// var lives;
-// var enemyBullet;
-// var firingTimer = 0;
-// var stateText;
-// var livingEnemies = [];
+var score = 0;
+var lives = 3;
+var points;
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -75,38 +60,27 @@ function create() {
     enemies = game.add.group();
     enemies.enableBody = true;
     enemies.physicsBodyType = Phaser.Physics.ARCADE;
+    enemies.createMultiple(20, 'enemy');
+
+    enemies.setAll('anchor.x', 0.5);
+    enemies.setAll('anchor.y', 0.5);
+    enemies.setAll('outOfBoundsKill', true);
+    enemies.setAll('checkWorldBounds', true);
+
+    healths = game.add.group();
+    healths.enableBody = true;
+    healths.physicsBodyType = Phaser.Physics.ARCADE;
+    healths.createMultiple(20, 'health');
+
+    healths.setAll('anchor.x', 0.5);
+    healths.setAll('anchor.y', 0.5);
+    healths.setAll('outOfBoundsKill', true);
+    healths.setAll('checkWorldBounds', true);
 
     createEnemies();
 
-    //  The score
-    // scoreString = 'Score : ';
-    // scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
-
-    //  Lives
-    // lives = game.add.group();
-    // game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
-
-    //  Text
-    // stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
-    // stateText.anchor.setTo(0.5, 0.5);
-    // stateText.visible = false;
-
-    // for (var i = 0; i < 3; i++) {
-    //     var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
-    //     ship.anchor.setTo(0.5, 0.5);
-    //     ship.angle = 90;
-    //     ship.alpha = 0.4;
-    // }
-
-    //  An explosion pool
-    // explosions = game.add.group();
-    // explosions.createMultiple(30, 'kaboom');
-    // explosions.forEach(setupInvader, this);
-
-    //  And some controls to play the game with
-    // cursors = game.input.keyboard.createCursorKeys();
-    // fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    text = game.add.text(game.world.centerX, game.world.centerY, "", { font: "65px Verdana", fill: "#ffffff", align: "center" });
+    scoreText = game.add.text(0, 0, "Score: 0", { font: "42px Verdana", fill: "#ffffff", align: "center" });
+    livesText = game.add.text(game.world.width - 180, 0, "Lives: 3", { font: "42px Verdana", fill: "#ffffff", align: "center" });
 
     if (window.DeviceMotionEvent != undefined) {
          window.ondevicemotion = function(e) {
@@ -119,7 +93,6 @@ function create() {
                 move = false;
             }
 
-            
             if ( e.acceleration.x ) {
                 // str += "acc.x: " + acceleration.x + " ";
             }
@@ -136,22 +109,41 @@ function create() {
          }
     }
 
+
+    setInterval(function(){
+        // var enemy = enemies.create(Math.floor(Math.random() * game.world.width ), -50, 'enemy');
+        var enemy = enemies.getFirstDead(false);
+        var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+        enemy.reset( x, -5);
+        enemy.rotation = game.physics.arcade.moveToXY(enemy, x, game.world.height + 50, 60, 3000);
+        enemy.type = 'enemy';
+
+        var health = healths.getFirstDead(false);
+        var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+        health.reset( x, -5);
+        health.rotation = game.physics.arcade.moveToXY(health, x, game.world.height + 50, 60, 3000);
+        health.type = 'health';
+    }, 1000);
+
 }
 
 function createEnemies () {
 
     // for (var y = 0; y < 4; y++)
     // {
-        var enemy = enemies.create(48, 50, 'enemy');
-        enemy.anchor.setTo(0.5, 0.5);
-        enemy.body.moves = false;
+        
     // }
 
     // enemies.x = 100;
-    enemies.y = -50;
 
-    var tween = game.add.tween(enemy).to( { y: game.world.height + 50 }, 3000, Phaser.Easing.Linear.None, true, 0, 1000, false);
+    
 
+    // var point = points.create(48, 50, 'point');
+    // point.y = -250;
+    // point.anchor.setTo(0.5, 0.5);
+    // point.body.moves = false;
+    // point.type = "point";
+    // var tween2 = game.add.tween(point).to( { y: game.world.height + 50 }, 3000, Phaser.Easing.Linear.None, true, 0, 1000, false);
 }
 
 // function setupInvader (invader) {
@@ -167,9 +159,6 @@ function createEnemies () {
 // }
 
 function update() {
-    
-
-
     //  Scroll the background
     // starfield.tilePosition.y += 2;
     if ( move ) {
@@ -179,7 +168,7 @@ function update() {
         }
     }
 
-    if (player.alive) {
+    // if (player.alive) {
         //  Reset the player, then check for movement keys
         // player.body.velocity.setTo(0, 0);
 
@@ -205,11 +194,13 @@ function update() {
 
         //  Run collision
         game.physics.arcade.overlap(player, enemies, collisionHandler, null, this);
+        game.physics.arcade.overlap(player, healths, collisionHandler, null, this);
         // game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
-    }
+    // }
 
     // text.text = player.x;
-    text.text = str;
+    scoreText.text = "Score: " + score;
+    livesText.text = "Lives: " + lives;
 }
 
 function render() {
@@ -220,12 +211,25 @@ function render() {
     // }
 }
 
-function collisionHandler (bullet, alien) {
-    
+function collisionHandler2 (bullet, alien) {
+
     //  When a bullet hits an alien we kill them both
     // bullet.kill();
     alien.kill();
 
+    score++;
+}
+function collisionHandler (bullet, alien) {
+
+    //  When a bullet hits an alien we kill them both
+    // bullet.kill();
+    alien.kill();
+
+    if ( alien.type === 'enemy' ) {
+        lives--;
+    } else {
+        score++;
+    }
     // //  Increase the score
     // score += 20;
     // scoreText.text = scoreString + score;
