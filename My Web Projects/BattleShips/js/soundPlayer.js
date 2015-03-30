@@ -1,6 +1,6 @@
 define(function(){
     var explosionSound = new Audio('./sounds/explosion_sound.mp3'),
-        waterSound = new Audio('./sounds/water_sound.mp3')
+        waterSound = new Audio('./sounds/water_sound.mp3'),
         soundsEnabled = true;
 
 	var soundPlayer = {

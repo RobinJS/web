@@ -9,10 +9,10 @@ define(function (require) {
 
     var GameManager = function(){
     	var currentState = 'arrange_ships',
-    	winner = null;
+    		winner = null,
+    		playerTurn = 'player';
 
     	this.hitPosition = null;
-    	this.playerTurn = 'player';
 
     	this.mainStage = new Stage('mainCanvas');
     	this.gameScene = new GameScene(this.mainStage);
@@ -20,7 +20,6 @@ define(function (require) {
     	this.opponentField = new OpponentField( this.mainStage );
 
     	this.gameScene.addGameOverSplash();
-    	// this.addRotationListeners();
 
     /* gameScene listeners */
     	this.gameScene.events.playerAutoArrange.add(function(){
@@ -117,17 +116,17 @@ define(function (require) {
 		        	this.gameScene.hideArrangepanel();
 		        break;
 		        case config.gameStates.PLAYERS_TURN:
-		        	this.gameScene.hideTurnLabel( this.playerTurn );
-		        	this.playerTurn = 'player';
-		        	this.gameScene.showTurnLabel( this.playerTurn );
+		        	this.gameScene.hideTurnLabel( playerTurn );
+		        	playerTurn = 'player';
+		        	this.gameScene.showTurnLabel( playerTurn );
 		        	this.opponentField.enableHitMarker();
 		        break;
 		        case config.gameStates.COMPUTERS_TURN:
 		        	this.opponentField.disableHitMarker();
 
-		        	this.gameScene.hideTurnLabel( this.playerTurn );
-		        	this.playerTurn = 'computer';
-	        		this.gameScene.showTurnLabel( this.playerTurn );
+		        	this.gameScene.hideTurnLabel( playerTurn );
+		        	playerTurn = 'computer';
+	        		this.gameScene.showTurnLabel( playerTurn );
 
 	        		this.playerField.computersTurn();
 		        break;
@@ -136,24 +135,25 @@ define(function (require) {
 		        break;
 		        case config.gameStates.GAME_OVER:
 		        	this.opponentField.disableHitMarker();
-		        	this.gameScene.hideTurnLabel( this.playerTurn );
+		        	this.gameScene.hideTurnLabel( playerTurn );
+		        	this.saveResultInStorage();
 		        	this.gameScene.showWinSplah( winner );
 		        break;
 		   	}
 		};
 
 		this.hitCheck = function () {
-			if ( this.playerTurn === 'player' ) {
+			if ( playerTurn === 'player' ) {
 				this.opponentField.checkHittedSector( this.hitPosition );
-			} else if ( this.playerTurn === 'computer' ) {
+			} else if ( playerTurn === 'computer' ) {
 				this.playerField.checkHittedSector( this.hitPosition );
 			}
 		}.bind(this);
 
 		this.switchPlayerTurn = function(){
-			if ( this.playerTurn === 'player' ) {
+			if ( playerTurn === 'player' ) {
 				currentState = config.gameStates.COMPUTERS_TURN;
-			} else if ( this.playerTurn === 'computer' ) {
+			} else if ( playerTurn === 'computer' ) {
 				currentState = config.gameStates.PLAYERS_TURN;
 			}
 		}.bind(this);
@@ -166,6 +166,11 @@ define(function (require) {
 				}.bind(this, ship));
 			});
 		}.bind(this)());
+
+		this.saveResultInStorage = function(){
+			var currentPoints = sessionStorage[winner] !== undefined ? sessionStorage[winner] : 0;
+			sessionStorage[winner] = parseInt(currentPoints) + 1;
+		};
 
 		this.reset = function(){
 			this.opponentField.reset();

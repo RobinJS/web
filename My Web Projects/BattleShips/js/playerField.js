@@ -3,7 +3,7 @@ define(function (require) {
 
     var Ship = require('ship'),
         config = require('config'),
-        Signal = require('libs/signals.min'),
+        Signal = require('signals'),
         utils = require('utils'),
         soundPlayer = require('soundPlayer');
 
@@ -95,7 +95,6 @@ define(function (require) {
 
                 this.ships[i].events.hideAvailableArea.add(function(i){
                     this.availableArea.removeAllChildren();
-                    // this.ships[i].availableSectors = [];
                 }.bind(this, i));
 			}
     	},
@@ -275,14 +274,8 @@ define(function (require) {
                 }
             }
 
-            
-
             // check if ship is dropped over available area
             if ( canBeDropped ) {
-                // this.arrangedX = this.image.x;
-                // this.arrangedY = this.image.y;
-                // this.markSectorsAsFull();
-                // ;;;console.log(1);
                 this.lastClickedShip.emptySectorsUnderShip();
                 this.lastClickedShip.rotate();
                 this.lastClickedShip.arrangedX = this.lastClickedShip.image.x;
@@ -292,9 +285,6 @@ define(function (require) {
             } else {
                 this.showCantRotateShadow( testShipParams );
             }
-            
-            // this.events.lastClickedShip.dispatch();
-            // this.events.hideAvailableArea.dispatch();
         },
 
         showCantRotateShadow: function( testShipParams ){
@@ -356,6 +346,7 @@ define(function (require) {
                             that.shipsRemaining--;
                             that.events.updateShipsRemainingText.dispatch();
                             that.markShipSunk( ship );
+                            that.markSurroundingSectorsAsEmpty( ship );
                         }
                     }
 
@@ -426,11 +417,7 @@ define(function (require) {
                 that.waterSplashAnim.removeEventListener('animationend', animEndHandler);
                 that.waterSplashAnim.visible = false;
 
-                var newHitMark = new createjs.Bitmap("img/empty_mark.png");
-                newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
-                newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
-                that.hitMarks.addChild( newHitMark );
-                
+                that.addEmptyHitMark( hitPosition );
                 that.events.emptySectorMarked.dispatch();
             }
 
@@ -446,6 +433,13 @@ define(function (require) {
             this.waterSplashAnim.gotoAndPlay('anim');
         },
 
+        addEmptyHitMark: function( hitPosition ){
+            var newHitMark = new createjs.Bitmap("img/empty_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.playerFieldData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.playerFieldData.y;
+            this.hitMarks.addChild( newHitMark );
+        },
+
         markShipSunk: function( ship ){
             var sunkMark = new createjs.Shape();
             sunkMark.graphics.setStrokeStyle(1).beginFill('rgba(0, 101, 155, 0.7)').rect(0, 0, ship.sectorsWidth * config.gridSize, ship.sectorsHeight * config.gridSize);
@@ -458,6 +452,20 @@ define(function (require) {
             this.lastHitPos = {};
             this.lastDirection = '';
             this.directions = [ 'up', 'right', 'down', 'left' ];
+        },
+
+        markSurroundingSectorsAsEmpty: function( ship ){
+            for (var y = ship.startSectorY - 1; y <= ship.endSectorY + 1; y++) {
+                for (var x = ship.startSectorX - 1; x <= ship.endSectorX + 1; x++) {
+                    if ( y >= 0 && y < this.field.length && x >= 0 && x < this.field.length ) {
+                        var sector = this.field[y][x];
+                        if ( sector == 0 ) {
+                            this.field[y][x] = '.';
+                            this.addEmptyHitMark( {x: x, y: y} );
+                        }
+                    }
+                }
+            }
         },
 
         getNewDirection: function(){

@@ -3,7 +3,7 @@ define(function (require) {
 
     var Ship = require('ship'),
         config = require('config'),
-        Signal = require('libs/signals.min'),
+        Signal = require('signals'),
         utils = require('utils'),
         soundPlayer = require('soundPlayer');
 
@@ -169,6 +169,7 @@ define(function (require) {
                             that.shipsRemaining--;
                             that.events.updateShipsRemainingText.dispatch();
                             that.markShipSunk( ship );
+                            that.markSurroundingSectorsAsEmpty( ship );
                         }
                     }
 
@@ -205,11 +206,7 @@ define(function (require) {
                 that.waterSplashAnim.removeEventListener('animationend', animEndHandler);
                 that.waterSplashAnim.visible = false;
 
-                var newHitMark = new createjs.Bitmap("img/empty_mark.png");
-                newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
-                newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
-                that.hitMarks.addChild( newHitMark );
-                
+                that.addEmptyHitMark( hitPosition );
                 that.events.emptySectorMarked.dispatch();
             }
 
@@ -227,6 +224,13 @@ define(function (require) {
             this.waterSplashAnim.gotoAndPlay('anim');
         },
 
+        addEmptyHitMark: function( hitPosition ){
+            var newHitMark = new createjs.Bitmap("img/empty_mark.png");
+            newHitMark.x = hitPosition.x * config.gridSize + config.opponentFiledData.x;
+            newHitMark.y = hitPosition.y * config.gridSize + config.opponentFiledData.y;
+            this.hitMarks.addChild( newHitMark );
+        },
+
         markShipSunk: function( ship ){
             var sunkMark = new createjs.Shape();
             sunkMark.graphics.setStrokeStyle(1).beginFill('rgba(0, 101, 155, 0.7)').rect(0, 0, ship.sectorsWidth * config.gridSize, ship.sectorsHeight * config.gridSize);
@@ -234,6 +238,20 @@ define(function (require) {
             sunkMark.x = ship.startSectorX * config.gridSize + config.opponentFiledData.x;
             sunkMark.y = ship.startSectorY * config.gridSize + config.opponentFiledData.y;
             this.hitMarks.addChild( sunkMark );
+        },
+
+        markSurroundingSectorsAsEmpty: function( ship ){
+            for (var y = ship.startSectorY - 1; y <= ship.endSectorY + 1; y++) {
+                for (var x = ship.startSectorX - 1; x <= ship.endSectorX + 1; x++) {
+                    if ( y >= 0 && y < this.field.length && x >= 0 && x < this.field.length ) {
+                        var sector = this.field[y][x];
+                        if ( sector == 0 ) {
+                            this.field[y][x] = '.';
+                            this.addEmptyHitMark( {x: x, y: y} );
+                        }
+                    }
+                }
+            }
         },
 
         clearField: function(){

@@ -2,15 +2,15 @@ define(function (require) {
     "use strict";
 
     var InfoHeader = require('infoHeader'),
-    	Signal = require('libs/signals.min'),
+    	Signal = require('signals'),
     	config = require('config'),
     	Button = require('button'),
     	soundPlayer = require('soundPlayer');
 
     var GameScene = function( mainStage ){
     	this.mainStage = mainStage;
-    	this.stageBgImage = new createjs.Bitmap("img/ocean_bg.jpg");
-		this.mainStage.addChild(this.stageBgImage);
+    	var stageBgImage = new createjs.Bitmap("img/ocean_bg.jpg");
+		this.mainStage.addChild(stageBgImage);
 		this.infoHeader = new InfoHeader( this.mainStage );
 
 	/* sound icons */
@@ -31,6 +31,7 @@ define(function (require) {
 		this.soundButton.y = 50;
 		this.soundButton.soundIcon = this.soundIcon;
 		this.soundButton.muteIcon = this.muteIcon;
+		this.soundButton.mouseEnabled = false;
 		this.mainStage.addChild(this.soundButton);
 	/* end sound icons */
 
@@ -119,12 +120,25 @@ define(function (require) {
 
  		this.gameOverLabel = new createjs.Text("GAME OVER", "38px Verdana", "#fff");
  		this.gameOverLabel.x = this.mainStage.canvas.width / 2 - 150;
- 		this.gameOverLabel.y = 210;
+ 		this.gameOverLabel.y = 130;
 
  		this.winnerLabel = new createjs.Text("", "28px Verdana", "#fff");
- 		this.winnerLabel.y = 300;
+ 		this.winnerLabel.x = 450;
+ 		this.winnerLabel.y = 180;
 
- 		this.playAgainBtn = new Button(470, 450, 525, 462, "PLAY AGAIN", '#6acd3c' );
+ 		this.scoreLabel = new createjs.Text("SCORE:", "28px Verdana", "#fff");
+ 		this.scoreLabel.x = 550;
+ 		this.scoreLabel.y = 300;
+
+ 		this.playerScoreText = new createjs.Text("Player:", "28px Verdana", "#fff");
+ 		this.playerScoreText.x = 520;
+ 		this.playerScoreText.y = 350;
+
+ 		this.computerScoreText = new createjs.Text("Computer:", "28px Verdana", "#fff");
+ 		this.computerScoreText.x = 468;
+ 		this.computerScoreText.y = 390;
+
+ 		this.playAgainBtn = new Button(470, 510, 525, 522, "PLAY AGAIN", '#6acd3c' );
  		this.playAgainBtn.button.alpha = 0;
 		this.playAgainBtn.clickEnabled = false;
 	/* end Game Over splash stuff */
@@ -135,7 +149,7 @@ define(function (require) {
 		this.mainStage.addChild(this.arrangepanel);
 
 		this.gameOverSplash = new createjs.Container();
-    	this.gameOverSplash.addChild(this.gameOverSplashBg, this.gameOverLabel, this.winnerLabel, this.playAgainBtn.button);
+    	this.gameOverSplash.addChild(this.gameOverSplashBg, this.gameOverLabel, this.winnerLabel, this.scoreLabel, this.playerScoreText, this.computerScoreText, this.playAgainBtn.button);
 		this.gameOverSplash.y = -this.mainStage.canvas.height;
 		
 		this.events = {
@@ -160,6 +174,7 @@ define(function (require) {
 			this.startGameBtn.addEventListener('pressup', function(e){
 				this.startGameBtn.hidePressedImg();
 				this.disableButtonsClick();
+				this.soundButton.mouseEnabled = true;
 				this.events.startGame.dispatch();
 			}.bind(this));
 
@@ -202,6 +217,7 @@ define(function (require) {
 			this.playAgainBtn.addEventListener('pressup', function(e){
 				this.playAgainBtn.hidePressedImg();
 				this.disableButtonsClick();
+				this.soundButton.mouseEnabled = true;
 				this.events.playAgain.dispatch();
 			}.bind(this));
 
@@ -313,7 +329,9 @@ define(function (require) {
 		},
 
 		showWinSplah: function( winner ){
-			var that = this;
+			var that = this,
+				playerWins = sessionStorage.player !== undefined ? sessionStorage.player : 0,
+				computerWins = sessionStorage.computer !== undefined ? sessionStorage.computer : 0;
 
 			if ( winner === 'player' ) {
 				this.winnerLabel.x = this.mainStage.canvas.width / 2 - 175;
@@ -322,6 +340,9 @@ define(function (require) {
 			}
 
 			this.winnerLabel.text = winner + " is the winner!"
+
+			this.playerScoreText.text = 'Player: ' + playerWins + ' wins';
+			this.computerScoreText.text = 'Computer: ' + computerWins + ' wins';
 			this.playAgainBtn.button.alpha = 0;
 
 			TweenMax.to(this.gameOverSplash, 1, {
@@ -330,14 +351,13 @@ define(function (require) {
 					that.animatePlayAgainBtn();
 				}
 			});
+
+			this.soundButton.mouseEnabled = false;
 		},
 
 		hideWinSplah: function( winner ){
 			TweenMax.to(this.gameOverSplash, 1, {
-				y: -this.mainStage.canvas.height,
-				onComplete: function(){
-					// that.events.panelShown.dispatch();
-				}
+				y: -this.mainStage.canvas.height
 			});
 		},
 

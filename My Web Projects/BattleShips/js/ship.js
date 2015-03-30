@@ -2,7 +2,7 @@ define(function (require) {
     "use strict";
 
     var config = require('config'),
-        Signal = require('libs/signals.min');
+        Signal = require('signals');
 
     var Ship = function( type, field ){
     	this.type = type;
@@ -18,8 +18,6 @@ define(function (require) {
         this.sunk = false;
 
         this.image = new createjs.Bitmap(config.shipsData[type].imagePath);
-        // this.image.regX = 25;
-        // this.image.regY = 25;
         this.image.x = 0;
         this.image.y = 0;
 
