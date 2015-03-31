@@ -12,7 +12,7 @@ function preload() {
     // game.scale.compatibility.orientationFallback = 'viewport';
     game.scale.setupScale(770, 1280);
 
-    game.load.spritesheet('enemy', 'img/enemy.png', 24, 24);
+    game.load.spritesheet('bomb', 'img/bombImg.png', 200, 200);
     game.load.spritesheet('health', 'img/health.png', 24, 24);
     game.load.image('player', 'img/player.png');
 
@@ -23,7 +23,7 @@ function preload() {
 }
 
 var player;
-var enemies;
+var bombs;
 var move = false;
 var step = 0;
 var scoreText;
@@ -63,15 +63,15 @@ function create() {
     
 
     //  The baddies!
-    enemies = game.add.group();
-    enemies.enableBody = true;
-    enemies.physicsBodyType = Phaser.Physics.ARCADE;
-    enemies.createMultiple(20, 'enemy');
+    bombs = game.add.group();
+    bombs.enableBody = true;
+    bombs.physicsBodyType = Phaser.Physics.ARCADE;
+    bombs.createMultiple(20, 'bomb');
 
-    enemies.setAll('anchor.x', 0.5);
-    enemies.setAll('anchor.y', 0.5);
-    enemies.setAll('outOfBoundsKill', true);
-    enemies.setAll('checkWorldBounds', true);
+    bombs.setAll('anchor.x', 0.5);
+    bombs.setAll('anchor.y', 0.5);
+    bombs.setAll('outOfBoundsKill', true);
+    bombs.setAll('checkWorldBounds', true);
 
     healths = game.add.group();
     healths.enableBody = true;
@@ -91,8 +91,8 @@ function create() {
     if (window.DeviceMotionEvent != undefined) {
          window.addEventListener('deviceorientation', function(e) {
             if ( e.gamma && Math.abs(e.gamma.toFixed(0)) != '0' && Math.abs(e.gamma.toFixed(0)) != '-0' ) {
-                move = true;
                 step = parseInt(e.gamma.toFixed(0));
+                move = true;
                 // speed = step;
             } else {
                 move = false;
@@ -119,11 +119,13 @@ function create() {
 }
 
 function createFallingObjects () {
-    var enemy = enemies.getFirstDead(false);
+    var bomb = bombs.getFirstDead(false);
+    bomb.scale.x = 0.5;
+    bomb.scale.y = 0.5;
     var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-    enemy.reset( x, -5);
-    enemy.rotation = game.physics.arcade.moveToXY(enemy, x, game.world.height + 50, 60, 3000);
-    enemy.type = 'enemy';
+    bomb.reset( x, -5);
+    game.physics.arcade.moveToXY(bomb, x, game.world.height + 50, 60, 3000);
+    bomb.type = 'bomb';
 
     var health = healths.getFirstDead(false);
     var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
@@ -191,7 +193,7 @@ function update() {
         // }
 
         //  Run collision
-        game.physics.arcade.overlap(player, enemies, collisionHandler, null, this);
+        game.physics.arcade.overlap(player, bombs, collisionHandler, null, this);
         game.physics.arcade.overlap(player, healths, collisionHandler, null, this);
         // game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
     // }
