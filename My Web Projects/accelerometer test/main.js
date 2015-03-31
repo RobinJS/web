@@ -25,6 +25,18 @@ var score = 0;
 var lives = 3;
 var points;
 
+/*
+    - Teleportation
+    - bigger size
+    - smaller size
+    - speed up the falling thing
+    - speed down the falling thing
+    - explode all baddies around you
+    - get all around you (magnet)
+    - extra live
+    - move in all directions
+*/
+
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -55,6 +67,7 @@ function create() {
     player = game.add.sprite(game.world.centerX, game.world.height - 60, 'player');
     player.anchor.setTo(0.5, 0.5);
     game.physics.enable(player, Phaser.Physics.ARCADE);
+    player.body.collideWorldBounds = true;
 
     //  The baddies!
     enemies = game.add.group();
@@ -86,7 +99,7 @@ function create() {
          window.ondevicemotion = function(e) {
             if ( e.accelerationIncludingGravity.x && e.accelerationIncludingGravity.x.toFixed(0) != 0 ) {
             // if ( e.rotationRate.beta && e.rotationRate.beta.toFixed(0) != 0 ) {
-                step = e.accelerationIncludingGravity.x.toFixed(0);
+                step = -e.accelerationIncludingGravity.x.toFixed(0);
                 // step = e.rotationRate.beta.toFixed(0) / 10;
                 move = true;
             } else {
@@ -162,9 +175,9 @@ function update() {
     //  Scroll the background
     // starfield.tilePosition.y += 2;
     if ( move ) {
-        var futurePosition = player.x + step * 3;
+        var futurePosition = player.x + step * 5;
         if ( futurePosition > player.width / 2 && futurePosition < game.world.width - player.width / 2 ) {
-            player.x += step * 3;
+            player.x += step * 5;
         }
     }
 
