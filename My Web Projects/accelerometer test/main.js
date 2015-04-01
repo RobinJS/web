@@ -16,6 +16,8 @@ function preload() {
     game.load.spritesheet('magnet', 'img/magnet.png', 90, 90);
     game.load.spritesheet('health', 'img/health.png', 24, 24);
     game.load.image('player', 'img/player.png');
+    game.load.image('magnetHitAreaImg', 'img/magnetHitArea.png');
+
 
     // game.scale.onOrientationChange.add(function(){
         
@@ -34,6 +36,7 @@ var score = 0;
 var lives = 3;
 var points;
 var debug;
+var magnetHitArea;
 /*
     - Teleportation
     - bigger size
@@ -58,11 +61,31 @@ function create() {
     // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
 
     //  The hero!
-    player = game.add.sprite(game.world.centerX, game.world.height - 60, 'player');
+    playerContainer = game.add.group();
+    playerContainer.x = game.world.centerX;
+    playerContainer.y = game.world.height - 10;
+    playerContainer.enableBody = true;
+    game.physics.enable(playerContainer, Phaser.Physics.ARCADE);
+    // player.body.collideWorldBounds = true;
+    
+    player = game.add.sprite(0, 0, 'player');
     game.physics.enable(player, Phaser.Physics.ARCADE);
-    player.body.collideWorldBounds = true;
-    player.anchor.set(0.5);
+    // player.body.collideWorldBounds = true;
+
+    player.anchor.set(0.5, 1);
     player.body.immovable = true;
+    playerContainer.addChild(player);
+
+    var magnetHitAreaProps = { width: 300, height: 300 };
+
+    magnetHitArea = game.add.sprite(0, 0, 'magnetHitAreaImg');
+    game.physics.enable(magnetHitArea, Phaser.Physics.ARCADE);
+    // magnetHitArea.body.collideWorldBounds = true;
+
+    magnetHitArea.anchor.set(0.5, 1);
+    magnetHitArea.body.immovable = true;
+    
+    playerContainer.addChild(magnetHitArea);
     
 
     //  The baddies!
@@ -189,11 +212,11 @@ function update() {
         var futurePosition = player.x + step;
         
         if ( futurePosition - player.width/2 <= 0 ) {
-            player.body.x = 0;
-        } else if ( futurePosition + player.width/2 >= game.world.width ) {
-            player.body.x = game.world.width - player.width;
+            playerContainer.x = 0;
+        } else if ( futurePosition + playerContainer/2 >= game.world.width ) {
+            playerContainer.x = game.world.width - playerContainer;
         } else {
-            player.body.x += step;
+            playerContainer.x += step;
         }
     }
 
@@ -202,9 +225,9 @@ function update() {
         // player.body.velocity.setTo(0, 0);
 
         if (cursors.left.isDown) {
-            player.body.x -= 10;
+            playerContainer.x -= 10;
         } else if (cursors.right.isDown) {
-            player.body.x += 10;
+            playerContainer.x += 10;
         }
 
         // //  Firing?
@@ -224,13 +247,14 @@ function update() {
         // game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
 
         game.physics.arcade.collide(player, [bombs, magnets, healths], collisionHandler, null, this);
+        game.physics.arcade.overlap(magnetHitArea, healths, magnetisedCollection, null, this);
     // }
 
-    healths.forEach(function(h){
-        if ( h.y > game.world.height - 150 ) {
-            game.physics.arcade.moveToObject(h, player, 400);
-        }
-    });
+    // healths.forEach(function(h){
+    //     if ( h.y > game.world.height - 150 ) {
+    //         game.physics.arcade.moveToObject(h, player, 400);
+    //     }
+    // });
 
     // text.text = player.x;
     scoreText.text = "Score: " + score;
@@ -249,6 +273,8 @@ function render() {
 
     // debug.text = "speed: " + speed;
     debug.text = "step: " + step;
+    
+    // game.debug.body(magnetHitArea);
 
     return;
     game.debug.body(player);
@@ -261,16 +287,20 @@ function render() {
     });
 }
 
+function magnetisedCollection (obj1, obj2) {
+    game.physics.arcade.moveToObject(obj2, playerContainer, 400);
+}
 
-
-function collisionHandler (bullet, alien) {
+function collisionHandler (obj1, obj2) {
 
     //  When a bullet hits an alien we kill them both
     // bullet.kill();
-    alien.kill();
+    obj2.kill();
 
-    if ( alien.type === 'enemy' ) {
+    if ( obj2.type === 'enemy' ) {
         lives--;
+    } else if ( obj2.type === 'health' ){
+
     } else {
         score++;
     }
