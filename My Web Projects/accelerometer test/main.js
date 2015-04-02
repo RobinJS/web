@@ -17,6 +17,7 @@ function preload() {
     game.load.spritesheet('health', 'img/health.png', 24, 24);
     game.load.image('player', 'img/player.png');
     game.load.image('magnetHitAreaImg', 'img/magnetHitArea.png');
+    game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
 
 
     // game.scale.onOrientationChange.add(function(){
@@ -37,12 +38,15 @@ var lives = 3;
 var points;
 var debug;
 var magnetHitArea;
+var magnets;
+var speedUps;
 /*
     - Teleportation
     - bigger size
     - smaller size
     - speed up the falling things
     - speed down the falling things
+    - happy face icon :)
     - explode all baddies around you
         - get all around you (magnet)
     - extra live
@@ -76,17 +80,15 @@ function create() {
     player.body.immovable = true;
     playerContainer.addChild(player);
 
-    var magnetHitAreaProps = { width: 300, height: 300 };
-
     magnetHitArea = game.add.sprite(0, 0, 'magnetHitAreaImg');
     game.physics.enable(magnetHitArea, Phaser.Physics.ARCADE);
     // magnetHitArea.body.collideWorldBounds = true;
-
+    magnetHitArea.width = 400;
+    magnetHitArea.height = 300;
     magnetHitArea.anchor.set(0.5, 1);
     magnetHitArea.body.immovable = true;
     
     playerContainer.addChild(magnetHitArea);
-    
 
     //  The baddies!
     bombs = game.add.group();
@@ -103,6 +105,16 @@ function create() {
     healths.enableBody = true;
     healths.physicsBodyType = Phaser.Physics.ARCADE;
     healths.createMultiple(20, 'health');
+
+    bombs = game.add.group();
+    bombs.enableBody = true;
+    bombs.physicsBodyType = Phaser.Physics.ARCADE;
+    bombs.createMultiple(20, 'speedUpIconImg');
+
+    speedUps = game.add.group();
+    speedUps.enableBody = true;
+    speedUps.physicsBodyType = Phaser.Physics.ARCADE;
+    speedUps.createMultiple(20, 'speedUpIconImg');
 
     createEnemies();
 
@@ -174,6 +186,22 @@ function createFallingObjects () {
     magnet.outOfBoundsKill = true;
     magnet.checkWorldBounds = true;
 
+
+    var speedUp = speedUps.getFirstDead(false);
+    speedUp.scale.x = 0.5;
+    speedUp.scale.y = 0.5;
+    var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+    speedUp.reset( x, -5);
+    game.physics.arcade.moveToXY(speedUp, x, game.world.height + 50, 60, 6000);
+    speedUp.type = 'speedUp';
+    speedUp.body.width = 45;
+    speedUp.body.height = 70;
+
+    speedUp.anchor.x = 0.5;
+    speedUp.anchor.y = 0.5;
+
+    speedUp.outOfBoundsKill = true;
+    speedUp.checkWorldBounds = true;
 
 
     var health = healths.getFirstDead(false);
