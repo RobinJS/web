@@ -18,6 +18,7 @@ function preload() {
     game.load.image('player', 'img/player.png');
     game.load.image('magnetHitAreaImg', 'img/magnetHitArea.png');
     game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
+    game.load.image('snail', 'img/snail.png');
 
 
     // game.scale.onOrientationChange.add(function(){
@@ -40,12 +41,13 @@ var debug;
 var magnetHitArea;
 var magnets;
 var speedUps;
+var snails;
 /*
     - Teleportation
     - bigger size
     - smaller size
-    - speed up the falling things
-    - speed down the falling things
+        - speed up the falling things
+        - speed down the falling things
     - happy face icon :)
     - explode all baddies around you
         - get all around you (magnet)
@@ -115,6 +117,11 @@ function create() {
     speedUps.enableBody = true;
     speedUps.physicsBodyType = Phaser.Physics.ARCADE;
     speedUps.createMultiple(20, 'speedUpIconImg');
+
+    snails = game.add.group();
+    snails.enableBody = true;
+    snails.physicsBodyType = Phaser.Physics.ARCADE;
+    snails.createMultiple(20, 'snail');
 
     createEnemies();
 
@@ -202,6 +209,22 @@ function createFallingObjects () {
 
     speedUp.outOfBoundsKill = true;
     speedUp.checkWorldBounds = true;
+
+    var snail = snails.getFirstDead(false);
+    snail.scale.x = 0.5;
+    snail.scale.y = 0.5;
+    var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+    snail.reset( x, -5);
+    game.physics.arcade.moveToXY(snail, x, game.world.height + 50, 60, 6000);
+    snail.type = 'snail';
+    snail.body.width = 45;
+    snail.body.height = 70;
+
+    snail.anchor.x = 0.5;
+    snail.anchor.y = 0.5;
+
+    snail.outOfBoundsKill = true;
+    snail.checkWorldBounds = true;
 
 
     var health = healths.getFirstDead(false);
