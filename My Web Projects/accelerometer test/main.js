@@ -44,13 +44,14 @@ var speedUps;
 var snails;
 /*
     - Teleportation
-    - bigger size
-    - smaller size
+        - bigger size
+        - smaller size
         - speed up the falling things
         - speed down the falling things
     - happy face icon :)
-    - explode all baddies around you
-        - get all around you (magnet)
+        - explode all baddies around you (the bomb)
+        - get all goodies around you (magnet)
+    - shield
     - extra live
     - move in all directions
     - try to reach the bonus level
@@ -108,11 +109,6 @@ function create() {
     healths.physicsBodyType = Phaser.Physics.ARCADE;
     healths.createMultiple(20, 'health');
 
-    bombs = game.add.group();
-    bombs.enableBody = true;
-    bombs.physicsBodyType = Phaser.Physics.ARCADE;
-    bombs.createMultiple(20, 'speedUpIconImg');
-
     speedUps = game.add.group();
     speedUps.enableBody = true;
     speedUps.physicsBodyType = Phaser.Physics.ARCADE;
@@ -161,70 +157,70 @@ function create() {
 }
 
 function createFallingObjects () {
-    var bomb = bombs.getFirstDead(false);
-    bomb.scale.x = 0.5;
-    bomb.scale.y = 0.5;
-    var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-    bomb.reset( x, -5);
-    game.physics.arcade.moveToXY(bomb, x, game.world.height + 50, 60, 6000);
-    bomb.type = 'bomb';
-    bomb.body.width = 45;
-    bomb.body.height = 70;
+    // var bomb = bombs.getFirstDead(false);
+    // bomb.scale.x = 0.5;
+    // bomb.scale.y = 0.5;
+    // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+    // bomb.reset( x, -5);
+    // game.physics.arcade.moveToXY(bomb, x, game.world.height + 50, 60, 6000);
+    // bomb.type = 'bomb';
+    // bomb.body.width = 45;
+    // bomb.body.height = 70;
 
-    bomb.anchor.x = 0.5;
-    bomb.anchor.y = 0.5;
+    // bomb.anchor.x = 0.5;
+    // bomb.anchor.y = 0.5;
 
-    bomb.outOfBoundsKill = true;
-    bomb.checkWorldBounds = true;
+    // bomb.outOfBoundsKill = true;
+    // bomb.checkWorldBounds = true;
 
-    var magnet = magnets.getFirstDead(false);
-    magnet.scale.x = 0.5;
-    magnet.scale.y = 0.5;
-    var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-    magnet.reset( x, -5);
-    game.physics.arcade.moveToXY(magnet, x, game.world.height + 50, 60, 6000);
-    magnet.type = 'magnet';
-    magnet.body.width = 45;
-    magnet.body.height = 70;
+    // var magnet = magnets.getFirstDead(false);
+    // magnet.scale.x = 0.5;
+    // magnet.scale.y = 0.5;
+    // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+    // magnet.reset( x, -5);
+    // game.physics.arcade.moveToXY(magnet, x, game.world.height + 50, 60, 6000);
+    // magnet.type = 'magnet';
+    // magnet.body.width = 45;
+    // magnet.body.height = 70;
 
-    magnet.anchor.x = 0.5;
-    magnet.anchor.y = 0.5;
+    // magnet.anchor.x = 0.5;
+    // magnet.anchor.y = 0.5;
 
-    magnet.outOfBoundsKill = true;
-    magnet.checkWorldBounds = true;
+    // magnet.outOfBoundsKill = true;
+    // magnet.checkWorldBounds = true;
 
 
-    var speedUp = speedUps.getFirstDead(false);
-    speedUp.scale.x = 0.5;
-    speedUp.scale.y = 0.5;
-    var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-    speedUp.reset( x, -5);
-    game.physics.arcade.moveToXY(speedUp, x, game.world.height + 50, 60, 6000);
-    speedUp.type = 'speedUp';
-    speedUp.body.width = 45;
-    speedUp.body.height = 70;
+    // var speedUp = speedUps.getFirstDead(false);
+    // speedUp.scale.x = 0.5;
+    // speedUp.scale.y = 0.5;
+    // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+    // speedUp.reset( x, -5);
+    // game.physics.arcade.moveToXY(speedUp, x, game.world.height + 50, 60, 6000);
+    // speedUp.type = 'speedUp';
+    // speedUp.body.width = 45;
+    // speedUp.body.height = 70;
 
-    speedUp.anchor.x = 0.5;
-    speedUp.anchor.y = 0.5;
+    // speedUp.anchor.x = 0.5;
+    // speedUp.anchor.y = 0.5;
 
-    speedUp.outOfBoundsKill = true;
-    speedUp.checkWorldBounds = true;
+    // speedUp.outOfBoundsKill = true;
+    // speedUp.checkWorldBounds = true;
 
-    var snail = snails.getFirstDead(false);
-    snail.scale.x = 0.5;
-    snail.scale.y = 0.5;
-    var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-    snail.reset( x, -5);
-    game.physics.arcade.moveToXY(snail, x, game.world.height + 50, 60, 6000);
-    snail.type = 'snail';
-    snail.body.width = 45;
-    snail.body.height = 70;
+    // var snail = snails.getFirstDead(false);
+    // snail.scale.x = 0.5;
+    // snail.scale.y = 0.5;
+    // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+    // snail.reset( x, -5);
+    // game.physics.arcade.moveToXY(snail, x, game.world.height + 50, 60, 6000);
+    // snail.type = 'snail';
+    // snail.body.width = 45;
+    // snail.body.height = 70;
 
-    snail.anchor.x = 0.5;
-    snail.anchor.y = 0.5;
+    // snail.anchor.x = 0.5;
+    // snail.anchor.y = 0.5;
 
-    snail.outOfBoundsKill = true;
-    snail.checkWorldBounds = true;
+    // snail.outOfBoundsKill = true;
+    // snail.checkWorldBounds = true;
 
 
     var health = healths.getFirstDead(false);
@@ -298,7 +294,7 @@ function update() {
         // game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
 
         game.physics.arcade.collide(player, [bombs, magnets, healths], collisionHandler, null, this);
-        game.physics.arcade.overlap(magnetHitArea, healths, magnetisedCollection, null, this);
+        // game.physics.arcade.overlap(magnetHitArea, healths, magnetisedCollection, null, this);
     // }
 
     // healths.forEach(function(h){
