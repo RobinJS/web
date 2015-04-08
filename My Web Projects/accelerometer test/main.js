@@ -1,29 +1,49 @@
-require([ "js/player" ],
+require(["js/player"],
     function( Player ) {
-        "use strict";
         var game = new Phaser.Game(720, 1280, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
-        var playerContainer;
-        var player;
-        var magnetHitArea;
-        var bombs;
-        var magnets;
-        var healths;
-        var speedUps;
-        var snails;
-        
-        var score = 0;
-        var lives = 3;
-        var scoreText;
-        var livesText;
+        function preload() {
+            game.scale.maxWidth = 770;
+            game.scale.maxHeight = 1280;
+            game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+            game.scale.setScreenSize();
 
+            // game.scale.compatibility.supportsFullScreen = true;
+            game.scale.fullScreenTarget = game.canvas;
+            // game.scale.compatibility.orientationFallback = 'viewport';
+            game.scale.setupScale(770, 1280);
+
+            game.load.spritesheet('bomb', 'img/bombImg.png', 90, 128);
+            game.load.spritesheet('magnet', 'img/magnet.png', 90, 90);
+            game.load.spritesheet('health', 'img/health.png', 24, 24);
+            game.load.image('player', 'img/player.png');
+            game.load.image('magnetHitAreaImg', 'img/magnetHitArea.png');
+            game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
+            game.load.image('snail', 'img/snail.png');
+
+
+            // game.scale.onOrientationChange.add(function(){
+                
+            // });
+
+        }
+
+        var player;
+        var bombs;
         var move = false;
         var step = 0;
-
+        var scoreText;
+        var livesText;
+        var str = "";
+        var score = 0;
+        var lives = 3;
+        var points;
         var debug;
-        var creationTimer;
-        var cursors;
-
+        var magnetHitArea;
+        var magnets;
+        var speedUps;
+        var snails;
         /*
             - Teleportation
             - bigger size
@@ -42,59 +62,70 @@ require([ "js/player" ],
             si * 3 , do# * 2, re, la * 3 (down), (up) do# * 2, re, (down) sol * 3, (up) do# * 2, fa# * 2, mi * 2
         */
 
-        function preload() {
-            game.load.image('bomb', 'img/bombImg.png', 90, 128);
-            game.load.image('magnet', 'img/magnet.png', 90, 90);
-            game.load.image('health', 'img/health.png', 24, 24);
-            game.load.image('player', 'img/player.png');
-            game.load.image('magnetHitAreaImg', 'img/magnetHitArea.png');
-            game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
-            game.load.image('snail', 'img/snail.png');
-        }
-
         function create() {
-            // game settings
-            game.scale.maxWidth = 770;
-            game.scale.maxHeight = 1280;
-            game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
-            game.physics.startSystem(Phaser.Physics.ARCADE);
-            game.scale.setScreenSize();
-            // game.scale.compatibility.supportsFullScreen = true;
-            // game.scale.fullScreenTarget = game.canvas;
-            // game.scale.compatibility.orientationFallback = 'viewport';
-            game.scale.setupScale(770, 1280);
             game.stage.setBackgroundColor("#dce2e6");
-
+            debug = game.add.text(0, 50, " ", { font: "42px Verdana", fill: "#ffffff", align: "center" });
             //  The scrolling starfield background
             // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
 
             //  The hero!
-            player = new Player( game );
+            playerContainer = game.add.group();
+            playerContainer.x = game.world.centerX;
+            playerContainer.y = game.world.height - 10;
+            playerContainer.enableBody = true;
+            game.physics.enable(playerContainer, Phaser.Physics.ARCADE);
+            // player.body.collideWorldBounds = true;
+            
+            player = game.add.sprite(0, 0, 'player');
+            game.physics.enable(player, Phaser.Physics.ARCADE);
+            // player.body.collideWorldBounds = true;
 
-            // bombs = game.add.group();
-            // bombs.enableBody = true;
-            // bombs.physicsBodyType = Phaser.Physics.ARCADE;
-            // bombs.createMultiple(20, 'bomb');
+            player.anchor.set(0.5, 1);
+            player.body.immovable = true;
+            playerContainer.addChild(player);
 
-            // magnets = game.add.group();
-            // magnets.enableBody = true;
-            // magnets.physicsBodyType = Phaser.Physics.ARCADE;
-            // magnets.createMultiple(20, 'magnet');
+            magnetHitArea = game.add.sprite(0, 0, 'magnetHitAreaImg');
+            game.physics.enable(magnetHitArea, Phaser.Physics.ARCADE);
+            // magnetHitArea.body.collideWorldBounds = true;
+            magnetHitArea.width = 400;
+            magnetHitArea.height = 300;
+            magnetHitArea.anchor.set(0.5, 1);
+            magnetHitArea.body.immovable = true;
+            
+            playerContainer.addChild(magnetHitArea);
 
-            // healths = game.add.group();
-            // healths.enableBody = true;
-            // healths.physicsBodyType = Phaser.Physics.ARCADE;
-            // healths.createMultiple(20, 'health');
+            //  The baddies!
+            bombs = game.add.group();
+            bombs.enableBody = true;
+            bombs.physicsBodyType = Phaser.Physics.ARCADE;
+            bombs.createMultiple(20, 'bomb');
 
-            // speedUps = game.add.group();
-            // speedUps.enableBody = true;
-            // speedUps.physicsBodyType = Phaser.Physics.ARCADE;
-            // speedUps.createMultiple(20, 'speedUpIconImg');
+            magnets = game.add.group();
+            magnets.enableBody = true;
+            magnets.physicsBodyType = Phaser.Physics.ARCADE;
+            magnets.createMultiple(20, 'magnet');
 
-            // snails = game.add.group();
-            // snails.enableBody = true;
-            // snails.physicsBodyType = Phaser.Physics.ARCADE;
-            // snails.createMultiple(20, 'snail');
+            healths = game.add.group();
+            healths.enableBody = true;
+            healths.physicsBodyType = Phaser.Physics.ARCADE;
+            healths.createMultiple(20, 'health');
+
+            bombs = game.add.group();
+            bombs.enableBody = true;
+            bombs.physicsBodyType = Phaser.Physics.ARCADE;
+            bombs.createMultiple(20, 'speedUpIconImg');
+
+            speedUps = game.add.group();
+            speedUps.enableBody = true;
+            speedUps.physicsBodyType = Phaser.Physics.ARCADE;
+            speedUps.createMultiple(20, 'speedUpIconImg');
+
+            snails = game.add.group();
+            snails.enableBody = true;
+            snails.physicsBodyType = Phaser.Physics.ARCADE;
+            snails.createMultiple(20, 'snail');
+
+            createEnemies();
 
             scoreText = game.add.text(0, 0, "Score: 0", { font: "42px Verdana", fill: "#ffffff", align: "center" });
             livesText = game.add.text(game.world.width - 180, 0, "Lives: 3", { font: "42px Verdana", fill: "#ffffff", align: "center" });
@@ -128,85 +159,103 @@ require([ "js/player" ],
             creationTimer.start();
 
             cursors = game.input.keyboard.createCursorKeys();
-            debug = game.add.text(0, 50, " ", { font: "42px Verdana", fill: "#ffffff", align: "center" });
 
         }
 
         function createFallingObjects () {
-            // var bomb = bombs.getFirstDead(false);
-            // bomb.scale.x = 0.5;
-            // bomb.scale.y = 0.5;
-            // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-            // bomb.reset( x, -5);
-            // game.physics.arcade.moveToXY(bomb, x, game.world.height + 50, 60, 6000);
-            // bomb.type = 'bomb';
-            // bomb.body.width = 45;
-            // bomb.body.height = 70;
+            var bomb = bombs.getFirstDead(false);
+            bomb.scale.x = 0.5;
+            bomb.scale.y = 0.5;
+            var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+            bomb.reset( x, -5);
+            game.physics.arcade.moveToXY(bomb, x, game.world.height + 50, 60, 6000);
+            bomb.type = 'bomb';
+            bomb.body.width = 45;
+            bomb.body.height = 70;
 
-            // bomb.anchor.x = 0.5;
-            // bomb.anchor.y = 0.5;
+            bomb.anchor.x = 0.5;
+            bomb.anchor.y = 0.5;
 
-            // bomb.outOfBoundsKill = true;
-            // bomb.checkWorldBounds = true;
+            bomb.outOfBoundsKill = true;
+            bomb.checkWorldBounds = true;
 
-            // var magnet = magnets.getFirstDead(false);
-            // magnet.scale.x = 0.5;
-            // magnet.scale.y = 0.5;
-            // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-            // magnet.reset( x, -5);
-            // game.physics.arcade.moveToXY(magnet, x, game.world.height + 50, 60, 6000);
-            // magnet.type = 'magnet';
-            // magnet.body.width = 45;
-            // magnet.body.height = 70;
+            var magnet = magnets.getFirstDead(false);
+            magnet.scale.x = 0.5;
+            magnet.scale.y = 0.5;
+            var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+            magnet.reset( x, -5);
+            game.physics.arcade.moveToXY(magnet, x, game.world.height + 50, 60, 6000);
+            magnet.type = 'magnet';
+            magnet.body.width = 45;
+            magnet.body.height = 70;
 
-            // magnet.anchor.x = 0.5;
-            // magnet.anchor.y = 0.5;
+            magnet.anchor.x = 0.5;
+            magnet.anchor.y = 0.5;
 
-            // magnet.outOfBoundsKill = true;
-            // magnet.checkWorldBounds = true;
-
-
-            // var speedUp = speedUps.getFirstDead(false);
-            // speedUp.scale.x = 0.5;
-            // speedUp.scale.y = 0.5;
-            // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-            // speedUp.reset( x, -5);
-            // game.physics.arcade.moveToXY(speedUp, x, game.world.height + 50, 60, 6000);
-            // speedUp.type = 'speedUp';
-            // speedUp.body.width = 45;
-            // speedUp.body.height = 70;
-
-            // speedUp.anchor.x = 0.5;
-            // speedUp.anchor.y = 0.5;
-
-            // speedUp.outOfBoundsKill = true;
-            // speedUp.checkWorldBounds = true;
-
-            // var snail = snails.getFirstDead(false);
-            // snail.scale.x = 0.5;
-            // snail.scale.y = 0.5;
-            // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-            // snail.reset( x, -5);
-            // game.physics.arcade.moveToXY(snail, x, game.world.height + 50, 60, 6000);
-            // snail.type = 'snail';
-            // snail.body.width = 45;
-            // snail.body.height = 70;
-
-            // snail.anchor.x = 0.5;
-            // snail.anchor.y = 0.5;
-
-            // snail.outOfBoundsKill = true;
-            // snail.checkWorldBounds = true;
+            magnet.outOfBoundsKill = true;
+            magnet.checkWorldBounds = true;
 
 
-            // var health = healths.getFirstDead(false);
-            // var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
-            // health.reset( x, -5);
-            // game.physics.arcade.moveToXY(health, x, game.world.height + 50, 60, 6000);
+            var speedUp = speedUps.getFirstDead(false);
+            speedUp.scale.x = 0.5;
+            speedUp.scale.y = 0.5;
+            var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+            speedUp.reset( x, -5);
+            game.physics.arcade.moveToXY(speedUp, x, game.world.height + 50, 60, 6000);
+            speedUp.type = 'speedUp';
+            speedUp.body.width = 45;
+            speedUp.body.height = 70;
 
-            // health.type = 'health';
-            // health.outOfBoundsKill = true;
-            // health.checkWorldBounds = true;
+            speedUp.anchor.x = 0.5;
+            speedUp.anchor.y = 0.5;
+
+            speedUp.outOfBoundsKill = true;
+            speedUp.checkWorldBounds = true;
+
+            var snail = snails.getFirstDead(false);
+            snail.scale.x = 0.5;
+            snail.scale.y = 0.5;
+            var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+            snail.reset( x, -5);
+            game.physics.arcade.moveToXY(snail, x, game.world.height + 50, 60, 6000);
+            snail.type = 'snail';
+            snail.body.width = 45;
+            snail.body.height = 70;
+
+            snail.anchor.x = 0.5;
+            snail.anchor.y = 0.5;
+
+            snail.outOfBoundsKill = true;
+            snail.checkWorldBounds = true;
+
+
+            var health = healths.getFirstDead(false);
+            var x = Math.floor(Math.random() * game.world.width - 24 ) + 12;
+            health.reset( x, -5);
+            game.physics.arcade.moveToXY(health, x, game.world.height + 50, 60, 6000);
+
+            health.type = 'health';
+            health.outOfBoundsKill = true;
+            health.checkWorldBounds = true;
+        }
+
+        function createEnemies () {
+
+            // for (var y = 0; y < 4; y++)
+            // {
+                
+            // }
+
+            // enemies.x = 100;
+
+            
+
+            // var point = points.create(48, 50, 'point');
+            // point.y = -250;
+            // point.anchor.setTo(0.5, 0.5);
+            // point.body.moves = false;
+            // point.type = "point";
+            // var tween2 = game.add.tween(point).to( { y: game.world.height + 50 }, 3000, Phaser.Easing.Linear.None, true, 0, 1000, false);
         }
 
         function update() {
@@ -216,11 +265,11 @@ require([ "js/player" ],
                 var futurePosition = player.x + step;
                 
                 if ( futurePosition - player.width/2 <= 0 ) {
-                    player.x = 0;
-                } else if ( futurePosition + player/2 >= game.world.width ) {
-                    player.x = game.world.width - player;
+                    playerContainer.x = 0;
+                } else if ( futurePosition + playerContainer/2 >= game.world.width ) {
+                    playerContainer.x = game.world.width - playerContainer;
                 } else {
-                    player.x += step;
+                    playerContainer.x += step;
                 }
             }
 
@@ -229,9 +278,9 @@ require([ "js/player" ],
                 // player.body.velocity.setTo(0, 0);
 
                 if (cursors.left.isDown) {
-                    player.x -= 10;
+                    playerContainer.x -= 10;
                 } else if (cursors.right.isDown) {
-                    player.x += 10;
+                    playerContainer.x += 10;
                 }
 
                 // //  Firing?
@@ -360,5 +409,4 @@ require([ "js/player" ],
         //         game.input.onTap.addOnce(restart,this);
         //     }
         // }
-
 });
