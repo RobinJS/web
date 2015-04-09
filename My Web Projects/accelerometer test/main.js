@@ -38,9 +38,11 @@ require(["js/player" ],
         var step = 0;
         var scoreText;
         var livesText;
+        var timerText;
         var str = "";
         var score = 0;
         var lives = 3;
+        var timeRemaining;
         var points;
         var debug;
         var magnetHitArea;
@@ -76,6 +78,7 @@ require(["js/player" ],
 
             scoreText = game.add.text(0, 0, "Score: 0", { font: "42px Verdana", fill: "#ffffff", align: "center" });
             livesText = game.add.text(game.world.width - 180, 0, "Lives: 3", { font: "42px Verdana", fill: "#ffffff", align: "center" });
+            timerText = game.add.text(game.world.width / 2 - 50, 0, "1:00", { font: "42px Verdana", fill: "#ffffff", align: "center" });
 
             if (window.DeviceMotionEvent != undefined) {
                  window.addEventListener('deviceorientation', function(e) {
@@ -100,10 +103,6 @@ require(["js/player" ],
 
                  });
             }
-
-            creationTimer = game.time.create(false);
-            creationTimer.loop(1000, createFallingObjects, this);
-            creationTimer.start();
 
             cursors = game.input.keyboard.createCursorKeys();
 
@@ -191,6 +190,27 @@ require(["js/player" ],
             });
         }
 
+        function timerUpdate () {
+            createFallingObjects();
+
+            timeRemaining--;
+
+            if ( timeRemaining === 0 ) {
+                // end level
+            } else if ( timeRemaining < 10 ) {
+                timerText.text = "0:0" + timeRemaining;
+            } else {
+                timerText.text = "0:" + timeRemaining;
+            }
+        }
+
+        function startLevel () {
+            timeRemaining = 60;
+            creationTimer = game.time.create(false);
+            creationTimer.loop(1000, timerUpdate, this);
+            creationTimer.start();
+        }
+
         function magnetisedCollection (obj1, obj2) {
             game.physics.arcade.moveToObject(obj2, playerContainer, 400);
         }
@@ -273,7 +293,7 @@ require(["js/player" ],
         function setProps( obj, scale, bodyWidth, bodyHeight, type ){
             obj.scale.x = scale;
             obj.scale.y = scale;
-            
+
             obj.body.width = bodyWidth;
             obj.body.height = bodyHeight;
 
