@@ -23,6 +23,9 @@ require(["js/player" ],
             game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
             game.load.image('snail', 'img/snail.png');
 
+            game.load.image('bg_tiles', 'img/bg_tiles.jpg');
+            // game.load.spritesheet("bg_tiles", "img/bg_tiles.jpg", 720, 720);
+
 
             // game.scale.onOrientationChange.add(function(){
                 
@@ -31,6 +34,7 @@ require(["js/player" ],
         }
 
         var player, crystals;
+        var bgTiles;
 
         var gameBoundOffset = 130;
         var bombs;
@@ -73,6 +77,11 @@ require(["js/player" ],
             //  The scrolling starfield background
             // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
 
+            // var skyLayer = game.add.group();
+            // skyLayer.z = 0;
+            // var cloudLayer = game.add.group();
+            // cloudLayer.z = 1;
+
             createObjectGroups();
             player = new Player( game );
 
@@ -105,7 +114,8 @@ require(["js/player" ],
             }
 
             cursors = game.input.keyboard.createCursorKeys();
-
+            createNewTile();
+            startLevel();
         }
 
         function update() {
@@ -255,6 +265,11 @@ require(["js/player" ],
         }
 
         function createObjectGroups () {
+            bgTiles = game.add.group();
+            bgTiles.enableBody = true;
+            bgTiles.physicsBodyType = Phaser.Physics.ARCADE;
+            bgTiles.createMultiple(3, 'bg_tiles');
+
             crystals = game.add.group();
             crystals.enableBody = true;
             crystals.physicsBodyType = Phaser.Physics.ARCADE;
@@ -305,7 +320,18 @@ require(["js/player" ],
             obj.type = type;
         }
 
+        function createNewTile(){
+            var bgTile = bgTiles.getFirstDead(false);
+            bgTile.reset( 0, 0);
+            setProps( bgTile, 1, 720, 720, 'bgTile' );
+            bgTile.events.onKilled.addOnce(function(){
+                createNewTile();
+            });
+            game.physics.arcade.moveToXY(bgTile, bgTile.x, game.world.height + gameBoundOffset, 60, 6000);
+        }
+
         function createFallingObjects () {
+
             var crystal = crystals.getFirstDead(false);
             crystal.reset( getRandomXPos(), -5);
             setProps( crystal, 0.5, 45, 58, 'crystal' );
