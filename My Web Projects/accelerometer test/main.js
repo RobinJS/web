@@ -6,6 +6,8 @@ require(["js/player" ],
             game.scale.maxWidth = 770;
             game.scale.maxHeight = 1280;
             game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+            // game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+            // game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             game.physics.startSystem(Phaser.Physics.ARCADE);
             game.scale.setScreenSize();
 
@@ -35,6 +37,7 @@ require(["js/player" ],
 
         var player, crystals;
         var bgTiles;
+        var bgXPositions = [ -360, 0, 360 ];
 
         var gameBoundOffset = 130;
         var bombs;
@@ -72,7 +75,8 @@ require(["js/player" ],
         */
 
         function create() {
-            game.stage.setBackgroundColor("#dce2e6"); // CHANGE to black !!!
+            // game.stage.setBackgroundColor("#dce2e6"); // CHANGE to black !!!
+            game.stage.setBackgroundColor("#000000"); // CHANGE to black !!!
             debug = game.add.text(0, 50, " ", { font: "42px Verdana", fill: "#ffffff", align: "center" });
             //  The scrolling starfield background
             // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
@@ -268,10 +272,10 @@ require(["js/player" ],
             bgTiles = game.add.group();
             bgTiles.enableBody = true;
             bgTiles.physicsBodyType = Phaser.Physics.ARCADE;
-            bgTiles.createMultiple(3, 'bg_tiles');
+            bgTiles.createMultiple(0, 'bg_tiles');
 
             var bgTile1 = bgTiles.getIndex(0);
-            bgTile1 = game.add.sprite(0, 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile1 = game.add.sprite(bgXPositions[ game.rnd.between(0, 2) ], 720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
             bgTile1.outOfBoundsKill = true;
             bgTile1.checkWorldBounds = true;
             bgTile1.events.onKilled.addOnce(function(){
@@ -280,7 +284,7 @@ require(["js/player" ],
             game.physics.arcade.moveToXY(bgTile1, bgTile1.x, game.world.height + gameBoundOffset, 60);
 
             var bgTile2 = bgTiles.getIndex(1);
-            bgTile2 = game.add.sprite(0, 720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile2 = game.add.sprite(bgXPositions[ game.rnd.between(0, 2) ], 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
             bgTile2.outOfBoundsKill = true;
             bgTile2.checkWorldBounds = true;
             bgTile2.events.onKilled.addOnce(function(){
@@ -289,7 +293,7 @@ require(["js/player" ],
             game.physics.arcade.moveToXY(bgTile2, bgTile2.x, game.world.height + gameBoundOffset, 60);
 
             var bgTile3 = bgTiles.getIndex(2);
-            bgTile3 = game.add.sprite(0, -720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile3 = game.add.sprite(bgXPositions[ game.rnd.between(0, 2) ], -720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
             bgTile3.outOfBoundsKill = true;
             bgTile3.checkWorldBounds = true;
             bgTile3.events.onKilled.addOnce(function(){
@@ -349,26 +353,27 @@ require(["js/player" ],
 
         function createNewTile(){
             var bgTile = bgTiles.getFirstDead(false);
-            bgTile = game.add.sprite(0, 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
-            bgTile.reset( 0, -720 );
+            // bgTile = game.add.sprite(0, 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile.frame = game.rnd.between(0, 3);
+            var y = Math.min.apply(null, bgTiles.children.map(function(ch) { return ch.y; }));
+            ;;;console.log(y);
+            bgTile.reset( bgXPositions[ game.rnd.between(0, 2) ], y - 720 );
             bgTile.outOfBoundsKill = true;
             bgTile.checkWorldBounds = true;
 
             // setProps( bgTile, 1, 720, 720, 'bgTile' );
-            bgTile.events.onKilled.addOnce(function(){
-                createNewTile();
+            bgTile.events.onEnterBounds.addOnce(function(){
+                alert();
             });
+            // bgTile.events.onKilled.addOnce(function(){
+            //     createNewTile();
+            // });
             game.physics.arcade.moveToXY(bgTile, bgTile.x, game.world.height + gameBoundOffset, 60);
 
 
         }
 
         function createFallingObjects () {
-            // bgTile1 = game.add.sprite(0, 0, 'bg_tiles', 0, bgTiles);
-            // bgTile2 = game.add.sprite(0, 0, 'bg_tiles', 1, bgTiles);
-            // bgTile2 = game.add.sprite(0, 0, 'bg_tiles', 2, bgTiles);
-            // bgTile2 = game.add.sprite(0, 0, 'bg_tiles', 3, bgTiles);
-            
             var crystal = crystals.getFirstDead(false);
             crystal.reset( getRandomXPos(), -5);
             setProps( crystal, 0.5, 45, 58, 'crystal' );
