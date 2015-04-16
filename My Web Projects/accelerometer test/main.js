@@ -23,8 +23,8 @@ require(["js/player" ],
             game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
             game.load.image('snail', 'img/snail.png');
 
-            game.load.image('bg_tiles', 'img/bg_tiles.jpg');
-            // game.load.spritesheet("bg_tiles", "img/bg_tiles.jpg", 720, 720);
+            // game.load.image('bg_tiles', 'img/bg_tiles.jpg');
+            game.load.spritesheet("bg_tiles", "img/bg_tiles.jpg", 720, 720);
 
 
             // game.scale.onOrientationChange.add(function(){
@@ -72,7 +72,7 @@ require(["js/player" ],
         */
 
         function create() {
-            game.stage.setBackgroundColor("#dce2e6");
+            game.stage.setBackgroundColor("#dce2e6"); // CHANGE to black !!!
             debug = game.add.text(0, 50, " ", { font: "42px Verdana", fill: "#ffffff", align: "center" });
             //  The scrolling starfield background
             // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
@@ -114,7 +114,7 @@ require(["js/player" ],
             }
 
             cursors = game.input.keyboard.createCursorKeys();
-            createNewTile();
+            // createNewTile();
             startLevel();
         }
 
@@ -270,6 +270,33 @@ require(["js/player" ],
             bgTiles.physicsBodyType = Phaser.Physics.ARCADE;
             bgTiles.createMultiple(3, 'bg_tiles');
 
+            var bgTile1 = bgTiles.getIndex(0);
+            bgTile1 = game.add.sprite(0, 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile1.outOfBoundsKill = true;
+            bgTile1.checkWorldBounds = true;
+            bgTile1.events.onKilled.addOnce(function(){
+                createNewTile();
+            });
+            game.physics.arcade.moveToXY(bgTile1, bgTile1.x, game.world.height + gameBoundOffset, 60);
+
+            var bgTile2 = bgTiles.getIndex(1);
+            bgTile2 = game.add.sprite(0, 720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile2.outOfBoundsKill = true;
+            bgTile2.checkWorldBounds = true;
+            bgTile2.events.onKilled.addOnce(function(){
+                createNewTile();
+            });
+            game.physics.arcade.moveToXY(bgTile2, bgTile2.x, game.world.height + gameBoundOffset, 60);
+
+            var bgTile3 = bgTiles.getIndex(2);
+            bgTile3 = game.add.sprite(0, -720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile3.outOfBoundsKill = true;
+            bgTile3.checkWorldBounds = true;
+            bgTile3.events.onKilled.addOnce(function(){
+                createNewTile();
+            });
+            game.physics.arcade.moveToXY(bgTile3, bgTile3.x, game.world.height + gameBoundOffset, 60);
+
             crystals = game.add.group();
             crystals.enableBody = true;
             crystals.physicsBodyType = Phaser.Physics.ARCADE;
@@ -322,16 +349,26 @@ require(["js/player" ],
 
         function createNewTile(){
             var bgTile = bgTiles.getFirstDead(false);
-            bgTile.reset( 0, 0);
-            setProps( bgTile, 1, 720, 720, 'bgTile' );
+            bgTile = game.add.sprite(0, 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
+            bgTile.reset( 0, -720 );
+            bgTile.outOfBoundsKill = true;
+            bgTile.checkWorldBounds = true;
+
+            // setProps( bgTile, 1, 720, 720, 'bgTile' );
             bgTile.events.onKilled.addOnce(function(){
                 createNewTile();
             });
-            game.physics.arcade.moveToXY(bgTile, bgTile.x, game.world.height + gameBoundOffset, 60, 6000);
+            game.physics.arcade.moveToXY(bgTile, bgTile.x, game.world.height + gameBoundOffset, 60);
+
+
         }
 
         function createFallingObjects () {
-
+            // bgTile1 = game.add.sprite(0, 0, 'bg_tiles', 0, bgTiles);
+            // bgTile2 = game.add.sprite(0, 0, 'bg_tiles', 1, bgTiles);
+            // bgTile2 = game.add.sprite(0, 0, 'bg_tiles', 2, bgTiles);
+            // bgTile2 = game.add.sprite(0, 0, 'bg_tiles', 3, bgTiles);
+            
             var crystal = crystals.getFirstDead(false);
             crystal.reset( getRandomXPos(), -5);
             setProps( crystal, 0.5, 45, 58, 'crystal' );
