@@ -1,4 +1,4 @@
-require(["js/player" ],
+require(["player" ],
     function( Player ) {
         var game = new Phaser.Game(720, 1280, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
@@ -16,7 +16,13 @@ require(["js/player" ],
             // game.scale.compatibility.orientationFallback = 'viewport';
             game.scale.setupScale(770, 1280);
 
-            game.load.image('player', 'img/player.png');
+            game.load.image('player_frame', 'img/player_frame.png');
+            game.load.image('player_glow', 'img/player_glow.png');
+            game.load.image('player_bg', 'img/player_bg.png');
+
+            // game.load.spritesheet('coin', 'img/coin_sprite.png', 143, 130, 10);
+            game.load.atlasJSONHash('coin', 'img/coin_sprite.png', 'img/coin_sprite.json');
+
             game.load.image('crystal', 'img/crystal.png');
             game.load.image('bomb', 'img/bombImg.png');
             game.load.image('magnet', 'img/magnet.png');
@@ -35,7 +41,7 @@ require(["js/player" ],
 
         }
 
-        var player, crystals;
+        var player, crystals, coins;
         var bgTiles;
         var bgXPositions = [ -360, 0, 360 ];
 
@@ -126,14 +132,14 @@ require(["js/player" ],
             //  Scroll the background
             // starfield.tilePosition.y += 2;
             if ( move ) {
-                var futurePosition = player.x + step;
+                var futurePosition = player.container.x + step;
                 
                 if ( futurePosition - player.width/2 <= 0 ) {
-                    player.x = 0;
+                    player.container.x = 0;
                 } else if ( futurePosition + player/2 >= game.world.width ) {
-                    player.x = game.world.width - player;
+                    player.container.x = game.world.width - player;
                 } else {
-                    player.x += step;
+                    player.container.x += step;
                 }
             }
 
@@ -142,9 +148,9 @@ require(["js/player" ],
                 // player.body.velocity.setTo(0, 0);
 
                 if (cursors.left.isDown) {
-                    player.x -= 10;
+                    player.container.x -= 10;
                 } else if (cursors.right.isDown) {
-                    player.x += 10;
+                    player.container.x += 10;
                 }
 
                 // //  Firing?
@@ -164,7 +170,7 @@ require(["js/player" ],
                 // game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
 
                 // game.physics.arcade.overlap(player.children[0], [bombs], collisionHandler, null, this);
-                game.physics.arcade.overlap(player.children[0], crystals, crystalCatchHandler, null, this);
+                game.physics.arcade.overlap(player.container.children[1], [crystals, coins], collisionHandler, null, this);
                 // game.physics.arcade.overlap(magnetHitArea, healths, magnetisedCollection, null, this);
             // }
 
@@ -306,6 +312,11 @@ require(["js/player" ],
             crystals.physicsBodyType = Phaser.Physics.ARCADE;
             crystals.createMultiple(20, 'crystal');
 
+            coins = game.add.group();
+            coins.enableBody = true;
+            coins.physicsBodyType = Phaser.Physics.ARCADE;
+            coins.createMultiple(20, 'coin');
+
             // bombs = game.add.group();
             // bombs.enableBody = true;
             // bombs.physicsBodyType = Phaser.Physics.ARCADE;
@@ -376,8 +387,16 @@ require(["js/player" ],
         function createFallingObjects () {
             var crystal = crystals.getFirstDead(false);
             crystal.reset( getRandomXPos(), -5);
-            setProps( crystal, 0.5, 45, 58, 'crystal' );
+            setProps( crystal, 1, 45, 58, 'crystal' );
             game.physics.arcade.moveToXY(crystal, crystal.x, game.world.height + gameBoundOffset, 60, 6000);
+
+
+            var coin = coins.getFirstDead(false);
+            coin.reset( getRandomXPos(), -5);
+            setProps( coin, 1, 143, 130, 'coin' );
+            coin.animations.add('flip');
+            coin.animations.play('flip', 20, true);
+            game.physics.arcade.moveToXY(coin, coin.x, game.world.height + gameBoundOffset, 60, 6000);
 
             // var bomb = bombs.getFirstDead(false);
             // bomb.scale.x = 0.5;
