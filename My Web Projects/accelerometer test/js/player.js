@@ -18,7 +18,7 @@ define(function (require) {
         // this.playerBg.scale.x = 0.5;
         // this.playerBg.scale.y = 0.5;
         this.playerBg.height = 0;
-        this.playerBg.y = -12;
+        this.playerBg.y = -9;
         this.playerBg.anchor.set(0.5, 1);
         this.playerBg.body.immovable = true;
         this.container.addChild(this.playerBg);
@@ -29,7 +29,7 @@ define(function (require) {
         // frame.body.collideWorldBounds = true;
         // this.frame.scale.x = 0.5;
         // this.frame.scale.y = 0.5;
-        this.frame.y = -80;
+        this.frame.y = -50;
         this.frame.anchor.set(0.5, 0.5);
         this.frame.body.immovable = true;
         this.container.addChild(this.frame);
@@ -40,7 +40,7 @@ define(function (require) {
         // frame.body.collideWorldBounds = true;
         // this.frame.scale.x = 0.5;
         // this.frame.scale.y = 0.5;
-        this.frame.y = -80;
+        this.frame.y = -47;
         this.frame.anchor.set(0.5, 0.5);
         this.frame.body.immovable = true;
         this.container.addChild(this.frame);

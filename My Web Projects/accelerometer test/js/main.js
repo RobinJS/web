@@ -1,49 +1,9 @@
-require(["player" ],
-    function( Player ) {
+require([ "settings", "player" ],
+    function( settings, Player ) {
         var game = new Phaser.Game(720, 1280, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
-
-        function preload() {
-            game.scale.maxWidth = 770;
-            game.scale.maxHeight = 1280;
-            game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
-            // game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-            // game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            game.physics.startSystem(Phaser.Physics.ARCADE);
-            game.scale.setScreenSize();
-
-            // game.scale.compatibility.supportsFullScreen = true;
-            game.scale.fullScreenTarget = game.canvas;
-            // game.scale.compatibility.orientationFallback = 'viewport';
-            game.scale.setupScale(770, 1280);
-
-            game.load.image('player_frame', 'img/player_frame.png');
-            game.load.image('player_glow', 'img/player_glow.png');
-            game.load.image('player_bg', 'img/player_bg.png');
-
-            // game.load.spritesheet('coin', 'img/coin_sprite.png', 143, 130, 10);
-            game.load.atlasJSONHash('coin', 'img/coin_sprite.png', 'img/coin_sprite.json');
-
-            game.load.image('crystal', 'img/crystal.png');
-            game.load.image('bomb', 'img/bombImg.png');
-            game.load.image('magnet', 'img/magnet.png');
-            game.load.image('health', 'img/health.png');
-            game.load.image('magnetHitAreaImg', 'img/magnetHitArea.png');
-            game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
-            game.load.image('snail', 'img/snail.png');
-
-            // game.load.image('bg_tiles', 'img/bg_tiles.jpg');
-            game.load.spritesheet("bg_tiles", "img/bg_tiles.jpg", 720, 720);
-
-
-            // game.scale.onOrientationChange.add(function(){
-                
-            // });
-
-        }
-
+        
         var player, crystals, coins;
-        var bgTiles;
-        var bgXPositions = [ -360, 0, 360 ];
+        var crystalsCollected = 0;
 
         var gameBoundOffset = 130;
         var bombs;
@@ -62,6 +22,50 @@ require(["player" ],
         var magnets;
         var speedUps;
         var snails;
+
+        
+        
+
+        function preload() {
+            game.scale.maxWidth = 720;
+            game.scale.maxHeight = 1280;
+            game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+            // game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+            // game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+            game.scale.setScreenSize();
+
+            // game.scale.compatibility.supportsFullScreen = true;
+            game.scale.fullScreenTarget = game.canvas;
+            // game.scale.compatibility.orientationFallback = 'viewport';
+            game.scale.setupScale(720, 1280);
+
+            game.load.image('player_frame', 'img/player_frame.png');
+            game.load.image('player_glow', 'img/player_glow.png');
+            game.load.image('player_bg', 'img/player_bg.png');
+
+            // game.load.spritesheet('coin', 'img/coin_sprite.png', 143, 130, 10);
+            game.load.atlasJSONHash('coin', 'img/coin_sprite.png', 'img/coin_sprite.json');
+
+            game.load.image('crystal', 'img/crystal.png');
+            game.load.image('bomb', 'img/bombImg.png');
+            game.load.image('magnet', 'img/magnet.png');
+            game.load.image('health', 'img/health.png');
+            game.load.image('magnetHitAreaImg', 'img/magnetHitArea.png');
+            game.load.image('speedUpIconImg', 'img/speed_up_icon.png');
+            game.load.image('snail', 'img/snail.png');
+
+            // game.load.image('bg_tiles', 'img/bg_tiles.jpg');
+            game.load.spritesheet("bgImage", "img/bg.png", 720, 1280);
+
+
+            // game.scale.onOrientationChange.add(function(){
+                
+            // });
+
+        }
+
+        
         /*
             - Teleportation
             - bigger size
@@ -85,7 +89,7 @@ require(["player" ],
             game.stage.setBackgroundColor("#000000"); // CHANGE to black !!!
             debug = game.add.text(0, 50, " ", { font: "42px Verdana", fill: "#ffffff", align: "center" });
             //  The scrolling starfield background
-            // starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+            backgroundImage = game.add.tileSprite(0, 0, 720, 1280, 'bgImage');
 
             // var skyLayer = game.add.group();
             // skyLayer.z = 0;
@@ -124,13 +128,18 @@ require(["player" ],
             }
 
             cursors = game.input.keyboard.createCursorKeys();
-            // createNewTile();
             startLevel();
+
+            var gameElements = {player: player, crystals: crystals, coins: coins};
+            window.DEBUG = {};
+            window.DEBUG.game = game;
+            window.DEBUG.gameElements = gameElements;
         }
 
         function update() {
             //  Scroll the background
-            // starfield.tilePosition.y += 2;
+            backgroundImage.tilePosition.y += settings.bgSpeed;
+
             if ( move ) {
                 var futurePosition = player.container.x + step;
                 
@@ -198,12 +207,12 @@ require(["player" ],
             debug.text = "step: " + step;
             
             // game.debug.body(magnetHitArea);
+            // game.debug.body(player.container.children[3]);
 
+            return;
             crystals.children.forEach(function(cr){
                 game.debug.body(cr);
             });
-            return;
-            game.debug.body(player.children[1]);
 
             magnets.children.forEach(function(magnet){
                 game.debug.body(magnet);
@@ -239,22 +248,20 @@ require(["player" ],
             obj2.kill();
         }
 
-        function collisionHandler (obj1, obj2) {
+        function collisionHandler (playerCollisionObj, collisionObj) {
             //  When a bullet hits an alien we kill them both
             // bullet.kill();
-            obj2.kill();
+            collisionObj.kill();
 
-            if ( obj2.type === 'enemy' ) {
-                lives--;
-            } else if ( obj2.type === 'health' ){
-
-            } else {
-                score++;
+            if ( collisionObj.type === 'crystal' ) {
+                crystalsCollected++;
+                player.expandBg();
+            } else if ( collisionObj.type === 'coin' ){
+                score += 10;
+                scoreText.text = settings.scoreString + score;
+                
             }
-            // //  Increase the score
-            // score += 20;
-            // scoreText.text = scoreString + score;
-
+                
             // //  And create an explosion :)
             // var explosion = explosions.getFirstExists(false);
             // explosion.reset(alien.body.x, alien.body.y);
@@ -275,37 +282,6 @@ require(["player" ],
         }
 
         function createObjectGroups () {
-            bgTiles = game.add.group();
-            bgTiles.enableBody = true;
-            bgTiles.physicsBodyType = Phaser.Physics.ARCADE;
-            bgTiles.createMultiple(0, 'bg_tiles');
-
-            var bgTile1 = bgTiles.getIndex(0);
-            bgTile1 = game.add.sprite(bgXPositions[ game.rnd.between(0, 2) ], 720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
-            bgTile1.outOfBoundsKill = true;
-            bgTile1.checkWorldBounds = true;
-            bgTile1.events.onKilled.addOnce(function(){
-                createNewTile();
-            });
-            game.physics.arcade.moveToXY(bgTile1, bgTile1.x, game.world.height + gameBoundOffset, 60);
-
-            var bgTile2 = bgTiles.getIndex(1);
-            bgTile2 = game.add.sprite(bgXPositions[ game.rnd.between(0, 2) ], 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
-            bgTile2.outOfBoundsKill = true;
-            bgTile2.checkWorldBounds = true;
-            bgTile2.events.onKilled.addOnce(function(){
-                createNewTile();
-            });
-            game.physics.arcade.moveToXY(bgTile2, bgTile2.x, game.world.height + gameBoundOffset, 60);
-
-            var bgTile3 = bgTiles.getIndex(2);
-            bgTile3 = game.add.sprite(bgXPositions[ game.rnd.between(0, 2) ], -720, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
-            bgTile3.outOfBoundsKill = true;
-            bgTile3.checkWorldBounds = true;
-            bgTile3.events.onKilled.addOnce(function(){
-                createNewTile();
-            });
-            game.physics.arcade.moveToXY(bgTile3, bgTile3.x, game.world.height + gameBoundOffset, 60);
 
             crystals = game.add.group();
             crystals.enableBody = true;
@@ -362,38 +338,15 @@ require(["player" ],
             obj.type = type;
         }
 
-        function createNewTile(){
-            var bgTile = bgTiles.getFirstDead(false);
-            // bgTile = game.add.sprite(0, 0, 'bg_tiles', game.rnd.between(0, 3), bgTiles);
-            bgTile.frame = game.rnd.between(0, 3);
-            var y = Math.min.apply(null, bgTiles.children.map(function(ch) { return ch.y; }));
-            ;;;console.log(y);
-            bgTile.reset( bgXPositions[ game.rnd.between(0, 2) ], y - 720 );
-            bgTile.outOfBoundsKill = true;
-            bgTile.checkWorldBounds = true;
-
-            // setProps( bgTile, 1, 720, 720, 'bgTile' );
-            bgTile.events.onEnterBounds.addOnce(function(){
-                alert();
-            });
-            // bgTile.events.onKilled.addOnce(function(){
-            //     createNewTile();
-            // });
-            game.physics.arcade.moveToXY(bgTile, bgTile.x, game.world.height + gameBoundOffset, 60);
-
-
-        }
-
         function createFallingObjects () {
             var crystal = crystals.getFirstDead(false);
             crystal.reset( getRandomXPos(), -5);
-            setProps( crystal, 1, 45, 58, 'crystal' );
+            setProps( crystal, 1, 50, 64, 'crystal' );
             game.physics.arcade.moveToXY(crystal, crystal.x, game.world.height + gameBoundOffset, 60, 6000);
-
 
             var coin = coins.getFirstDead(false);
             coin.reset( getRandomXPos(), -5);
-            setProps( coin, 1, 143, 130, 'coin' );
+            setProps( coin, 1, 50, 45, 'coin' );
             coin.animations.add('flip');
             coin.animations.play('flip', 20, true);
             game.physics.arcade.moveToXY(coin, coin.x, game.world.height + gameBoundOffset, 60, 6000);
