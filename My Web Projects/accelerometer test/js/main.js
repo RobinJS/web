@@ -4,6 +4,9 @@ require([ "settings", "player" ],
         
         var player, crystals, coins;
         var crystalsCollected = 0;
+        var startButtonPressed = false;
+        var startPageBg;
+        var startButton;
 
         var gameBoundOffset = 130;
         var bombs;
@@ -23,9 +26,6 @@ require([ "settings", "player" ],
         var speedUps;
         var snails;
 
-        
-        
-
         function preload() {
             game.scale.maxWidth = 720;
             game.scale.maxHeight = 1280;
@@ -39,6 +39,8 @@ require([ "settings", "player" ],
             game.scale.fullScreenTarget = game.canvas;
             // game.scale.compatibility.orientationFallback = 'viewport';
             game.scale.setupScale(720, 1280);
+
+            game.load.spritesheet('startButton', 'img/button_sprite_sheet.png', 193, 71);
 
             game.load.image('player_frame', 'img/player_frame.png');
             game.load.image('player_glow', 'img/player_glow.png');
@@ -62,7 +64,6 @@ require([ "settings", "player" ],
             // game.scale.onOrientationChange.add(function(){
                 
             // });
-
         }
 
         
@@ -103,40 +104,20 @@ require([ "settings", "player" ],
             livesText = game.add.text(game.world.width - 180, 0, "Lives: 3", { font: "42px Verdana", fill: "#ffffff", align: "center" });
             timerText = game.add.text(game.world.width / 2 - 50, 0, "1:00", { font: "42px Verdana", fill: "#ffffff", align: "center" });
 
-            if (window.DeviceMotionEvent != undefined) {
-                 window.addEventListener('deviceorientation', function(e) {
-                    if ( e.gamma && Math.abs(e.gamma.toFixed(0)) != '0' && Math.abs(e.gamma.toFixed(0)) != '-0' ) {
-                        step = parseInt(e.gamma.toFixed(0));
-                        move = true;
-                        // speed = step;
-                    } else {
-                        move = false;
-                    }
-
-                    // if ( e.accelerationIncludingGravity.x && Math.abs(e.accelerationIncludingGravity.x.toFixed(0)) != 0 ) {
-                    // // if ( e.rotationRate.beta && e.rotationRate.beta.toFixed(0) != 0 ) {
-                    //     step = e.accelerationIncludingGravity.x.toFixed(1);
-                    //     // step = e.rotationRate.beta.toFixed(0) / 10;
-                    //     speed = step;
-                    //     move = true;
-                    // } else {
-                    //     move = false;
-                    // }
-
-
-                 });
-            }
-
-            cursors = game.input.keyboard.createCursorKeys();
-            startLevel();
-
             var gameElements = {player: player, crystals: crystals, coins: coins};
             window.DEBUG = {};
             window.DEBUG.game = game;
             window.DEBUG.gameElements = gameElements;
+
+
+            showStartScreen();
         }
 
         function update() {
+            if ( !startButtonPressed ) {
+                return;
+            }
+
             //  Scroll the background
             backgroundImage.tilePosition.y += settings.bgSpeed;
 
@@ -217,6 +198,49 @@ require([ "settings", "player" ],
             magnets.children.forEach(function(magnet){
                 game.debug.body(magnet);
             });
+        }
+
+        function showStartScreen () {
+            startPageBg = game.add.graphics(0, 0);
+            startPageBg.beginFill(0x000000, 1);
+            startPageBg.drawRect(0, 0, game.world.width, game.world.height);
+
+            startButton = game.add.button(game.world.centerX - 95, 400, 'startButton', onStartButtonPressed, this, 2, 1, 0);
+        }
+
+        function hideStartScreen(){
+            startPageBg.visible = false;
+            startButton.visible = false;
+        }
+
+        function onStartButtonPressed(){
+            hideStartScreen();
+            startButtonPressed = true;
+
+            if (window.DeviceMotionEvent != undefined) {
+                window.addEventListener('deviceorientation', function(e) {
+                    if ( e.gamma && Math.abs(e.gamma.toFixed(0)) != '0' && Math.abs(e.gamma.toFixed(0)) != '-0' ) {
+                        step = parseInt(e.gamma.toFixed(0));
+                        move = true;
+                        // speed = step;
+                    } else {
+                        move = false;
+                    }
+
+                    // if ( e.accelerationIncludingGravity.x && Math.abs(e.accelerationIncludingGravity.x.toFixed(0)) != 0 ) {
+                    // // if ( e.rotationRate.beta && e.rotationRate.beta.toFixed(0) != 0 ) {
+                    //     step = e.accelerationIncludingGravity.x.toFixed(1);
+                    //     // step = e.rotationRate.beta.toFixed(0) / 10;
+                    //     speed = step;
+                    //     move = true;
+                    // } else {
+                    //     move = false;
+                    // }
+                });
+
+            }
+
+            cursors = game.input.keyboard.createCursorKeys();
         }
 
         function timerUpdate () {
