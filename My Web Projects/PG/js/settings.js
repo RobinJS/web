@@ -12,7 +12,8 @@ define(function (require) {
 			width: 156, height: 46,
 			doubleHalfBtn: { normal: 0, down: 46, inactive: 92 },
 			doubleBtn: { normal: 138, down: 184, inactive: 230 }
-		}
+		},
+		totalFlippedCards: 5
 	};
 
 	return settings;

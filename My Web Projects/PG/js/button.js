@@ -8,8 +8,8 @@ define(function (require) {
 			return;
 		}
 
-		this.STATES = { NORMAL: 'normal', DOWN: 'down', INACTIVE: 'inactive' };
-		this.state = this.STATES.NORMAL;
+		this.STATES = { normal: 'normal', down: 'down', inactive: 'inactive' };
+		this.state = this.STATES.inactive;
 		this.type = type;
 
 		var buttonType = settings.buttons[type+"Btn"],
@@ -22,29 +22,45 @@ define(function (require) {
 		};
 
 		// this.image = new PIXI.Sprite(new PIXI.Texture( baseTexture, {x: 0, y: cropY, width: settings.buttons.width, height: settings.buttons.height }));
-		this.image = new PIXI.Sprite( this.textures.normal );
+		this.image = new PIXI.Sprite( this.textures.inactive );
 		this.image.interactive = true;
 		this.image.buttonMode = true;
+		this.image.interactive = false;
 
 		this.addEventListeners();
-		return this.image;
 	};
 
 	Button.prototype.addEventListeners = function(){
 		var that = this;
 
 		this.image.mousedown = this.image.touchstart = function(){
-			that.changeState( that.STATES.DOWN );
+			if ( that.state === that.STATES.inactive ) { return; }
+
+			that.changeState( that.STATES.down );
 		};
 
 		this.image.mouseup = this.image.touchend = function(){
-			that.changeState( that.STATES.INACTIVE );
+			if ( that.state === that.STATES.inactive ) { return; }
+
+			that.changeState( that.STATES.inactive );
 			that.image.interactive = false;
 		};
 	};
 
 	Button.prototype.changeState = function( stateType ){
 		this.image.setTexture( this.textures[stateType] );
+		this.state = this.STATES[stateType];
+		this.image.interactive = true;
+	};
+
+	Button.prototype.getImage = function(){
+		return this.image;
+	};
+
+	
+	Button.prototype.setXY = function(x, y){
+		this.image.x = x;
+		this.image.y = y;
 	};
 
 	return Button;

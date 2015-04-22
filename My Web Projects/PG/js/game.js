@@ -23,12 +23,12 @@ define(function (require) {
 	var Game = function(){
 		this.doubleButton = null;
 		this.doubleHalfButton = null;
-		this.flippedCardsArr = [];
-
+		this.flippedCardsContainer = null;
 
 
 		this.events = {
-			elementsCreated: new Signal()
+			elementsCreated: new Signal(),
+			allCardsDealed: new Signal()
 		}
 		
 		this.addEventListeners();
@@ -38,7 +38,9 @@ define(function (require) {
 	};
 
 	Game.prototype.addEventListeners = function () {
-
+		this.events.allCardsDealed.add(function(){
+			this.activateButtons();
+		}.bind(this));
 	};
 
 	Game.prototype.createGameElements = function () {
@@ -66,13 +68,13 @@ define(function (require) {
 		stage.addChild(dealersCardText);
 
 		/* BUTTONS */
-		this.doubleButton = stage.addChild(new Button( "double" ));
-		this.doubleButton.x = 750;
-		this.doubleButton.y = 480;
+		this.doubleButton = new Button( "double" );
+		this.doubleButton.setXY( 750, 480 );
+		stage.addChild(this.doubleButton.getImage());
 
-		this.doubleHalfButton = stage.addChild(new Button( "doubleHalf" ));
-		this.doubleHalfButton.x = 550;
-		this.doubleHalfButton.y = 480;
+		this.doubleHalfButton = new Button( "doubleHalf" );
+		this.doubleHalfButton.setXY( 550, 480 );
+		stage.addChild(this.doubleHalfButton.getImage());
 
 		/* CARDS */
 		// these are at the top left corner looking lika a deck of cards
@@ -82,15 +84,13 @@ define(function (require) {
 			deckCard3 = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5 );
 
 
-		var totalFlippedCard = 5;
+		this.flippedCardsContainer = new PIXI.DisplayObjectContainer();
+		stage.addChild(this.flippedCardsContainer);
 
-		for (var i = 0; i < totalFlippedCard; i++) {
+		for (var i = 0; i < settings.totalFlippedCards; i++) {
 			var flippedCard = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5, false );
-			this.flippedCardsArr.push(flippedCard);
+			this.flippedCardsContainer.addChild(flippedCard);
 		}
-
-
-
 
 
 		// this.card0 = new PIXI.Sprite.fromFrame('0');
@@ -137,14 +137,41 @@ define(function (require) {
 	};
 
 	Game.prototype.start = function () {
-		this.deal();
+		setTimeout(function(){
+			this.deal();
+		}.bind(this), 1000);
 	};
 
 	Game.prototype.deal = function () {
-		this.flippedCardsArr.forEach(function(card, index){
-			card.visible = true;
-			TweenMax.to(card.position, 2, { x: settings.cardPositions[index].x, y: settings.cardPositions[index].y, delay: 200 });
-		});
+		var that = this,
+			index = 0;
+
+		// put this animation into a Deck class ???
+		function animateCard () {
+			if ( index < settings.totalFlippedCards ) {
+				var currentCard = that.flippedCardsContainer.children[index];
+				currentCard.visible = true;
+
+				TweenMax.to(currentCard.position, 0.1, {
+							 x: settings.cardPositions[index].x,
+							 y: settings.cardPositions[index].y,
+							 delay: 0.2,
+							 onComplete: function(){
+								index++;
+								animateCard();
+							 }});
+			} else {
+				that.events.allCardsDealed.dispatch();
+			}
+		}
+
+		animateCard();
+	};
+
+	Game.prototype.activateButtons = function(){
+		this.doubleButton.changeState( "normal" );
+		this.doubleHalfButton.changeState( "normal" );
+
 	};
 
 	return Game;
