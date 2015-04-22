@@ -3,15 +3,18 @@ define(function (require) {
 		settings = require('settings'),
 		Signal = require('libs/signals.min'),
 		stage = require('stage'),
-		Button = require('button');
+		Button = require('button'),
+		Card = require('card');
 
-	function createSpriteFromImage( imgPath, x, y, scale ){
+	function createSpriteFromImage( imgPath, x, y, scale, visible ){
 		var card = PIXI.Sprite.fromImage( imgPath );
 		card.anchor.x = card.anchor.y = 0.5;
 		card.scale.x = card.scale.y = scale;
 		// card.position.x = settings.gameWidth + card.width;
 		card.position.x = x;
 		card.position.y = y;
+
+		card.visible = visible === false ? false : true;
 
 		stage.addChild(card);
 		return card;
@@ -20,7 +23,7 @@ define(function (require) {
 	var Game = function(){
 		this.doubleButton = null;
 		this.doubleHalfButton = null;
-		this.cardBacksArr = [];
+		this.flippedCardsArr = [];
 
 
 
@@ -29,6 +32,9 @@ define(function (require) {
 		}
 		
 		this.addEventListeners();
+
+		DEBUG = {};
+		DEBUG.game = this;
 	};
 
 	Game.prototype.addEventListeners = function () {
@@ -69,20 +75,23 @@ define(function (require) {
 		this.doubleHalfButton.y = 480;
 
 		/* CARDS */
-		var dexkCard0 = createSpriteFromImage( "img/cards_back.png", 110, 180, 1.5 );
-		var dexkCard1 = createSpriteFromImage( "img/cards_back.png", 108, 178, 1.5 );
-		var dexkCard2 = createSpriteFromImage( "img/cards_back.png", 106, 176, 1.5 );
-		var dexkCard3 = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5 );
+		// these are at the top left corner looking lika a deck of cards
+		var deckCard0 = createSpriteFromImage( "img/cards_back.png", 110, 180, 1.5 ),
+			deckCard1 = createSpriteFromImage( "img/cards_back.png", 108, 178, 1.5 ),
+			deckCard2 = createSpriteFromImage( "img/cards_back.png", 106, 176, 1.5 ),
+			deckCard3 = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5 );
 
 
-		var totalCardBacks = 5;
+		var totalFlippedCard = 5;
 
-		for (var i = 0; i < totalCardBacks; i++) {
-			var cardBack = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5 );
-			this.cardBacksArr.push(cardBack);
-
-			TweenMax.to(cardBack.position, 0.5, { x: settings.cardPositions[i].x, y: settings.cardPositions[i].y });
+		for (var i = 0; i < totalFlippedCard; i++) {
+			var flippedCard = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5, false );
+			this.flippedCardsArr.push(flippedCard);
 		}
+
+
+
+
 
 		// this.card0 = new PIXI.Sprite.fromFrame('0');
 		// this.card0.x = settings.cardPositions.dealer.x;
@@ -128,7 +137,14 @@ define(function (require) {
 	};
 
 	Game.prototype.start = function () {
+		this.deal();
+	};
 
+	Game.prototype.deal = function () {
+		this.flippedCardsArr.forEach(function(card, index){
+			card.visible = true;
+			TweenMax.to(card.position, 2, { x: settings.cardPositions[index].x, y: settings.cardPositions[index].y, delay: 200 });
+		});
 	};
 
 	return Game;
