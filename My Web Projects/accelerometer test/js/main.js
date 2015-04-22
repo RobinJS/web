@@ -241,6 +241,8 @@ require([ "settings", "player" ],
             }
 
             cursors = game.input.keyboard.createCursorKeys();
+
+            startLevel();
         }
 
         function timerUpdate () {
