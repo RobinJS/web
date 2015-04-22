@@ -10,12 +10,9 @@ define(function (require) {
 		var card = PIXI.Sprite.fromImage( imgPath );
 		card.anchor.x = card.anchor.y = 0.5;
 		card.scale.x = card.scale.y = scale;
-		// card.position.x = settings.gameWidth + card.width;
 		card.position.x = x;
 		card.position.y = y;
-
 		card.visible = visible === false ? false : true;
-
 		stage.addChild(card);
 		return card;
 	}
@@ -86,6 +83,8 @@ define(function (require) {
 
 		this.flippedCardsContainer = new PIXI.DisplayObjectContainer();
 		stage.addChild(this.flippedCardsContainer);
+
+		// this.currentDeal; !!! -> create
 
 		for (var i = 0; i < settings.totalFlippedCards; i++) {
 			var flippedCard = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5, false );
@@ -172,6 +171,11 @@ define(function (require) {
 		this.doubleButton.changeState( "normal" );
 		this.doubleHalfButton.changeState( "normal" );
 
+	};
+
+	Game.prototype.showDealersCard = function(){
+		var dealersCard = flippedCardsContainer.children[0];
+		dealersCard.flip();
 	};
 
 	return Game;

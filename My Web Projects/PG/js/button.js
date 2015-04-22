@@ -39,11 +39,17 @@ define(function (require) {
 			that.changeState( that.STATES.down );
 		};
 
-		this.image.mouseup = this.image.touchend = function(){
+		this.image.click = this.image.tap = function(){
 			if ( that.state === that.STATES.inactive ) { return; }
 
 			that.changeState( that.STATES.inactive );
 			that.image.interactive = false;
+		};
+
+		this.image.mouseout = function(){
+			if ( that.state === that.STATES.inactive ) { return; }
+
+			that.changeState( that.STATES.normal );
 		};
 	};
 
