@@ -1,8 +1,10 @@
 define(function (require) {
 	var PIXI = require('libs/pixi.dev'),
-		settings = require('settings');
+		settings = require('settings'),
+		Signal = require('libs/signals.min');
 
 	var Button = function( type ){
+		PIXI.DisplayObjectContainer.call(this);
 		if ( type !== "double" && type !== "doubleHalf" ) {
 			;;;console.error("Invalid button type");
 			return;
@@ -27,8 +29,14 @@ define(function (require) {
 		this.image.buttonMode = true;
 		this.image.interactive = false;
 
+		this.events = {
+			clicked: new Signal()
+		};
+
 		this.addEventListeners();
 	};
+
+	Button.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
 
 	Button.prototype.addEventListeners = function(){
 		var that = this;
@@ -44,6 +52,8 @@ define(function (require) {
 
 			that.changeState( that.STATES.inactive );
 			that.image.interactive = false;
+
+			this.events.clicked.dispatch();
 		};
 
 		this.image.mouseout = function(){

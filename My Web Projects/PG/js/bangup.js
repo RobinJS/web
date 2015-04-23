@@ -3,11 +3,15 @@ define(function (require) {
 		settings = require('settings');
 
 	var Bangup = function( type ){
+		PIXI.DisplayObjectContainer.call(this);
+
 		this.text = new PIXI.Text("0", { font: 'bold 22px Arial', fill: '#f3d601', align: 'center' });
 		this.currentAmount = 0;
 		
 
 	};
+
+	Bangup.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
 
 	Bangup.prototype.addEventListeners = function(){
 		var that = this;

@@ -5,7 +5,8 @@ define(function (require) {
 		stage = require('stage'),
 		Button = require('button'),
 		Card = require('card'),
-		Bangup = require('bangup');
+		Bangup = require('bangup'),
+		Bet = require('bet');
 
 	function createSpriteFromImage( imgPath, x, y, scale, visible ){
 		var card = PIXI.Sprite.fromImage( imgPath );
@@ -79,17 +80,22 @@ define(function (require) {
 		/* BUTTONS */
 		this.doubleButton = new Button( "double" );
 		this.doubleButton.setXY( 750, 480 );
-		stage.addChild(this.doubleButton.getImage());
+		stage.addChild(this.doubleButton);
 
 		this.doubleHalfButton = new Button( "doubleHalf" );
 		this.doubleHalfButton.setXY( 550, 480 );
-		stage.addChild(this.doubleHalfButton.getImage());
+		stage.addChild(this.doubleHalfButton);
 
 		/* BALANCE */
 		this.balance = new Bangup();
 		this.balance.setXY( 150, 13);
 		this.balance.setAmount(1000);
-		stage.addChild(this.balance.getImage());
+		stage.addChild(this.balance);
+
+		/* BET */
+		this.bet = new Bet();
+		this.bet.setXY( 200, settings.gameHeight - 50 );
+		stage.addChild(this.bet);
 
 		/* CARDS */
 		// these are at the top left corner looking lika a deck of cards
@@ -107,7 +113,7 @@ define(function (require) {
 		for (var i = 0; i < settings.totalFlippedCards; i++) {
 			var card = new Card();
 			this.dealedCards.push( card );
-			this.dealedCardsContainer.addChild(card.container);
+			this.dealedCardsContainer.addChild(card);
 		}
 
 
@@ -156,7 +162,7 @@ define(function (require) {
 
 	Game.prototype.start = function () {
 
-		return;
+		// return;
 		setTimeout(function(){
 			this.deal();
 		}.bind(this), 1000);
