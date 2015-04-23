@@ -5,7 +5,7 @@ define(function (require) {
 
 	var Button = function( type ){
 		PIXI.DisplayObjectContainer.call(this);
-		if ( type !== "double" && type !== "doubleHalf" && type !== "increase" && type !== "decrease" ) {
+		if ( type !== "double" && type !== "doubleHalf" && type !== "increase" && type !== "decrease" && type !== "start" ) {
 			;;;console.error("Invalid button type");
 			return;
 		}
@@ -27,6 +27,8 @@ define(function (require) {
 		this.image.interactive = true;
 		this.image.buttonMode = true;
 		this.image.interactive = false;
+		this.active = true;
+
 		this.addChild(this.image);
 
 		this.events = {
@@ -64,12 +66,18 @@ define(function (require) {
 	Button.prototype.changeState = function( stateType ){
 		this.image.setTexture( this.textures[stateType] );
 		this.state = this.STATES[stateType];
-		// this.image.interactive = true;
 	};
 
 	Button.prototype.activate = function( stateType ){
 		this.changeState( this.STATES.NORMAL );
 		this.image.interactive = true;
+		this.active = true;
+	};
+
+	Button.prototype.deactivate = function( stateType ){
+		this.changeState( this.STATES.INACTIVE );
+		this.image.interactive = false;
+		this.active = false;
 	};
 	
 	Button.prototype.setXY = function(x, y){

@@ -65,7 +65,7 @@ define(function (require) {
 		//show D's card - ask Player to choose a card
 		// show win (if any)
 		// show not chosen coards
-
+		var that = this;
 		var background = new PIXI.Sprite.fromImage('img/bg.jpg');
 		stage.addChild(background);
 
@@ -97,6 +97,16 @@ define(function (require) {
 		this.doubleHalfButton = new Button( "doubleHalf" );
 		this.doubleHalfButton.setXY( 550, 480 );
 		stage.addChild(this.doubleHalfButton);
+
+		this.startButton = new Button( "start" );
+		this.startButton.setXY( 950, settings.gameHeight - 65 );
+		this.startButton.events.clicked.add(function(){
+			that.startButton.deactivate;
+			that.currentState = that.STATES.DEAL;
+			that.newState();
+		});
+		this.startButton.activate();
+		stage.addChild(this.startButton);
 
 		/* BALANCE */
 		this.balance = new Bangup();
