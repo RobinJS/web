@@ -66,10 +66,15 @@ define(function (require) {
 		dealersCardText.y = 450;
 		stage.addChild(dealersCardText);
 
-		var balance = new PIXI.Text("BALANCE:", { font: 'bold 24px Arial', fill: '#f3d601', align: 'left' });
-		balance.x = 10;
-		balance.y = 10;
-		stage.addChild(balance);
+		var balanceText = new PIXI.Text("BALANCE:", { font: 'bold 24px Arial', fill: '#f3d601', align: 'left' });
+		balanceText.x = 10;
+		balanceText.y = 10;
+		stage.addChild(balanceText);
+
+		var betPerGame = new PIXI.Text("Bet per game:", { font: 'bold 18px Arial', fill: '#c2c2c2', align: 'left' });
+		betPerGame.x = 200;
+		betPerGame.y = settings.gameHeight - 80;
+		stage.addChild(betPerGame);
 
 		/* BUTTONS */
 		this.doubleButton = new Button( "double" );
@@ -83,7 +88,7 @@ define(function (require) {
 		/* BALANCE */
 		this.balance = new Bangup();
 		this.balance.setXY( 150, 13);
-		this.balance.setAmount(100);
+		this.balance.setAmount(1000);
 		stage.addChild(this.balance.getImage());
 
 		/* CARDS */
@@ -150,6 +155,8 @@ define(function (require) {
 	};
 
 	Game.prototype.start = function () {
+
+		return;
 		setTimeout(function(){
 			this.deal();
 		}.bind(this), 1000);
