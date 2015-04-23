@@ -19,10 +19,6 @@ define(function (require) {
 		
 	};
 
-	Bangup.prototype.getImage = function(){
-		return this.text;
-	};
-
 	Bangup.prototype.setXY = function( x, y ){
 		this.text.x = x;
 		this.text.y = y;

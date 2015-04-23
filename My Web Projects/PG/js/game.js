@@ -6,7 +6,8 @@ define(function (require) {
 		Button = require('button'),
 		Card = require('card'),
 		Bangup = require('bangup'),
-		Bet = require('bet');
+		Bet = require('bet'),
+		Hints = require('hints');
 
 	function createSpriteFromImage( imgPath, x, y, scale, visible ){
 		var card = PIXI.Sprite.fromImage( imgPath );
@@ -23,8 +24,11 @@ define(function (require) {
 		this.doubleButton = null;
 		this.doubleHalfButton = null;
 		this.dealedCardsContainer = null;
+		this.hints = null;
 		this.dealedCards = [];
 
+		this.STATES = { BET: 'bet' };
+		this.currentState = "";
 
 		this.events = {
 			elementsCreated: new Signal(),
@@ -43,6 +47,15 @@ define(function (require) {
 		}.bind(this));
 	};
 
+	Game.prototype.newState = function(){
+		switch( this.currentState ) {
+	        case this.STATES.BET:
+	        	this.hints.showBetHint();
+	        	this.bet.activateButtons();
+	        break;
+	   	}
+	};
+
 	Game.prototype.createGameElements = function () {
 		
 		// popup Dealer's card
@@ -57,10 +70,9 @@ define(function (require) {
 		stage.addChild(background);
 
 		/* TEXTS */
-		var hintText = new PIXI.Text("CHOOSE DOUBLE OR DOUBLE HALF", { font: 'bold 24px Arial', fill: '#ffffff', align: 'center' });
-		hintText.x = settings.gameWidth/2 - hintText.width/2 + 90;
-		hintText.y = 120;
-		stage.addChild(hintText);
+		this.hints = new Hints();
+		stage.addChild(this.hints);
+		
 
 		var dealersCardText = new PIXI.Text("Dealer's card", { font: 'bold 24px Arial', fill: '#c2c2c2', align: 'left' });
 		dealersCardText.x = 275;
@@ -94,7 +106,6 @@ define(function (require) {
 
 		/* BET */
 		this.bet = new Bet();
-		this.bet.setXY( 200, settings.gameHeight - 50 );
 		stage.addChild(this.bet);
 
 		/* CARDS */
@@ -161,18 +172,14 @@ define(function (require) {
 	};
 
 	Game.prototype.start = function () {
-
-		// return;
-		setTimeout(function(){
-			this.deal();
-		}.bind(this), 1000);
+		this.currentState = this.STATES.BET;
+		this.newState();
 	};
 
 	Game.prototype.deal = function () {
 		var that = this,
 			cardIndex = 0;
 
-		// put this animation into a Deck class ???
 		function animateCard () {
 			if ( cardIndex < settings.totalFlippedCards ) {
 				var currentCard = that.dealedCards[cardIndex];
@@ -190,9 +197,9 @@ define(function (require) {
 	};
 
 	Game.prototype.activateButtons = function(){
-		this.doubleButton.changeState( "normal" );
-		this.doubleHalfButton.changeState( "normal" );
-
+		this.doubleButton.activate();
+		this.doubleHalfButton.activate();
+		this.bet.activateButtons();
 	};
 
 	Game.prototype.showDealersCard = function(){
