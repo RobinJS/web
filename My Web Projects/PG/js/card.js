@@ -2,10 +2,9 @@ define(function (require) {
 	var PIXI = require('libs/pixi.dev'),
 		settings = require('settings');
 
-	var Card = function( type ){
+	var Card = function(){
 		PIXI.DisplayObjectContainer.call(this);
 
-		// this = new PIXI.DisplayObjectContainer();
 		this.position.x = settings.cardsDefaultPosition.x;
 		this.position.y = settings.cardsDefaultPosition.y;
 
@@ -36,12 +35,24 @@ define(function (require) {
 	};
 	
 	Card.prototype.deal = function( cardIndex, callback ){
-		TweenMax.to(this.position, 0.2, {
+		TweenMax.to(this.position, 0.1, {
 					x: settings.cardPositions[cardIndex].x,
 					y: settings.cardPositions[cardIndex].y,
-					ease: Power3.easeOut,
+					ease: Power4.easeOut,
 					delay: 0.1,
 					onComplete: callback
+				});
+	};
+
+	Card.prototype.hide = function( callback ){
+		var that = this;
+		TweenMax.to(this.position, 0.2, {
+					x: settings.cardPositionOutsideGame,
+					ease: Power1.easeIn,
+					onComplete: function(){
+						that.reset();
+						callback && callback();
+					}
 				});
 	};
 
@@ -61,7 +72,12 @@ define(function (require) {
 		}});
 	};
 
-	
+	Card.prototype.reset = function(){
+		this.position.x = settings.cardsDefaultPosition.x;
+		this.position.y = settings.cardsDefaultPosition.y;
+		this.backImage.visible = true;
+		this.frontImage.visible = false;
+	};
 
 	return Card;
 });

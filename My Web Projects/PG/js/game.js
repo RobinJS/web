@@ -7,7 +7,8 @@ define(function (require) {
 		Card = require('card'),
 		Bangup = require('bangup'),
 		Bet = require('bet'),
-		Hints = require('hints');
+		Hints = require('hints'),
+		Wins = require('wins');
 
 	function createSpriteFromImage( imgPath, x, y, scale, visible ){
 		var card = PIXI.Sprite.fromImage( imgPath );
@@ -44,18 +45,21 @@ define(function (require) {
 		this.doubleButton = null;
 		this.doubleHalfButton = null;
 		this.startButton = null;
+		this.collectButton = null;
 		this.dealedCardsContainer = null;
 		this.balance = null;
 		this.bet = null;
 		this.hints = null;
 		this.dealedCards = [];
+		this.winAmount = 0;
 
-		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet' };
+		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', FINISH: 'finish' };
 		this.currentState = "";
 
 		this.events = {
 			elementsCreated: new Signal(),
-			allCardsDealed: new Signal()
+			allCardsDealed: new Signal(),
+			allCardsHidden: new Signal()
 		}
 		
 		this.addEventListeners();
@@ -75,19 +79,38 @@ define(function (require) {
 			case game.STATES.START:
 				game.deactivateButtons([game.startButton]);
 				game.bet.deactivateButtons();
+				game.wins.showStartAmount( game.bet.getCurrentBet() );
 				game.currentState = game.STATES.DEAL;
 				game.newState();
 			break;
 			case game.STATES.DEAL:
 				game.events.allCardsDealed.addOnce(function(){
-					game.activateButtons([game.doubleButton, game.doubleHalfButton]);
+					game.deactivateButtons([game.startButton]);
+					game.activateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
+					game.hints.changeText( game.hints.TEXTS.CHOOSE_BUTTON );
 				});
 
+				game.balance.updateWith(-game.bet.getCurrentBet());
 	        	game.deal();
+	        	game.wins.showFutureWins();
 	        break;
 	        case game.STATES.BET:
-	        	game.hints.showBetHint();
+	        	game.hints.changeText( game.hints.TEXTS.BET );
 	        	game.bet.activateButtons();
+	        break;
+
+	        case game.STATES.FINISH:
+	        	if ( game.winAmount === 0 ) {
+	        		game.balance.updateWith(game.bet.getCurrentBet());
+	        	}
+
+	        	game.events.allCardsHidden.addOnce(function(){
+		        	game.activateButtons([game.startButton]);
+		        	game.bet.activateButtons();
+	        	});
+
+	        	game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
+	        	game.hideCards();
 	        break;
 	   	}
 	};
@@ -97,11 +120,10 @@ define(function (require) {
 		var background = new PIXI.Sprite.fromImage('img/bg.jpg');
 		stage.addChild(background);
 
-		/* TEXTS */
+	/* TEXTS */
 		this.hints = new Hints();
 		stage.addChild(this.hints);
 		
-
 		var dealersCardText = new PIXI.Text("Dealer's card", { font: 'bold 24px Arial', fill: '#c2c2c2', align: 'left' });
 		dealersCardText.x = 275;
 		dealersCardText.y = 450;
@@ -117,7 +139,7 @@ define(function (require) {
 		betPerGame.y = settings.gameHeight - 80;
 		stage.addChild(betPerGame);
 
-		/* BUTTONS */
+	/* BUTTONS */
 		this.doubleButton = new Button( "double" );
 		this.doubleButton.setXY( 750, 480 );
 		stage.addChild(this.doubleButton);
@@ -127,7 +149,7 @@ define(function (require) {
 		stage.addChild(this.doubleHalfButton);
 
 		this.startButton = new Button( "start" );
-		this.startButton.setXY( 950, settings.gameHeight - 65 );
+		this.startButton.setXY( 920, settings.gameHeight - 65 );
 		this.startButton.events.clicked.add(function(){
 			that.currentState = that.STATES.START;
 			that.newState();
@@ -135,24 +157,29 @@ define(function (require) {
 		this.startButton.activate();
 		stage.addChild(this.startButton);
 
-		/* BALANCE */
+		this.collectButton = new Button( "collect" );
+		this.collectButton.setXY( 1100, settings.gameHeight - 65 );
+		this.collectButton.events.clicked.add(function(){
+			that.currentState = that.STATES.FINISH;
+			that.newState();
+		});
+		stage.addChild(this.collectButton);
+
+	/* BALANCE */
 		this.balance = new Bangup();
 		this.balance.setXY( 170, 28);
 		this.balance.setAmount(1000);
 		stage.addChild(this.balance);
 
-		/* WIN AMOUNT */
-		this.winAmount = new Bangup( true );
-		this.winAmount.setFontSize( 60 );
-		this.winAmount.setXY( 640, settings.gameHeight - 40);
-		this.winAmount.setAmount(20);
-		stage.addChild(this.winAmount);
+	/* WINS */
+		this.wins = new Wins();
+		stage.addChild(this.wins);
 
-		/* BET */
+	/* BET */
 		this.bet = new Bet();
 		stage.addChild(this.bet);
 
-		/* CARDS */
+	/* CARDS */
 		// these are at the top left corner looking lika a deck of cards
 		var deckCard0 = createSpriteFromImage( "img/cards_back.png", 110, 180, 1.5 ),
 			deckCard1 = createSpriteFromImage( "img/cards_back.png", 108, 178, 1.5 ),
@@ -164,7 +191,7 @@ define(function (require) {
 
 		// this.currentDeal; !!! -> create
 
-		for (var i = 0; i < settings.totalFlippedCards; i++) {
+		for (var i = 0; i < settings.totalGameCards; i++) {
 			var card = new Card();
 			this.dealedCards.push( card );
 			this.dealedCardsContainer.addChild(card);
@@ -221,18 +248,38 @@ define(function (require) {
 
 	Game.prototype.deal = function () {
 		var that = this,
-			cardIndex = 0;
+			cardIndex = settings.totalGameCards - 1;
 
 		function animateCard () {
-			if ( cardIndex < settings.totalFlippedCards ) {
+			if ( cardIndex >= 0 ) {
 				var currentCard = that.dealedCards[cardIndex];
 				currentCard.showBack();
 				currentCard.deal(cardIndex, function(){
-					cardIndex++;
+					cardIndex--;
 					animateCard();
 				});
 			} else {
 				that.events.allCardsDealed.dispatch();
+			}
+		}
+
+		animateCard();
+	};
+
+	Game.prototype.hideCards = function () {
+		var that = this,
+			cardIndex = settings.totalGameCards - 1;
+
+		function animateCard () {
+			if ( cardIndex >= 0 ) {
+				var currentCard = that.dealedCards[cardIndex];
+				// currentCard.showBack();
+				currentCard.hide(function(){
+					cardIndex--;
+					animateCard();
+				});
+			} else {
+				that.events.allCardsHidden.dispatch();
 			}
 		}
 

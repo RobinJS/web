@@ -5,7 +5,8 @@ define(function (require) {
 
 	var Button = function( type ){
 		PIXI.DisplayObjectContainer.call(this);
-		if ( type !== "double" && type !== "doubleHalf" && type !== "increase" && type !== "decrease" && type !== "start" ) {
+		
+		if ( settings.btnTypes.indexOf(type) === -1 ) {
 			;;;console.error("Invalid button type");
 			return;
 		}
