@@ -2,11 +2,15 @@ define(function (require) {
 	var PIXI = require('libs/pixi.dev'),
 		settings = require('settings');
 
-	var Bangup = function( type ){
+	var Bangup = function( centered ){
 		PIXI.DisplayObjectContainer.call(this);
 
 		this.text = new PIXI.Text("0", { font: 'bold 22px Arial', fill: '#f3d601', align: 'center' });
+		var bounds = this.text.getBounds();
+		this.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
+		this.addChild(this.text);
 		this.currentAmount = 0;
+		this.centered = centered;
 		
 
 	};
@@ -27,6 +31,13 @@ define(function (require) {
 	Bangup.prototype.setAmount = function( amount ){
 		this.currentAmount = amount;
 		this.text.setText(amount);
+		this.text.updateTransform();
+		var bounds = this.text.getBounds();
+		this.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
+	};
+
+	Bangup.prototype.setFontSize = function( size ){
+		this.text.setStyle({font: 'bold ' + size + 'px Arial', fill: '#f3d601', align: 'center'});
 	};
 
 	Bangup.prototype.updateWith = function( amount ){
@@ -44,6 +55,12 @@ define(function (require) {
 			amountToUpdate = (that.currentAmount + parseFloat(amountPercent)).toFixed(2);
 
 			that.text.setText( amountToUpdate );
+
+			if ( that.centered ) {
+				that.text.updateTransform();
+				var bounds = that.text.getBounds();
+				that.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
+			}
 		}
 
 		function onComplete () {

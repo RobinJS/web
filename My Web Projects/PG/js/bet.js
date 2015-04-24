@@ -80,6 +80,11 @@ define(function (require) {
 		this.decreaseBtn.activate();
 	};
 
+	Bet.prototype.deactivateButtons = function(){
+		this.increaseBtn.deactivate();
+		this.decreaseBtn.deactivate();
+	};
+
 	Bet.prototype.getCurrentBet = function(){
 		return this.amounts[this.amountIndex];
 	};

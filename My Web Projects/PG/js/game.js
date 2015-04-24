@@ -20,14 +20,37 @@ define(function (require) {
 		return card;
 	}
 
+	/*
+		- choose bet
+		- on start: get the bet amount from the balance
+		- deal cards
+		- enable buttons: double; double half and collect; disable + and - buttons; show "TO WIN" and "TO WIN"; show "choose dbl or dbl half!" hint
+		- on choose button: hide hint; diable buttons; show only "TO WIN" under the chosen button + the sum to win; hide current sum at the bottom bar;
+			show Dealer's card; show "pick a higher card to win!" hint; allow card to be chosen
+		- on card chosen: flip the card; show hint according to what happens;
+			SCENARIOS from here:
+			- CHOSEN CARD IS SMALLER: show "better luck next time" hint; flip other the cards; go to (1)
+			- CHOSEN CARD IS BIGGER: show "congrats! you win!" hint; update current win sum at the bottom bar; win effect over player's card (golden frame with sunlight); flip other the cards; go to (2)
+		- on COLLECT: hide cards, disable double btns, enable bet buttons, update balance, hide win sum at the bottom bar
+
+		 (1) hide cards; disable the 2 buttons; do not update the ballance (player looses what he bet before start); enable bet buttons and start button
+		 (2) enable double buttons and show sum wot win under them, enable collect button
+
+		 bet 1 -  to win: 1.5, to win: 2.00
+		 current win 1.5 - to win: 2.25, to win: 3.00
+
+	*/
 	var Game = function(){
 		this.doubleButton = null;
 		this.doubleHalfButton = null;
+		this.startButton = null;
 		this.dealedCardsContainer = null;
+		this.balance = null;
+		this.bet = null;
 		this.hints = null;
 		this.dealedCards = [];
 
-		this.STATES = { BET: 'bet' };
+		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet' };
 		this.currentState = "";
 
 		this.events = {
@@ -42,29 +65,34 @@ define(function (require) {
 	};
 
 	Game.prototype.addEventListeners = function () {
-		this.events.allCardsDealed.add(function(){
-			this.activateButtons();
-		}.bind(this));
+		
 	};
 
 	Game.prototype.newState = function(){
-		switch( this.currentState ) {
-	        case this.STATES.BET:
-	        	this.hints.showBetHint();
-	        	this.bet.activateButtons();
+		var game = this;
+
+		switch( game.currentState ) {
+			case game.STATES.START:
+				game.deactivateButtons([game.startButton]);
+				game.bet.deactivateButtons();
+				game.currentState = game.STATES.DEAL;
+				game.newState();
+			break;
+			case game.STATES.DEAL:
+				game.events.allCardsDealed.addOnce(function(){
+					game.activateButtons([game.doubleButton, game.doubleHalfButton]);
+				});
+
+	        	game.deal();
+	        break;
+	        case game.STATES.BET:
+	        	game.hints.showBetHint();
+	        	game.bet.activateButtons();
 	        break;
 	   	}
 	};
 
 	Game.prototype.createGameElements = function () {
-		
-		// popup Dealer's card
-		// show Player's cards
-		// allow buttons
-		
-		//show D's card - ask Player to choose a card
-		// show win (if any)
-		// show not chosen coards
 		var that = this;
 		var background = new PIXI.Sprite.fromImage('img/bg.jpg');
 		stage.addChild(background);
@@ -101,8 +129,7 @@ define(function (require) {
 		this.startButton = new Button( "start" );
 		this.startButton.setXY( 950, settings.gameHeight - 65 );
 		this.startButton.events.clicked.add(function(){
-			that.startButton.deactivate;
-			that.currentState = that.STATES.DEAL;
+			that.currentState = that.STATES.START;
 			that.newState();
 		});
 		this.startButton.activate();
@@ -110,9 +137,16 @@ define(function (require) {
 
 		/* BALANCE */
 		this.balance = new Bangup();
-		this.balance.setXY( 150, 13);
+		this.balance.setXY( 170, 28);
 		this.balance.setAmount(1000);
 		stage.addChild(this.balance);
+
+		/* WIN AMOUNT */
+		this.winAmount = new Bangup( true );
+		this.winAmount.setFontSize( 60 );
+		this.winAmount.setXY( 640, settings.gameHeight - 40);
+		this.winAmount.setAmount(20);
+		stage.addChild(this.winAmount);
 
 		/* BET */
 		this.bet = new Bet();
@@ -124,7 +158,6 @@ define(function (require) {
 			deckCard1 = createSpriteFromImage( "img/cards_back.png", 108, 178, 1.5 ),
 			deckCard2 = createSpriteFromImage( "img/cards_back.png", 106, 176, 1.5 ),
 			deckCard3 = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5 );
-
 
 		this.dealedCardsContainer = new PIXI.DisplayObjectContainer();
 		stage.addChild(this.dealedCardsContainer);
@@ -206,10 +239,16 @@ define(function (require) {
 		animateCard();
 	};
 
-	Game.prototype.activateButtons = function(){
-		this.doubleButton.activate();
-		this.doubleHalfButton.activate();
-		this.bet.activateButtons();
+	Game.prototype.activateButtons = function( buttons ){
+		buttons.forEach(function( btn ){
+			btn.activate();
+		});
+	};
+
+	Game.prototype.deactivateButtons = function( buttons ){
+		buttons.forEach(function( btn ){
+			btn.deactivate();
+		});
 	};
 
 	Game.prototype.showDealersCard = function(){
