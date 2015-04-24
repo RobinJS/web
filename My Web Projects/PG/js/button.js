@@ -25,10 +25,9 @@ define(function (require) {
 		};
 
 		this.image = new PIXI.Sprite( this.textures.inactive );
-		this.image.interactive = true;
-		this.image.buttonMode = true;
 		this.image.interactive = false;
-		this.active = true;
+		this.image.buttonMode = false;
+		this.active = false;
 
 		this.addChild(this.image);
 
@@ -72,12 +71,14 @@ define(function (require) {
 	Button.prototype.activate = function( stateType ){
 		this.changeState( this.STATES.NORMAL );
 		this.image.interactive = true;
+		this.image.buttonMode = true;
 		this.active = true;
 	};
 
 	Button.prototype.deactivate = function( stateType ){
 		this.changeState( this.STATES.INACTIVE );
 		this.image.interactive = false;
+		this.image.buttonMode = false;
 		this.active = false;
 	};
 	

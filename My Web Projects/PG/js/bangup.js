@@ -34,7 +34,7 @@ define(function (require) {
 
 	Bangup.prototype.setAmount = function( amount ){
 		this.currentAmount = amount;
-		this.text.setText(amount);
+		this.text.setText( amount.toFixed(2) );
 		this.text.updateTransform();
 		var bounds = this.text.getBounds();
 		this.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);

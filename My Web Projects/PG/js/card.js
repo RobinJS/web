@@ -1,12 +1,17 @@
 define(function (require) {
 	var PIXI = require('libs/pixi.dev'),
-		settings = require('settings');
+		settings = require('settings'),
+		Signal = require('libs/signals.min');
 
 	var Card = function(){
 		PIXI.DisplayObjectContainer.call(this);
 
 		this.position.x = settings.cardsDefaultPosition.x;
 		this.position.y = settings.cardsDefaultPosition.y;
+
+		this.interactive = false;
+		this.buttonMode = false;
+		this.active = false;
 
 		this.backImage = PIXI.Sprite.fromImage( "img/cards_back.png" );
 		this.backImage.anchor.x = this.backImage.anchor.y = 0.5;
@@ -20,6 +25,21 @@ define(function (require) {
 		this.frontImage.visible = false;
 		this.addChild(this.frontImage);
 
+		this.hoverFrame = PIXI.Sprite.fromImage( "img/green_frame.png" );
+		this.hoverFrame.anchor.x = this.hoverFrame.anchor.y = 0.5;
+		this.hoverFrame.visible = false;
+		this.addChild(this.hoverFrame);
+
+		this.winFrame = PIXI.Sprite.fromImage( "img/golden_frame.png" );
+		this.winFrame.anchor.x = this.winFrame.anchor.y = 0.5;
+		this.winFrame.visible = false;
+		this.addChild(this.winFrame);
+
+		this.addEventListeners();
+
+		this.events = {
+			clicked: new Signal()
+		};
 	};
 
 	Card.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
@@ -27,7 +47,23 @@ define(function (require) {
 	Card.prototype.addEventListeners = function(){
 		var that = this;
 
-		
+		this.click = this.tap = function(){
+			if ( !that.active ) { return; }
+
+			that.events.clicked.dispatch(that);
+		};
+
+		this.mouseover = function(){
+			if ( !that.active ) { return; }
+
+			that.hoverFrame.visible = true;
+		};
+
+		this.mouseout = function(){
+			if ( !that.active ) { return; }
+
+			that.hoverFrame.visible = false;
+		};
 	};
 
 	Card.prototype.showBack = function(){
@@ -56,7 +92,7 @@ define(function (require) {
 				});
 	};
 
-	Card.prototype.flip = function(){
+	Card.prototype.flip = function( callback ){
 		var that = this;
 
 		TweenMax.to(this, 0.1, { rotation: -0.2 });
@@ -67,7 +103,7 @@ define(function (require) {
 
 			TweenMax.to(that, 0.1, { rotation: 0 });
 			TweenMax.to(that.scale, 0.1, { x: 1, onComplete:function(){
-					
+				callback && callback();
 			}});
 		}});
 	};
@@ -77,6 +113,12 @@ define(function (require) {
 		this.position.y = settings.cardsDefaultPosition.y;
 		this.backImage.visible = true;
 		this.frontImage.visible = false;
+	};
+
+	Card.prototype.enablePick = function(){
+		this.interactive = true;
+		this.buttonMode = true;
+		this.active = true;
 	};
 
 	return Card;

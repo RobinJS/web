@@ -18,7 +18,7 @@ define(function (require) {
 		this.currentBet = 2;
 		
 		this.text = new PIXI.Text("", { font: 'bold 28px Arial', fill: '#f3d601', align: 'center' });
-		changeText( this.text, 2 );
+		changeText( this.text, this.currentBet.toFixed(2) );
 
 		this.text.x = 260;
 		this.text.y = settings.gameHeight - 25;
@@ -54,7 +54,7 @@ define(function (require) {
 				that.increaseBtn.deactivate();
 			}
 
-			changeText( that.text, that.amounts[that.amountIndex] );
+			changeText( that.text, that.amounts[that.amountIndex].toFixed(2) );
 		});
 
 		this.decreaseBtn.events.clicked.add(function(){
@@ -71,7 +71,7 @@ define(function (require) {
 				that.decreaseBtn.deactivate();
 			}
 
-			changeText( that.text, that.amounts[that.amountIndex] );
+			changeText( that.text, that.amounts[that.amountIndex].toFixed(2) );
 		});
 	};
 

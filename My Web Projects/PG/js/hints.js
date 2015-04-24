@@ -14,7 +14,8 @@ define(function (require) {
 
 		this.TEXTS = {
 			BET: "CHOOSE YOUR BET, PLEASE",
-			CHOOSE_BUTTON: "CHOOSE DOUBLE OR DOUBLE HALF"
+			CHOOSE_BUTTON: "CHOOSE DOUBLE OR DOUBLE HALF",
+			PICK: "PICK A HIGHER CARD TO WIN!"
 		};
 
 	};
@@ -32,6 +33,13 @@ define(function (require) {
 		}});
 
 		this.hintText.visible = true;
+	};
+
+	Hints.prototype.hide = function( text ){
+		var that = this;
+		TweenMax.to( this.hintText, 0.2, { alpha: 0, onComplete: function(){
+			that.hintText.visible = false;
+		}});
 	};
 
 	return Hints;

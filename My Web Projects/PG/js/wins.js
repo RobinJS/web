@@ -10,6 +10,7 @@ define(function (require) {
 		this.winAmountBangup.setCentered();
 		this.winAmountBangup.setFontSize( 60 );
 		this.winAmountBangup.setXY( 640, settings.gameHeight - 40);
+		this.addChild(this.winAmountBangup);
 
 		this.toWinDoubleHalf = new PIXI.Text("TO WIN:", { font: 'bold 18px Arial', fill: '#c2c2c2', align: 'left' });
 		this.toWinDoubleHalf.position.x = 560;
@@ -29,24 +30,44 @@ define(function (require) {
 
 	Wins.prototype.showStartAmount = function( currentBet ){
 		this.winAmountBangup.setAmount( currentBet );
+		this.cumulativeWinAmoiunt = currentBet;
+		this.winAmountBangup.visible = true;
+	};
+
+	Wins.prototype.hideWinAmount = function( currentBet ){
+		this.winAmountBangup.visible = false;
 	};
 
 	Wins.prototype.showFutureWins = function(){
-		
 		this.toWinDoubleHalf.setText("TO WIN: " + this.getDoubleHalfFutureWin());
 		this.toWinDouble.setText("TO WIN: " + this.getDoubleFutureWin());
-		
+		this.toWinDoubleHalf.visible = true;
+		this.toWinDouble.visible = true;
+	};
+
+	Wins.prototype.hideFutureWins = function(){
+		this.toWinDoubleHalf.setText("TO WIN: " + this.getDoubleHalfFutureWin());
+		this.toWinDouble.setText("TO WIN: " + this.getDoubleFutureWin());
+
+		this.toWinDoubleHalf.visible = false;
+		this.toWinDouble.visible = false;
 	};
 
 	Wins.prototype.getDoubleHalfFutureWin = function(){
-		
-		
+		return (this.cumulativeWinAmoiunt * 1.5).toFixed(2);
 	};
 
 	Wins.prototype.getDoubleFutureWin = function(){
-		
+		return (this.cumulativeWinAmoiunt * 2).toFixed(2);
 	};
 
+	Wins.prototype.hideNotChosenMultiplierSum = function( chosenMultiplier ){
+		if ( chosenMultiplier === 'doubleHalf' ) {
+			this.toWinDouble.visible = false;
+		} else if ( chosenMultiplier === 'double' ) {
+			this.toWinDoubleHalf.visible = false;
+		}
+	};
 
 	return Wins;
 });

@@ -28,6 +28,7 @@ define(function (require) {
 		- enable buttons: double; double half and collect; disable + and - buttons; show "TO WIN" and "TO WIN"; show "choose dbl or dbl half!" hint
 		- on choose button: hide hint; diable buttons; show only "TO WIN" under the chosen button + the sum to win; hide current sum at the bottom bar;
 			show Dealer's card; show "pick a higher card to win!" hint; allow card to be chosen
+		
 		- on card chosen: flip the card; show hint according to what happens;
 			SCENARIOS from here:
 			- CHOSEN CARD IS SMALLER: show "better luck next time" hint; flip other the cards; go to (1)
@@ -52,14 +53,16 @@ define(function (require) {
 		this.hints = null;
 		this.dealedCards = [];
 		this.winAmount = 0;
+		this.chosenMultiplier = "";
 
-		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', FINISH: 'finish' };
+		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', RESULT: 'result', FINISH: 'finish' };
 		this.currentState = "";
 
 		this.events = {
 			elementsCreated: new Signal(),
 			allCardsDealed: new Signal(),
-			allCardsHidden: new Signal()
+			allCardsHidden: new Signal(),
+			dealersCardShown: new Signal()
 		}
 		
 		this.addEventListeners();
@@ -98,7 +101,17 @@ define(function (require) {
 	        	game.hints.changeText( game.hints.TEXTS.BET );
 	        	game.bet.activateButtons();
 	        break;
+	        case game.STATES.RESULT:
+	        	game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
+	        	game.wins.hideNotChosenMultiplierSum( game.chosenMultiplier );
+	        	game.hints.hide();
 
+	        	game.events.dealersCardShown.addOnce(function(){
+        			game.hints.changeText( game.hints.TEXTS.PICK );
+	        		game.enableCardPick();
+	        	});
+	        	game.showDealersCard();
+	        break;
 	        case game.STATES.FINISH:
 	        	if ( game.winAmount === 0 ) {
 	        		game.balance.updateWith(game.bet.getCurrentBet());
@@ -111,6 +124,8 @@ define(function (require) {
 
 	        	game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
 	        	game.hideCards();
+	        	game.wins.hideWinAmount();
+	        	game.wins.hideFutureWins();
 	        break;
 	   	}
 	};
@@ -141,10 +156,20 @@ define(function (require) {
 
 	/* BUTTONS */
 		this.doubleButton = new Button( "double" );
+		this.doubleButton.events.clicked.add(function(){
+			that.chosenMultiplier = "double";
+			that.currentState = that.STATES.RESULT;
+			that.newState();
+		});
 		this.doubleButton.setXY( 750, 480 );
 		stage.addChild(this.doubleButton);
 
 		this.doubleHalfButton = new Button( "doubleHalf" );
+		this.doubleHalfButton.events.clicked.add(function(){
+			that.chosenMultiplier = "doubleHalf";
+			that.currentState = that.STATES.RESULT;
+			that.newState();
+		});
 		this.doubleHalfButton.setXY( 550, 480 );
 		stage.addChild(this.doubleHalfButton);
 
@@ -167,7 +192,7 @@ define(function (require) {
 
 	/* BALANCE */
 		this.balance = new Bangup();
-		this.balance.setXY( 170, 28);
+		this.balance.setXY( 180, 28);
 		this.balance.setAmount(1000);
 		stage.addChild(this.balance);
 
@@ -188,8 +213,6 @@ define(function (require) {
 
 		this.dealedCardsContainer = new PIXI.DisplayObjectContainer();
 		stage.addChild(this.dealedCardsContainer);
-
-		// this.currentDeal; !!! -> create
 
 		for (var i = 0; i < settings.totalGameCards; i++) {
 			var card = new Card();
@@ -299,8 +322,18 @@ define(function (require) {
 	};
 
 	Game.prototype.showDealersCard = function(){
-		var dealersCard = dealedCardsContainer.children[0];
-		dealersCard.flip();
+		var dealersCard = this.dealedCardsContainer.children[0];
+		dealersCard.flip(function(){
+			this.events.dealersCardShown.dispatch();
+		}.bind(this));
+	};
+
+	Game.prototype.enableCardPick = function(){
+		
+		for (var i = 1; i < this.dealedCards.length; i++) {
+			this.dealedCards[i].enablePick();
+		}
+		
 	};
 
 	return Game;
