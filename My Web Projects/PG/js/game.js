@@ -2,24 +2,12 @@ define(function (require) {
 	var PIXI = require('libs/pixi.dev'),
 		settings = require('settings'),
 		Signal = require('libs/signals.min'),
-		stage = require('stage'),
 		Button = require('button'),
-		Card = require('card'),
 		Bangup = require('bangup'),
 		Bet = require('bet'),
 		Hints = require('hints'),
+		Deck = require('deck'),
 		Wins = require('wins');
-
-	function createSpriteFromImage( imgPath, x, y, scale, visible ){
-		var card = PIXI.Sprite.fromImage( imgPath );
-		card.anchor.x = card.anchor.y = 0.5;
-		card.scale.x = card.scale.y = scale;
-		card.position.x = x;
-		card.position.y = y;
-		card.visible = visible === false ? false : true;
-		stage.addChild(card);
-		return card;
-	}
 
 	/*
 		- choose bet
@@ -28,21 +16,23 @@ define(function (require) {
 		- enable buttons: double; double half and collect; disable + and - buttons; show "TO WIN" and "TO WIN"; show "choose dbl or dbl half!" hint
 		- on choose button: hide hint; diable buttons; show only "TO WIN" under the chosen button + the sum to win; hide current sum at the bottom bar;
 			show Dealer's card; show "pick a higher card to win!" hint; allow card to be chosen
-		
 		- on card chosen: flip the card; show hint according to what happens;
-			SCENARIOS from here:
-			- CHOSEN CARD IS SMALLER: show "better luck next time" hint; flip other the cards; go to (1)
+			SCENARIOS from here: 
+			- CHOSEN CARD IS SMALLER: show "better luck next time" hint; flip the other cards; go to (1)
 			- CHOSEN CARD IS BIGGER: show "congrats! you win!" hint; update current win sum at the bottom bar; win effect over player's card (golden frame with sunlight); flip other the cards; go to (2)
-		- on COLLECT: hide cards, disable double btns, enable bet buttons, update balance, hide win sum at the bottom bar
-
 		 (1) hide cards; disable the 2 buttons; do not update the ballance (player looses what he bet before start); enable bet buttons and start button
 		 (2) enable double buttons and show sum wot win under them, enable collect button
+		- on COLLECT: hide cards, disable double btns, enable bet buttons, update balance, hide win sum at the bottom bar
+		
+			- TIE: .... 
 
 		 bet 1 -  to win: 1.5, to win: 2.00
 		 current win 1.5 - to win: 2.25, to win: 3.00
 
 	*/
 	var Game = function(){
+		PIXI.DisplayObjectContainer.call(this);
+
 		this.doubleButton = null;
 		this.doubleHalfButton = null;
 		this.startButton = null;
@@ -52,17 +42,15 @@ define(function (require) {
 		this.bet = null;
 		this.hints = null;
 		this.dealedCards = [];
+		this.deck = null;
 		this.winAmount = 0;
 		this.chosenMultiplier = "";
 
-		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', RESULT: 'result', FINISH: 'finish' };
+		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', PICK_A_CARD: 'pick', RESULT: 'result', FINISH: 'finish' };
 		this.currentState = "";
 
 		this.events = {
-			elementsCreated: new Signal(),
-			allCardsDealed: new Signal(),
-			allCardsHidden: new Signal(),
-			dealersCardShown: new Signal()
+			elementsCreated: new Signal()
 		}
 		
 		this.addEventListeners();
@@ -70,6 +58,8 @@ define(function (require) {
 		DEBUG = {};
 		DEBUG.game = this;
 	};
+
+	Game.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
 
 	Game.prototype.addEventListeners = function () {
 		
@@ -87,43 +77,83 @@ define(function (require) {
 				game.newState();
 			break;
 			case game.STATES.DEAL:
-				game.events.allCardsDealed.addOnce(function(){
+				game.deck.events.allCardsDealed.addOnce(function(){
 					game.deactivateButtons([game.startButton]);
 					game.activateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
 					game.hints.changeText( game.hints.TEXTS.CHOOSE_BUTTON );
 				});
 
 				game.balance.updateWith(-game.bet.getCurrentBet());
-	        	game.deal();
+	        	game.deck.deal();
 	        	game.wins.showFutureWins();
 	        break;
 	        case game.STATES.BET:
 	        	game.hints.changeText( game.hints.TEXTS.BET );
 	        	game.bet.activateButtons();
 	        break;
-	        case game.STATES.RESULT:
+	        case game.STATES.PICK_A_CARD:
 	        	game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
 	        	game.wins.hideNotChosenMultiplierSum( game.chosenMultiplier );
 	        	game.hints.hide();
 
-	        	game.events.dealersCardShown.addOnce(function(){
-        			game.hints.changeText( game.hints.TEXTS.PICK );
-	        		game.enableCardPick();
+	        	game.deck.events.cardPicked.addOnce(function(){
+        			game.currentState = game.STATES.RESULT;
+					game.newState();
 	        	});
-	        	game.showDealersCard();
+
+	        	game.deck.events.dealersCardShown.addOnce(function(){
+        			game.hints.changeText( game.hints.TEXTS.PICK );
+	        		game.deck.enableCardPick();
+	        	});
+	        	game.deck.showDealersCard();
+	        break;
+	        case game.STATES.RESULT:
+	        	var resultData = game.deck.getResultData();
+
+	        	// RESULT and FINISH - thik about it !!!
+	        	// use forEach in Deck class !!!
+
+	        	if ( resultData.dealer > resultData.player ) {
+	        		game.hints.changeText( game.hints.TEXTS.LOOSER );
+
+	        	} else if ( resultData.dealer < resultData.player ) {
+	        		game.hints.changeText( game.hints.TEXTS.CONGRATS );
+	        		game.wins.updateWinAmount();
+	        		game.deck.showWinEffects();
+	        		// win effect over player's card (golden frame with sunlight); flip other the cards;
+	        		
+	        		// enable double buttons and show sum wot win under them, enable collect button
+	        	} else {
+	        		// TEXT ???
+	        		game.hints.hide(); // remove after TIE TEXT exists
+
+	        	}
+
+	        	setTimeout(function(){
+	        		game.deck.flipTheOtherCards();
+	        	}, 1500);
+
+	        	setTimeout(function(){
+	        		game.deck.collect();
+	        		game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
+	        		game.activateButtons([game.startButton]);
+	        		game.bet.activateButtons();
+	        		game.balance.updateWith( 0 );
+	        	}, 2500);
+	        	
 	        break;
 	        case game.STATES.FINISH:
 	        	if ( game.winAmount === 0 ) {
 	        		game.balance.updateWith(game.bet.getCurrentBet());
 	        	}
 
-	        	game.events.allCardsHidden.addOnce(function(){
+	        	game.deck.events.allCardsHidden.addOnce(function(){
 		        	game.activateButtons([game.startButton]);
 		        	game.bet.activateButtons();
 	        	});
 
 	        	game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
-	        	game.hideCards();
+	        	game.deck.hideCards();
 	        	game.wins.hideWinAmount();
 	        	game.wins.hideFutureWins();
 	        break;
@@ -133,45 +163,45 @@ define(function (require) {
 	Game.prototype.createGameElements = function () {
 		var that = this;
 		var background = new PIXI.Sprite.fromImage('img/bg.jpg');
-		stage.addChild(background);
+		this.addChild(background);
 
 	/* TEXTS */
 		this.hints = new Hints();
-		stage.addChild(this.hints);
+		this.addChild(this.hints);
 		
 		var dealersCardText = new PIXI.Text("Dealer's card", { font: 'bold 24px Arial', fill: '#c2c2c2', align: 'left' });
 		dealersCardText.x = 275;
 		dealersCardText.y = 450;
-		stage.addChild(dealersCardText);
+		this.addChild(dealersCardText);
 
 		var balanceText = new PIXI.Text("BALANCE:", { font: 'bold 24px Arial', fill: '#f3d601', align: 'left' });
 		balanceText.x = 10;
 		balanceText.y = 10;
-		stage.addChild(balanceText);
+		this.addChild(balanceText);
 
 		var betPerGame = new PIXI.Text("Bet per game:", { font: 'bold 18px Arial', fill: '#c2c2c2', align: 'left' });
 		betPerGame.x = 200;
 		betPerGame.y = settings.gameHeight - 80;
-		stage.addChild(betPerGame);
+		this.addChild(betPerGame);
 
 	/* BUTTONS */
 		this.doubleButton = new Button( "double" );
 		this.doubleButton.events.clicked.add(function(){
 			that.chosenMultiplier = "double";
-			that.currentState = that.STATES.RESULT;
+			that.currentState = that.STATES.PICK_A_CARD;
 			that.newState();
 		});
 		this.doubleButton.setXY( 750, 480 );
-		stage.addChild(this.doubleButton);
+		this.addChild(this.doubleButton);
 
 		this.doubleHalfButton = new Button( "doubleHalf" );
 		this.doubleHalfButton.events.clicked.add(function(){
 			that.chosenMultiplier = "doubleHalf";
-			that.currentState = that.STATES.RESULT;
+			that.currentState = that.STATES.PICK_A_CARD;
 			that.newState();
 		});
 		this.doubleHalfButton.setXY( 550, 480 );
-		stage.addChild(this.doubleHalfButton);
+		this.addChild(this.doubleHalfButton);
 
 		this.startButton = new Button( "start" );
 		this.startButton.setXY( 920, settings.gameHeight - 65 );
@@ -180,7 +210,7 @@ define(function (require) {
 			that.newState();
 		});
 		this.startButton.activate();
-		stage.addChild(this.startButton);
+		this.addChild(this.startButton);
 
 		this.collectButton = new Button( "collect" );
 		this.collectButton.setXY( 1100, settings.gameHeight - 65 );
@@ -188,78 +218,25 @@ define(function (require) {
 			that.currentState = that.STATES.FINISH;
 			that.newState();
 		});
-		stage.addChild(this.collectButton);
+		this.addChild(this.collectButton);
 
 	/* BALANCE */
 		this.balance = new Bangup();
 		this.balance.setXY( 180, 28);
 		this.balance.setAmount(1000);
-		stage.addChild(this.balance);
+		this.addChild(this.balance);
+
+	/* DECK OF CARDS */
+		this.deck = new Deck();
+		this.addChild(this.deck);
 
 	/* WINS */
 		this.wins = new Wins();
-		stage.addChild(this.wins);
+		this.addChild(this.wins);
 
 	/* BET */
 		this.bet = new Bet();
-		stage.addChild(this.bet);
-
-	/* CARDS */
-		// these are at the top left corner looking lika a deck of cards
-		var deckCard0 = createSpriteFromImage( "img/cards_back.png", 110, 180, 1.5 ),
-			deckCard1 = createSpriteFromImage( "img/cards_back.png", 108, 178, 1.5 ),
-			deckCard2 = createSpriteFromImage( "img/cards_back.png", 106, 176, 1.5 ),
-			deckCard3 = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5 );
-
-		this.dealedCardsContainer = new PIXI.DisplayObjectContainer();
-		stage.addChild(this.dealedCardsContainer);
-
-		for (var i = 0; i < settings.totalGameCards; i++) {
-			var card = new Card();
-			this.dealedCards.push( card );
-			this.dealedCardsContainer.addChild(card);
-		}
-
-
-		// this.card0 = new PIXI.Sprite.fromFrame('0');
-		// this.card0.x = settings.cardPositions.dealer.x;
-		// this.card0.y = settings.cardPositions.dealer.y;
-		// this.card0.anchor.x = this.card0.anchor.y = 0.5;
-		// this.card0.scale.x = 1.5;
-		// this.card0.scale.y = 1.5;
-		// stage.addChild(this.card0);
-
-		// this.card1 = new PIXI.Sprite.fromFrame('1');
-		// this.card1.x = settings.cardPositions.player[0].x;
-		// this.card1.y = settings.cardPositions.player[0].y;
-		// this.card1.anchor.x = this.card1.anchor.y = 0.5;
-		// this.card1.scale.x = 1.5;
-		// this.card1.scale.y = 1.5;
-		// stage.addChild(this.card1);
-
-		// this.card2 = new PIXI.Sprite.fromFrame('2');
-		// this.card2.x = settings.cardPositions.player[1].x;
-		// this.card2.y = settings.cardPositions.player[1].y;
-		// this.card2.anchor.x = this.card2.anchor.y = 0.5;
-		// this.card2.scale.x = 1.5;
-		// this.card2.scale.y = 1.5;
-		// stage.addChild(this.card2);
-
-		// this.card3 = new PIXI.Sprite.fromFrame('3');
-		// this.card3.x = settings.cardPositions.player[2].x;
-		// this.card3.y = settings.cardPositions.player[2].y;
-		// this.card3.anchor.x = this.card3.anchor.y = 0.5;
-		// this.card3.scale.x = 1.5;
-		// this.card3.scale.y = 1.5;
-		// stage.addChild(this.card3);
-
-		// this.card4 = new PIXI.Sprite.fromFrame('4');
-		// this.card4.x = settings.cardPositions.player[3].x;
-		// this.card4.y = settings.cardPositions.player[3].y;
-		// this.card4.anchor.x = this.card4.anchor.y = 0.5;
-		// this.card4.scale.x = 1.5;
-		// this.card4.scale.y = 1.5;
-		// stage.addChild(this.card4);
+		this.addChild(this.bet);
 
 		this.events.elementsCreated.dispatch();
 	};
@@ -267,46 +244,6 @@ define(function (require) {
 	Game.prototype.start = function () {
 		this.currentState = this.STATES.BET;
 		this.newState();
-	};
-
-	Game.prototype.deal = function () {
-		var that = this,
-			cardIndex = settings.totalGameCards - 1;
-
-		function animateCard () {
-			if ( cardIndex >= 0 ) {
-				var currentCard = that.dealedCards[cardIndex];
-				currentCard.showBack();
-				currentCard.deal(cardIndex, function(){
-					cardIndex--;
-					animateCard();
-				});
-			} else {
-				that.events.allCardsDealed.dispatch();
-			}
-		}
-
-		animateCard();
-	};
-
-	Game.prototype.hideCards = function () {
-		var that = this,
-			cardIndex = settings.totalGameCards - 1;
-
-		function animateCard () {
-			if ( cardIndex >= 0 ) {
-				var currentCard = that.dealedCards[cardIndex];
-				// currentCard.showBack();
-				currentCard.hide(function(){
-					cardIndex--;
-					animateCard();
-				});
-			} else {
-				that.events.allCardsHidden.dispatch();
-			}
-		}
-
-		animateCard();
 	};
 
 	Game.prototype.activateButtons = function( buttons ){
@@ -319,21 +256,6 @@ define(function (require) {
 		buttons.forEach(function( btn ){
 			btn.deactivate();
 		});
-	};
-
-	Game.prototype.showDealersCard = function(){
-		var dealersCard = this.dealedCardsContainer.children[0];
-		dealersCard.flip(function(){
-			this.events.dealersCardShown.dispatch();
-		}.bind(this));
-	};
-
-	Game.prototype.enableCardPick = function(){
-		
-		for (var i = 1; i < this.dealedCards.length; i++) {
-			this.dealedCards[i].enablePick();
-		}
-		
 	};
 
 	return Game;

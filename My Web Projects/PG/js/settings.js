@@ -2,12 +2,8 @@ define(function (require) {
 	var settings = {
 		gameWidth: 1280,
 		gameHeight: 770,
-		assets: ['img/bg.jpg', 'img/cards.json', 'img/buttons.png', 'img/cards_back.png'],
+		assets: ['img/cards.json'],
 		btnTypes: [ "double", "doubleHalf", "increase", "decrease", "start", "collect" ],
-		// cardPositions: {
-		// 	dealer: { x: 260, y: 330 },
-		// 	player: [ {x: 480, y: 330}, {x: 660, y: 330}, {x: 840, y: 330}, {x: 1020, y: 330} ]
-		// },
 		cardPositions: [{x: 350, y: 330}, {x: 570, y: 330}, {x: 750, y: 330}, {x: 930, y: 330}, {x: 1110, y: 330}],
 		cardPositionOutsideGame: 1280 + 200,
 		cardsDefaultPosition: {x: 104, y: 174},
@@ -19,8 +15,10 @@ define(function (require) {
 			increaseBtn: { normal: {x: 624, y: 0}, down: {x: 624, y: 46}, inactive: {x: 624, y: 92}, width: 46, height: 46 },
 			decreaseBtn: { normal: {x: 670, y: 0}, down: {x: 670, y: 46}, inactive: {x: 670, y: 92}, width: 46, height: 46 }
 		},
-		totalGameCards: 5,
-		cardsScale: 1.5
+		totalDeckCards: 52,
+		totalPlayableCards: 5,
+		cardsScale: 1.5,
+		cardsMaxRank: 13
 	};
 
 	return settings;

@@ -12,6 +12,9 @@ define(function (require) {
 		this.interactive = false;
 		this.buttonMode = false;
 		this.active = false;
+		this.rank = null;
+		this.flipped = false;
+		this.chosenByPlayer = false;
 
 		this.backImage = PIXI.Sprite.fromImage( "img/cards_back.png" );
 		this.backImage.anchor.x = this.backImage.anchor.y = 0.5;
@@ -19,7 +22,7 @@ define(function (require) {
 		this.backImage.visible = false;
 		this.addChild(this.backImage);
 
-		this.frontImage = new PIXI.Sprite.fromFrame('4');
+		this.frontImage = new PIXI.Sprite.fromImage('0');
 		this.frontImage.anchor.x = this.frontImage.anchor.y = 0.5;
 		this.frontImage.scale.x = this.frontImage.scale.y = settings.cardsScale;
 		this.frontImage.visible = false;
@@ -50,6 +53,8 @@ define(function (require) {
 		this.click = this.tap = function(){
 			if ( !that.active ) { return; }
 
+			that.hoverFrame.visible = false;
+			that.chosenByPlayer = true;
 			that.events.clicked.dispatch(that);
 		};
 
@@ -71,7 +76,7 @@ define(function (require) {
 	};
 	
 	Card.prototype.deal = function( cardIndex, callback ){
-		TweenMax.to(this.position, 0.1, {
+		TweenMax.to(this.position, 0.2, {
 					x: settings.cardPositions[cardIndex].x,
 					y: settings.cardPositions[cardIndex].y,
 					ease: Power4.easeOut,
@@ -93,7 +98,9 @@ define(function (require) {
 	};
 
 	Card.prototype.flip = function( callback ){
+		if ( this.flipped ) { return; }
 		var that = this;
+		this.flipped = true;
 
 		TweenMax.to(this, 0.1, { rotation: -0.2 });
 
@@ -113,12 +120,30 @@ define(function (require) {
 		this.position.y = settings.cardsDefaultPosition.y;
 		this.backImage.visible = true;
 		this.frontImage.visible = false;
+		this.chosenByPlayer = false;
+		this.rank = null;
 	};
 
 	Card.prototype.enablePick = function(){
 		this.interactive = true;
 		this.buttonMode = true;
 		this.active = true;
+	};
+
+	Card.prototype.disablePick = function(){
+		this.interactive = false;
+		this.buttonMode = false;
+		this.active = false;
+		this.flipped = false;
+	};
+
+	Card.prototype.setRankAndSuit = function( cardId ){
+		this.frontImage.setTexture( PIXI.Texture.fromImage( cardId) );
+		this.rank = cardId % settings.cardsMaxRank;
+	};
+
+	Card.prototype.showWinFrame = function(){
+		this.winFrame.visible = true;
 	};
 
 	return Card;

@@ -23,6 +23,7 @@ define(function (require) {
 		this.addChild(this.toWinDouble);
 
 		this.cumulativeWinAmoiunt = 0;
+		this.futureWinAmount = 0;
 		
 	};
 
@@ -32,6 +33,11 @@ define(function (require) {
 		this.winAmountBangup.setAmount( currentBet );
 		this.cumulativeWinAmoiunt = currentBet;
 		this.winAmountBangup.visible = true;
+	};
+
+	Wins.prototype.updateWinAmount = function(){
+		this.cumulativeWinAmoiunt += this.futureWinAmount;
+		this.winAmountBangup.updateWith( this.futureWinAmount );
 	};
 
 	Wins.prototype.hideWinAmount = function( currentBet ){
@@ -64,8 +70,10 @@ define(function (require) {
 	Wins.prototype.hideNotChosenMultiplierSum = function( chosenMultiplier ){
 		if ( chosenMultiplier === 'doubleHalf' ) {
 			this.toWinDouble.visible = false;
+			futureWinAmount = this.getDoubleHalfFutureWin();
 		} else if ( chosenMultiplier === 'double' ) {
 			this.toWinDoubleHalf.visible = false;
+			futureWinAmount = this.getDoubleFutureWin();
 		}
 	};
 

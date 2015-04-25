@@ -14,10 +14,8 @@ define(function (require) {
 	renderer.view.style["transform"] = "translatez(0)";
 
 	var animate = function() {
-	    // update();
 		renderer.render(stage);
 	    requestAnimFrame(animate);
-	    // ;;;console.log('updating');
 	}.bind(this);
 
 	requestAnimFrame(animate);
