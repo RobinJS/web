@@ -23,8 +23,8 @@ define(function (require) {
 		 (1) hide cards; disable the 2 buttons; do not update the ballance (player looses what he bet before start); enable bet buttons and start button
 		 (2) enable double buttons and show sum wot win under them, enable collect button
 		- on COLLECT: hide cards, disable double btns, enable bet buttons, update balance, hide win sum at the bottom bar
+			- TIE:
 		
-			- TIE: .... 
 
 		 bet 1 -  to win: 1.5, to win: 2.00
 		 current win 1.5 - to win: 2.25, to win: 3.00
@@ -46,7 +46,7 @@ define(function (require) {
 		this.winAmount = 0;
 		this.chosenMultiplier = "";
 
-		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', PICK_A_CARD: 'pick', RESULT: 'result', FINISH: 'finish' };
+		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', PICK_A_CARD: 'pick', RESULT: 'result', WIN: 'win', LOOSE: 'loose', FINISH: 'finish' };
 		this.currentState = "";
 
 		this.events = {
@@ -57,6 +57,14 @@ define(function (require) {
 
 		DEBUG = {};
 		DEBUG.game = this;
+		DEBUG.gaffs = {};
+		DEBUG.gaffs.iWin = function(){
+			DEBUG.game.deck.cardsArr[0].setRankAndSuit( 0 );
+
+			for (var i = 1; i < 5; i++) {
+				DEBUG.game.deck.cardsArr[i].setRankAndSuit( 12 );
+			}
+		};
 	};
 
 	Game.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
@@ -73,6 +81,7 @@ define(function (require) {
 				game.deactivateButtons([game.startButton]);
 				game.bet.deactivateButtons();
 				game.wins.showStartAmount( game.bet.getCurrentBet() );
+				game.balance.updateWith(-game.bet.getCurrentBet());
 				game.currentState = game.STATES.DEAL;
 				game.newState();
 			break;
@@ -83,7 +92,6 @@ define(function (require) {
 					game.hints.changeText( game.hints.TEXTS.CHOOSE_BUTTON );
 				});
 
-				game.balance.updateWith(-game.bet.getCurrentBet());
 	        	game.deck.deal();
 	        	game.wins.showFutureWins();
 	        break;
@@ -109,38 +117,59 @@ define(function (require) {
 	        break;
 	        case game.STATES.RESULT:
 	        	var resultData = game.deck.getResultData();
-
-	        	// RESULT and FINISH - thik about it !!!
-	        	// use forEach in Deck class !!!
+	        		game.wins.setWinner( resultData );
 
 	        	if ( resultData.dealer > resultData.player ) {
-	        		game.hints.changeText( game.hints.TEXTS.LOOSER );
-
+	        		game.currentState = game.STATES.LOOSE;
+					game.newState();
 	        	} else if ( resultData.dealer < resultData.player ) {
-	        		game.hints.changeText( game.hints.TEXTS.CONGRATS );
-	        		game.wins.updateWinAmount();
-	        		game.deck.showWinEffects();
-	        		// win effect over player's card (golden frame with sunlight); flip other the cards;
-	        		
-	        		// enable double buttons and show sum wot win under them, enable collect button
+	        		game.currentState = game.STATES.WIN;
+					game.newState();
 	        	} else {
-	        		// TEXT ???
-	        		game.hints.hide(); // remove after TIE TEXT exists
+	        		game.hints.changeText( game.hints.TEXTS.TIE );
 
 	        	}
+	        break;
+	        case game.STATES.WIN:
+	        	game.hints.changeText( game.hints.TEXTS.CONGRATS );
+        		game.deck.showWinEffects();
 
-	        	setTimeout(function(){
+        		setTimeout(function(){
 	        		game.deck.flipTheOtherCards();
+        			game.wins.updateWinAmount();
 	        	}, 1500);
 
 	        	setTimeout(function(){
+	        		game.deck.events.allCardsHidden.addOnce(function(){
+	        			game.currentState = game.STATES.DEAL;
+						game.newState();
+	        		});
+
+	        		game.wins.hideFutureWins();
 	        		game.deck.collect();
-	        		game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
-	        		game.activateButtons([game.startButton]);
-	        		game.bet.activateButtons();
-	        		game.balance.updateWith( 0 );
-	        	}, 2500);
-	        	
+	        	}, 3000);
+
+	        break;
+	        case game.STATES.LOOSE:
+        		game.hints.changeText( game.hints.TEXTS.LOOSER );
+        		game.deck.showWinEffects();
+
+        		setTimeout(function(){
+	        		game.deck.flipTheOtherCards();
+        			game.wins.updateWinAmount();
+	        	}, 1500);
+
+	        	setTimeout(function(){
+	        		game.deck.events.allCardsHidden.addOnce(function(){
+	        			game.activateButtons([game.startButton]);
+	        			game.bet.activateButtons();
+	        			game.balance.updateWith( 0 );
+	        		});
+
+	        		game.deck.collect();
+	        	}, 3000);
+	        		
+        		game.activateButtons([game.doubleButton, game.doubleHalfButton]);
 	        break;
 	        case game.STATES.FINISH:
 	        	if ( game.winAmount === 0 ) {
@@ -153,7 +182,7 @@ define(function (require) {
 	        	});
 
 	        	game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
-	        	game.deck.hideCards();
+	        	game.deck.collect();
 	        	game.wins.hideWinAmount();
 	        	game.wins.hideFutureWins();
 	        break;

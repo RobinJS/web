@@ -24,8 +24,8 @@ define(function (require) {
 			deckCard3 = createSpriteFromImage( "img/cards_back.png", 104, 174, 1.5, this );
 		
 		this.cardsArr = [];
-		this.dealerCardRank = 0;
-		this.playerCardRank = 0;
+		this.dealerCard = null;
+		this.playerCard = null;
 
 		this.createCards();
 
@@ -54,9 +54,10 @@ define(function (require) {
 	};
 
 	Deck.prototype.handlePick = function( pickedCard ){
-		this.playerCardRank = pickedCard.rank;
+		this.playerCard = pickedCard;
 		this.disableCardPick();
 		pickedCard.flip();
+		this.checkResult();
 	};
 
 	Deck.prototype.deal = function () {
@@ -85,6 +86,8 @@ define(function (require) {
 		var that = this,
 			cardIndex = settings.totalPlayableCards - 1;
 
+		this.hideWinEffects();
+
 		function animateCard () {
 			if ( cardIndex >= 0 ) {
 				var currentCard = that.cardsArr[cardIndex];
@@ -101,11 +104,9 @@ define(function (require) {
 	};
 
 	Deck.prototype.showDealersCard = function(){
-		var dealersCard = this.cardsArr[0];
+		this.dealerCard = this.cardsArr[0];
 
-		this.dealerCardRank = dealersCard.rank;
-
-		dealersCard.flip(function(){
+		this.dealerCard.flip(function(){
 			this.events.dealersCardShown.dispatch();
 		}.bind(this));
 	};
@@ -147,7 +148,7 @@ define(function (require) {
 	};
 
 	Deck.prototype.getResultData = function(){
-		return { dealer: this.dealerCardRank, player: this.playerCardRank }
+		return { dealer: this.dealerCard.rank, player: this.playerCard.rank }
 	};
 
 	Deck.prototype.flipTheOtherCards = function(){
@@ -156,10 +157,26 @@ define(function (require) {
 		});
 	};
 
+	Deck.prototype.checkResult = function(){
+		if ( this.dealerCard.rank > this.playerCard.rank ) {
+			this.dealerCard.setWinning();
+		} else if ( this.dealerCard.rank < this.playerCard.rank ) {
+			this.playerCard.setWinning();
+		}
+	};
+
 	Deck.prototype.showWinEffects = function(){
 		this.cardsArr.forEach(function(card){
-			if ( card.chosenByPlayer ) {
+			if ( card.isWinCard ) {
 				card.showWinFrame();
+			}
+		});
+	};
+
+	Deck.prototype.hideWinEffects = function(){
+		this.cardsArr.forEach(function(card){
+			if ( card.isWinCard ) {
+				card.hideWinFrame();
 			}
 		});
 	};

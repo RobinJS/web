@@ -24,6 +24,7 @@ define(function (require) {
 
 		this.cumulativeWinAmoiunt = 0;
 		this.futureWinAmount = 0;
+		this.winner = "";
 		
 	};
 
@@ -36,8 +37,12 @@ define(function (require) {
 	};
 
 	Wins.prototype.updateWinAmount = function(){
-		this.cumulativeWinAmoiunt += this.futureWinAmount;
-		this.winAmountBangup.updateWith( this.futureWinAmount );
+		if ( this.winner === 'dealer' ) {
+			this.futureWinAmount = -this.cumulativeWinAmoiunt;
+		}
+
+		this.cumulativeWinAmoiunt = this.futureWinAmount;
+		this.winAmountBangup.updateTo( this.cumulativeWinAmoiunt );
 	};
 
 	Wins.prototype.hideWinAmount = function( currentBet ){
@@ -52,9 +57,6 @@ define(function (require) {
 	};
 
 	Wins.prototype.hideFutureWins = function(){
-		this.toWinDoubleHalf.setText("TO WIN: " + this.getDoubleHalfFutureWin());
-		this.toWinDouble.setText("TO WIN: " + this.getDoubleFutureWin());
-
 		this.toWinDoubleHalf.visible = false;
 		this.toWinDouble.visible = false;
 	};
@@ -70,11 +72,21 @@ define(function (require) {
 	Wins.prototype.hideNotChosenMultiplierSum = function( chosenMultiplier ){
 		if ( chosenMultiplier === 'doubleHalf' ) {
 			this.toWinDouble.visible = false;
-			futureWinAmount = this.getDoubleHalfFutureWin();
+			this.futureWinAmount = parseInt(this.getDoubleHalfFutureWin());
 		} else if ( chosenMultiplier === 'double' ) {
 			this.toWinDoubleHalf.visible = false;
-			futureWinAmount = this.getDoubleFutureWin();
+			this.futureWinAmount = parseInt(this.getDoubleFutureWin());
 		}
+	};
+
+	Wins.prototype.setWinner = function( resultData ){
+		if ( resultData.dealer > resultData.player ) {
+    		this.winner = "dealer";
+    	} else if ( resultData.dealer < resultData.player ) {
+    		this.winner = "player";
+    	} else {
+    		this.winner = "tie";
+    	}
 	};
 
 	return Wins;

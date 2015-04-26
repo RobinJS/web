@@ -14,7 +14,7 @@ define(function (require) {
 		this.active = false;
 		this.rank = null;
 		this.flipped = false;
-		this.chosenByPlayer = false;
+		this.isWinCard = false;
 
 		this.backImage = PIXI.Sprite.fromImage( "img/cards_back.png" );
 		this.backImage.anchor.x = this.backImage.anchor.y = 0.5;
@@ -54,7 +54,7 @@ define(function (require) {
 			if ( !that.active ) { return; }
 
 			that.hoverFrame.visible = false;
-			that.chosenByPlayer = true;
+			// that.isWinCard = true;
 			that.events.clicked.dispatch(that);
 		};
 
@@ -115,15 +115,6 @@ define(function (require) {
 		}});
 	};
 
-	Card.prototype.reset = function(){
-		this.position.x = settings.cardsDefaultPosition.x;
-		this.position.y = settings.cardsDefaultPosition.y;
-		this.backImage.visible = true;
-		this.frontImage.visible = false;
-		this.chosenByPlayer = false;
-		this.rank = null;
-	};
-
 	Card.prototype.enablePick = function(){
 		this.interactive = true;
 		this.buttonMode = true;
@@ -144,6 +135,26 @@ define(function (require) {
 
 	Card.prototype.showWinFrame = function(){
 		this.winFrame.visible = true;
+	};
+
+	Card.prototype.hideWinFrame = function(){
+		this.winFrame.visible = false;
+	};
+
+	Card.prototype.setWinning = function(){
+		this.isWinCard = true;
+	};
+
+	Card.prototype.reset = function(){
+		this.position.x = settings.cardsDefaultPosition.x;
+		this.position.y = settings.cardsDefaultPosition.y;
+		this.backImage.visible = true;
+		this.frontImage.visible = false;
+		this.isWinCard = false;
+		this.buttonMode = false;
+		this.active = false;
+		this.flipped = false;
+		this.rank = null;
 	};
 
 	return Card;
