@@ -29,6 +29,9 @@ define(function (require) {
 		 bet 1 -  to win: 1.5, to win: 2.00
 		 current win 1.5 - to win: 2.25, to win: 3.00
 
+
+		 TODO: 2.00
+
 	*/
 	var Game = function(){
 		PIXI.DisplayObjectContainer.call(this);
@@ -39,11 +42,11 @@ define(function (require) {
 		this.collectButton = null;
 		this.dealedCardsContainer = null;
 		this.balance = null;
+		this.balanceAmount = 0;
 		this.bet = null;
 		this.hints = null;
 		this.dealedCards = [];
 		this.deck = null;
-		this.winAmount = 0;
 		this.chosenMultiplier = "";
 
 		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', PICK_A_CARD: 'pick', RESULT: 'result', WIN: 'win', LOOSE: 'loose', FINISH: 'finish' };
@@ -55,14 +58,31 @@ define(function (require) {
 		
 		this.addEventListeners();
 
+
 		DEBUG = {};
 		DEBUG.game = this;
 		DEBUG.gaffs = {};
+
+		// call any of these methods BEFOR CLICKING ON "double" or "double half" buttons
 		DEBUG.gaffs.iWin = function(){
 			DEBUG.game.deck.cardsArr[0].setRankAndSuit( 0 );
 
 			for (var i = 1; i < 5; i++) {
 				DEBUG.game.deck.cardsArr[i].setRankAndSuit( 12 );
+			}
+		};
+
+		DEBUG.gaffs.dealerWins = function(){
+			DEBUG.game.deck.cardsArr[0].setRankAndSuit( 12 );
+
+			for (var i = 1; i < 5; i++) {
+				DEBUG.game.deck.cardsArr[i].setRankAndSuit( 0 );
+			}
+		};
+
+		DEBUG.gaffs.tie = function(){
+			for (var i = 0; i < 5; i++) {
+				DEBUG.game.deck.cardsArr[i].setRankAndSuit( 0 );
 			}
 		};
 	};
@@ -126,8 +146,8 @@ define(function (require) {
 	        		game.currentState = game.STATES.WIN;
 					game.newState();
 	        	} else {
-	        		game.hints.changeText( game.hints.TEXTS.TIE );
-
+	        		game.currentState = game.STATES.TIE;
+					game.newState();
 	        	}
 	        break;
 	        case game.STATES.WIN:
@@ -148,7 +168,6 @@ define(function (require) {
 	        		game.wins.hideFutureWins();
 	        		game.deck.collect();
 	        	}, 3000);
-
 	        break;
 	        case game.STATES.LOOSE:
         		game.hints.changeText( game.hints.TEXTS.LOOSER );
@@ -160,31 +179,43 @@ define(function (require) {
 	        	}, 1500);
 
 	        	setTimeout(function(){
+	        		game.currentState = game.STATES.FINISH;
+					game.newState();
+	        	}, 3000);
+	        break;
+	        case game.STATES.TIE:
+        		game.hints.changeText( game.hints.TEXTS.TIE );
+
+        		setTimeout(function(){
+	        		game.deck.flipTheOtherCards();
+	        	}, 1500);
+
+	        	setTimeout(function(){
 	        		game.deck.events.allCardsHidden.addOnce(function(){
-	        			game.activateButtons([game.startButton]);
-	        			game.bet.activateButtons();
-	        			game.balance.updateWith( 0 );
+	        			game.currentState = game.STATES.DEAL;
+						game.newState();
 	        		});
 
+	        		game.wins.hideFutureWins();
 	        		game.deck.collect();
 	        	}, 3000);
-	        		
-        		game.activateButtons([game.doubleButton, game.doubleHalfButton]);
 	        break;
 	        case game.STATES.FINISH:
-	        	if ( game.winAmount === 0 ) {
-	        		game.balance.updateWith(game.bet.getCurrentBet());
-	        	}
+        		game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
 
 	        	game.deck.events.allCardsHidden.addOnce(function(){
-		        	game.activateButtons([game.startButton]);
-		        	game.bet.activateButtons();
-	        	});
+        			game.activateButtons([game.startButton]);
+        			game.bet.activateButtons();
+        			var winAmount = game.wins.getWinAmount();
+        			if ( winAmount > 0 ) {
+        				game.balance.updateWith( winAmount );
+        			}
+        		});
 
-	        	game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
-	        	game.deck.collect();
-	        	game.wins.hideWinAmount();
+	        	game.hints.hide();
 	        	game.wins.hideFutureWins();
+	        	game.deck.collect();
+	        	game.wins.hide();
 	        break;
 	   	}
 	};
@@ -252,7 +283,8 @@ define(function (require) {
 	/* BALANCE */
 		this.balance = new Bangup();
 		this.balance.setXY( 180, 28);
-		this.balance.setAmount(1000);
+		this.balanceAmount = 1000;
+		this.balance.setAmount(this.balanceAmount);
 		this.addChild(this.balance);
 
 	/* DECK OF CARDS */

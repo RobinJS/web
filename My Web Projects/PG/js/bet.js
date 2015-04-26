@@ -10,6 +10,10 @@ define(function (require) {
 		textObj.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
 	}
 
+	function toFixed(number){
+		return Math.floor(number * 100) / 100;
+	}
+
 	var Bet = function( type ){
 		PIXI.DisplayObjectContainer.call(this);
 
@@ -18,7 +22,7 @@ define(function (require) {
 		this.currentBet = 2;
 		
 		this.text = new PIXI.Text("", { font: 'bold 28px Arial', fill: '#f3d601', align: 'center' });
-		changeText( this.text, this.currentBet.toFixed(2) );
+		changeText( this.text, toFixed(this.currentBet) );
 
 		this.text.x = 260;
 		this.text.y = settings.gameHeight - 25;
@@ -54,7 +58,7 @@ define(function (require) {
 				that.increaseBtn.deactivate();
 			}
 
-			changeText( that.text, that.amounts[that.amountIndex].toFixed(2) );
+			changeText( that.text, toFixed(that.amounts[that.amountIndex]) );
 		});
 
 		this.decreaseBtn.events.clicked.add(function(){
@@ -71,7 +75,7 @@ define(function (require) {
 				that.decreaseBtn.deactivate();
 			}
 
-			changeText( that.text, that.amounts[that.amountIndex].toFixed(2) );
+			changeText( that.text, toFixed(that.amounts[that.amountIndex]) );
 		});
 	};
 

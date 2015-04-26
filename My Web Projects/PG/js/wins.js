@@ -38,20 +38,20 @@ define(function (require) {
 
 	Wins.prototype.updateWinAmount = function(){
 		if ( this.winner === 'dealer' ) {
-			this.futureWinAmount = -this.cumulativeWinAmoiunt;
+			this.futureWinAmount = 0;
 		}
 
+		this.winAmountBangup.updateWith( this.futureWinAmount - this.cumulativeWinAmoiunt );
 		this.cumulativeWinAmoiunt = this.futureWinAmount;
-		this.winAmountBangup.updateTo( this.cumulativeWinAmoiunt );
 	};
 
-	Wins.prototype.hideWinAmount = function( currentBet ){
+	Wins.prototype.hide = function( currentBet ){
 		this.winAmountBangup.visible = false;
 	};
 
 	Wins.prototype.showFutureWins = function(){
-		this.toWinDoubleHalf.setText("TO WIN: " + this.getDoubleHalfFutureWin());
-		this.toWinDouble.setText("TO WIN: " + this.getDoubleFutureWin());
+		this.toWinDoubleHalf.setText( "TO WIN: " + Math.floor( this.getDoubleHalfFutureWin() * 100) / 100);
+		this.toWinDouble.setText( "TO WIN: " + Math.floor( this.getDoubleFutureWin() * 100 ) / 100);
 		this.toWinDoubleHalf.visible = true;
 		this.toWinDouble.visible = true;
 	};
@@ -62,20 +62,24 @@ define(function (require) {
 	};
 
 	Wins.prototype.getDoubleHalfFutureWin = function(){
-		return (this.cumulativeWinAmoiunt * 1.5).toFixed(2);
+		return this.cumulativeWinAmoiunt * 1.5;
 	};
 
 	Wins.prototype.getDoubleFutureWin = function(){
-		return (this.cumulativeWinAmoiunt * 2).toFixed(2);
+		return this.cumulativeWinAmoiunt * 2;
+	};
+
+	Wins.prototype.getWinAmount = function(){
+		return this.cumulativeWinAmoiunt;
 	};
 
 	Wins.prototype.hideNotChosenMultiplierSum = function( chosenMultiplier ){
 		if ( chosenMultiplier === 'doubleHalf' ) {
 			this.toWinDouble.visible = false;
-			this.futureWinAmount = parseInt(this.getDoubleHalfFutureWin());
+			this.futureWinAmount = this.getDoubleHalfFutureWin();
 		} else if ( chosenMultiplier === 'double' ) {
 			this.toWinDoubleHalf.visible = false;
-			this.futureWinAmount = parseInt(this.getDoubleFutureWin());
+			this.futureWinAmount = this.getDoubleFutureWin();
 		}
 	};
 

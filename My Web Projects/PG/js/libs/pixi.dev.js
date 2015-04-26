@@ -222,7 +222,7 @@ PIXI.sayHello = function (type)
             'color: #ff2424; background: #fff'
         ];
 
-        console.log.apply(console, args);
+        // console.log.apply(console, args);
     }
     else if (window['console'])
     {
