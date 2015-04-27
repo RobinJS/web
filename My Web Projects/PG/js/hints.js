@@ -18,7 +18,7 @@ define(function (require) {
 			PICK: "PICK A HIGHER CARD TO WIN!",
 			LOOSER: "BETTER LUCK NEXT TIME!",
 			CONGRATS: "CONGRATULATIONS! YOU WIN!",
-			TIE: "IT'S A TIE"
+			TIE: "IT'S A TIE. TRY AGAIN"
 		};
 
 	};

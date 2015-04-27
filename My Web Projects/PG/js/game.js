@@ -7,6 +7,7 @@ define(function (require) {
 		Bet = require('bet'),
 		Hints = require('hints'),
 		Deck = require('deck'),
+		Message = require('message'),
 		Wins = require('wins');
 
 	var Game = function(){
@@ -18,11 +19,12 @@ define(function (require) {
 		this.collectButton = null;
 		this.dealedCardsContainer = null;
 		this.balance = null;
-		this.balanceAmount = 0;
 		this.bet = null;
 		this.hints = null;
-		this.dealedCards = [];
 		this.deck = null;
+		this.message = null;
+		this.dealedCards = [];
+		this.balanceAmount = 0;
 		this.chosenMultiplier = "";
 
 		this.STATES = { START: 'start', DEAL: 'deal', BET: 'bet', PICK_A_CARD: 'pick', RESULT: 'result', WIN: 'win', LOOSE: 'loose', FINISH: 'finish' };
@@ -74,6 +76,18 @@ define(function (require) {
 
 		switch( game.currentState ) {
 			case game.STATES.START:
+				if ( game.balanceAmount < game.bet.getCurrentBet() ) {
+					game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton, game.startButton]);
+					game.bet.deactivateButtons();
+
+					game.message.events.messageHidden.addOnce(function(){
+						game.activateButtons([game.startButton]);
+						game.bet.activateButtons();
+					});
+					game.message.show();
+					return;
+				}
+
 				game.deactivateButtons([game.startButton]);
 				game.bet.deactivateButtons();
 				game.wins.showStartAmount( game.bet.getCurrentBet() );
@@ -81,7 +95,7 @@ define(function (require) {
 				var newBalance = game.balanceAmount - game.bet.getCurrentBet();
 				game.balance.update( game.balanceAmount, newBalance );
 				game.balanceAmount = newBalance;
-				
+
 				game.currentState = game.STATES.DEAL;
 				game.newState();
 			break;
@@ -284,6 +298,10 @@ define(function (require) {
 		this.addChild(this.bet);
 
 		this.events.elementsCreated.dispatch();
+	
+	/* MESSAGE */
+		this.message = new Message();
+		this.addChild(this.message);
 	};
 
 	Game.prototype.start = function () {

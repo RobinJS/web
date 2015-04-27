@@ -35,7 +35,7 @@ define(function (require) {
 		var that = this,
 			bangup = { currentAmount: startAmount };
 
-		endAmount = endAmount || startAmount;
+		endAmount = endAmount || 0;
 
 		TweenMax.to(bangup, 1, {
 			currentAmount: endAmount,

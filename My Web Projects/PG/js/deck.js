@@ -57,7 +57,7 @@ define(function (require) {
 		this.playerCard = pickedCard;
 		this.disableCardPick();
 		pickedCard.flip();
-		this.checkResult();
+		this.setWinningCard();
 	};
 
 	Deck.prototype.deal = function () {
@@ -157,7 +157,7 @@ define(function (require) {
 		});
 	};
 
-	Deck.prototype.checkResult = function(){
+	Deck.prototype.setWinningCard = function(){
 		if ( this.dealerCard.rank > this.playerCard.rank ) {
 			this.dealerCard.setWinning();
 		} else if ( this.dealerCard.rank < this.playerCard.rank ) {
