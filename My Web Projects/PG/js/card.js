@@ -54,7 +54,6 @@ define(function (require) {
 			if ( !that.active ) { return; }
 
 			that.hoverFrame.visible = false;
-			// that.isWinCard = true;
 			that.events.clicked.dispatch(that);
 		};
 

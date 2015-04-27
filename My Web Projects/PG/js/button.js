@@ -7,7 +7,7 @@ define(function (require) {
 		PIXI.DisplayObjectContainer.call(this);
 		
 		if ( settings.btnTypes.indexOf(type) === -1 ) {
-			;;;console.error("Invalid button type");
+			console.error("Invalid button type");
 			return;
 		}
 
@@ -52,7 +52,6 @@ define(function (require) {
 		this.image.click = this.image.tap = function(){
 			if ( that.state === that.STATES.INACTIVE ) { return; }
 
-			that.changeState( that.STATES.NORMAL );
 			that.events.clicked.dispatch();
 		};
 

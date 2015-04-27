@@ -9,30 +9,6 @@ define(function (require) {
 		Deck = require('deck'),
 		Wins = require('wins');
 
-	/*
-		- choose bet
-		- on start: get the bet amount from the balance
-		- deal cards
-		- enable buttons: double; double half and collect; disable + and - buttons; show "TO WIN" and "TO WIN"; show "choose dbl or dbl half!" hint
-		- on choose button: hide hint; diable buttons; show only "TO WIN" under the chosen button + the sum to win; hide current sum at the bottom bar;
-			show Dealer's card; show "pick a higher card to win!" hint; allow card to be chosen
-		- on card chosen: flip the card; show hint according to what happens;
-			SCENARIOS from here: 
-			- CHOSEN CARD IS SMALLER: show "better luck next time" hint; flip the other cards; go to (1)
-			- CHOSEN CARD IS BIGGER: show "congrats! you win!" hint; update current win sum at the bottom bar; win effect over player's card (golden frame with sunlight); flip other the cards; go to (2)
-		 (1) hide cards; disable the 2 buttons; do not update the ballance (player looses what he bet before start); enable bet buttons and start button
-		 (2) enable double buttons and show sum wot win under them, enable collect button
-		- on COLLECT: hide cards, disable double btns, enable bet buttons, update balance, hide win sum at the bottom bar
-			- TIE:
-		
-
-		 bet 1 -  to win: 1.5, to win: 2.00
-		 current win 1.5 - to win: 2.25, to win: 3.00
-
-
-		 TODO: 2.00
-
-	*/
 	var Game = function(){
 		PIXI.DisplayObjectContainer.call(this);
 
@@ -101,19 +77,22 @@ define(function (require) {
 				game.deactivateButtons([game.startButton]);
 				game.bet.deactivateButtons();
 				game.wins.showStartAmount( game.bet.getCurrentBet() );
+
 				var newBalance = game.balanceAmount - game.bet.getCurrentBet();
 				game.balance.update( game.balanceAmount, newBalance );
 				game.balanceAmount = newBalance;
+				
 				game.currentState = game.STATES.DEAL;
 				game.newState();
 			break;
 			case game.STATES.DEAL:
 				game.deck.events.allCardsDealed.addOnce(function(){
+					game.hints.changeText( game.hints.TEXTS.CHOOSE_BUTTON );
 					game.deactivateButtons([game.startButton]);
 					game.activateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
-					game.hints.changeText( game.hints.TEXTS.CHOOSE_BUTTON );
 				});
 
+				game.hints.hide();
 	        	game.deck.deal();
 	        	game.wins.showFutureWins();
 	        break;
@@ -168,6 +147,7 @@ define(function (require) {
 	        		});
 
 	        		game.wins.hideFutureWins();
+	        		game.hints.hide();
 	        		game.deck.collect();
 	        	}, 3500);
 	        break;
@@ -199,27 +179,27 @@ define(function (require) {
 	        		});
 
 	        		game.wins.hideFutureWins();
+	        		game.hints.hide();
 	        		game.deck.collect();
 	        	}, 3000);
 	        break;
 	        case game.STATES.FINISH:
         		game.deactivateButtons([game.doubleButton, game.doubleHalfButton, game.collectButton]);
+	        	game.wins.hideFutureWins();
+	        	game.hints.hide();
+	        	game.wins.hide();
 
 	        	game.deck.events.allCardsHidden.addOnce(function(){
         			game.activateButtons([game.startButton]);
         			game.bet.activateButtons();
         			var winAmount = game.wins.getWinAmount();
         			if ( winAmount > 0 ) {
-        				// var newBalance = game.balanceAmount + game.bet.getCurrentBet();
         				game.balance.update( game.balanceAmount, game.balanceAmount + winAmount );
         				game.balanceAmount = game.balanceAmount + winAmount;
         			}
         		});
 
-	        	game.hints.hide();
-	        	game.wins.hideFutureWins();
 	        	game.deck.collect();
-	        	game.wins.hide();
 	        break;
 	   	}
 	};

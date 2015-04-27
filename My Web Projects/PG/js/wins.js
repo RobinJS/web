@@ -25,7 +25,6 @@ define(function (require) {
 		this.cumulativeWinAmoiunt = 0;
 		this.futureWinAmount = 0;
 		this.winner = "";
-		
 	};
 
 	Wins.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
@@ -42,7 +41,7 @@ define(function (require) {
 		}
 
 		this.winAmountBangup.update( this.cumulativeWinAmoiunt, this.futureWinAmount );
-		this.cumulativeWinAmoiunt = this.futureWinAmount;
+		this.cumulativeWinAmoiunt = Math.floor( this.futureWinAmount * 100) / 100;
 	};
 
 	Wins.prototype.hide = function( currentBet ){

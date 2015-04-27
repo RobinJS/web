@@ -13,7 +13,6 @@ define(function (require) {
 		var bounds = this.text.getBounds();
 		this.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
 		this.addChild(this.text);
-		// this.currentAmount = 0;
 		this.centered = false;
 	};
 
@@ -40,8 +39,7 @@ define(function (require) {
 
 		TweenMax.to(bangup, 1, {
 			currentAmount: endAmount,
-			onUpdate: onUpdate,
-			onComplete: onComplete
+			onUpdate: onUpdate
 		});
 
 		function onUpdate () {
@@ -55,10 +53,6 @@ define(function (require) {
 				var bounds = that.text.getBounds();
 				that.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
 			}
-		}
-
-		function onComplete () {
-			// that.currentAmount += amount;
 		}
 	};
 

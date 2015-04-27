@@ -11,8 +11,7 @@ require(["libs/pixi.dev", "libs/TweenMax.min", "settings", "stage", "game" ],
 		});
 
 		game.createGameElements();
-
-		
 	}
+	
 	loader.load();
 });
