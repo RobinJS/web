@@ -31,7 +31,7 @@ define(function (require) {
 	Wins.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
 
 	Wins.prototype.showStartAmount = function( currentBet ){
-		this.winAmountBangup.setAmount( currentBet );
+		this.winAmountBangup.update( currentBet, currentBet );
 		this.cumulativeWinAmoiunt = currentBet;
 		this.winAmountBangup.visible = true;
 	};
@@ -41,7 +41,7 @@ define(function (require) {
 			this.futureWinAmount = 0;
 		}
 
-		this.winAmountBangup.updateWith( this.futureWinAmount - this.cumulativeWinAmoiunt );
+		this.winAmountBangup.update( this.cumulativeWinAmoiunt, this.futureWinAmount );
 		this.cumulativeWinAmoiunt = this.futureWinAmount;
 	};
 
@@ -50,8 +50,8 @@ define(function (require) {
 	};
 
 	Wins.prototype.showFutureWins = function(){
-		this.toWinDoubleHalf.setText( "TO WIN: " + Math.floor( this.getDoubleHalfFutureWin() * 100) / 100);
-		this.toWinDouble.setText( "TO WIN: " + Math.floor( this.getDoubleFutureWin() * 100 ) / 100);
+		this.toWinDoubleHalf.setText( "TO WIN: " + (Math.floor( this.getDoubleHalfFutureWin() * 100) / 100).toFixed(2));
+		this.toWinDouble.setText( "TO WIN: " + (Math.floor( this.getDoubleFutureWin() * 100 ) / 100).toFixed(2));
 		this.toWinDoubleHalf.visible = true;
 		this.toWinDouble.visible = true;
 	};

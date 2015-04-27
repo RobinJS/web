@@ -101,7 +101,9 @@ define(function (require) {
 				game.deactivateButtons([game.startButton]);
 				game.bet.deactivateButtons();
 				game.wins.showStartAmount( game.bet.getCurrentBet() );
-				game.balance.updateWith(-game.bet.getCurrentBet());
+				var newBalance = game.balanceAmount - game.bet.getCurrentBet();
+				game.balance.update( game.balanceAmount, newBalance );
+				game.balanceAmount = newBalance;
 				game.currentState = game.STATES.DEAL;
 				game.newState();
 			break;
@@ -167,7 +169,7 @@ define(function (require) {
 
 	        		game.wins.hideFutureWins();
 	        		game.deck.collect();
-	        	}, 3000);
+	        	}, 3500);
 	        break;
 	        case game.STATES.LOOSE:
         		game.hints.changeText( game.hints.TEXTS.LOOSER );
@@ -181,7 +183,7 @@ define(function (require) {
 	        	setTimeout(function(){
 	        		game.currentState = game.STATES.FINISH;
 					game.newState();
-	        	}, 3000);
+	        	}, 3500);
 	        break;
 	        case game.STATES.TIE:
         		game.hints.changeText( game.hints.TEXTS.TIE );
@@ -208,7 +210,9 @@ define(function (require) {
         			game.bet.activateButtons();
         			var winAmount = game.wins.getWinAmount();
         			if ( winAmount > 0 ) {
-        				game.balance.updateWith( winAmount );
+        				// var newBalance = game.balanceAmount + game.bet.getCurrentBet();
+        				game.balance.update( game.balanceAmount, game.balanceAmount + winAmount );
+        				game.balanceAmount = game.balanceAmount + winAmount;
         			}
         		});
 
@@ -282,9 +286,9 @@ define(function (require) {
 
 	/* BALANCE */
 		this.balance = new Bangup();
-		this.balance.setXY( 180, 28);
+		this.balance.setXY( 150, 28);
 		this.balanceAmount = 1000;
-		this.balance.setAmount(this.balanceAmount);
+		this.balance.update( this.balanceAmount, this.balanceAmount );
 		this.addChild(this.balance);
 
 	/* DECK OF CARDS */

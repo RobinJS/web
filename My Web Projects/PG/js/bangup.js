@@ -13,7 +13,7 @@ define(function (require) {
 		var bounds = this.text.getBounds();
 		this.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
 		this.addChild(this.text);
-		this.currentAmount = 0;
+		// this.currentAmount = 0;
 		this.centered = false;
 	};
 
@@ -28,33 +28,27 @@ define(function (require) {
 		this.centered = true;
 	};
 
-	Bangup.prototype.setAmount = function( amount ){
-		this.currentAmount = amount;
-		this.text.setText( toFixed(amount) );
-		this.text.updateTransform();
-		var bounds = this.text.getBounds();
-		this.text.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
-	};
-
 	Bangup.prototype.setFontSize = function( size ){
 		this.text.setStyle({font: 'bold ' + size + 'px Arial', fill: '#f3d601', align: 'center'});
 	};
 
-	Bangup.prototype.updateWith = function( amount ){
+	Bangup.prototype.update = function( startAmount, endAmount ){
 		var that = this,
-			bangup = { currentAmount: this.currentAmount };
+			bangup = { currentAmount: startAmount };
 
-		TweenMax.to(bangup, 1, { 
-			currentAmount: this.currentAmount + amount,
+		endAmount = endAmount || startAmount;
+
+		TweenMax.to(bangup, 1, {
+			currentAmount: endAmount,
 			onUpdate: onUpdate,
 			onComplete: onComplete
 		});
 
 		function onUpdate () {
-			var amountPercent = toFixed( this.progress() * amount ),
-			amountToUpdate = toFixed( that.currentAmount + parseFloat(amountPercent) );
+			var amountPercent = toFixed( this.progress() * (endAmount - startAmount) ),
+			amountToUpdate = toFixed( startAmount + parseFloat(amountPercent) );
 
-			that.text.setText( amountToUpdate );
+			that.text.setText( amountToUpdate.toFixed(2) );
 
 			if ( that.centered ) {
 				that.text.updateTransform();
@@ -64,7 +58,7 @@ define(function (require) {
 		}
 
 		function onComplete () {
-			that.currentAmount += amount;
+			// that.currentAmount += amount;
 		}
 	};
 

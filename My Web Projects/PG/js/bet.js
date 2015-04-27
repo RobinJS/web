@@ -4,7 +4,7 @@ define(function (require) {
 		Button = require('button');
 
 	function changeText ( textObj, newText ) {
-		textObj.setText( newText );
+		textObj.setText( newText.toFixed(2) );
 		
 		var bounds = textObj.getBounds();
 		textObj.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
@@ -24,7 +24,7 @@ define(function (require) {
 		this.text = new PIXI.Text("", { font: 'bold 28px Arial', fill: '#f3d601', align: 'center' });
 		changeText( this.text, toFixed(this.currentBet) );
 
-		this.text.x = 260;
+		this.text.x = 258;
 		this.text.y = settings.gameHeight - 25;
 		this.addChild(this.text);
 
