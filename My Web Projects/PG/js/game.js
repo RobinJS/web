@@ -34,8 +34,6 @@ define(function (require) {
 			elementsCreated: new Signal()
 		}
 		
-		this.addEventListeners();
-
 
 		DEBUG = {};
 		DEBUG.game = this;
@@ -66,10 +64,6 @@ define(function (require) {
 	};
 
 	Game.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
-
-	Game.prototype.addEventListeners = function () {
-		
-	};
 
 	Game.prototype.newState = function(){
 		var game = this;
