@@ -25,6 +25,7 @@ require([ "settings", "player" ],
         var magnets;
         var speedUps;
         var snails;
+        var objectIndex = 0;
 
         function preload() {
             game.scale.maxWidth = 720;
@@ -86,18 +87,14 @@ require([ "settings", "player" ],
         */
 
         function create() {
-            // game.stage.setBackgroundColor("#dce2e6"); // CHANGE to black !!!
             game.stage.setBackgroundColor("#000000"); // CHANGE to black !!!
             debug = game.add.text(0, 50, " ", { font: "42px Verdana", fill: "#ffffff", align: "center" });
+
             //  The scrolling starfield background
             backgroundImage = game.add.tileSprite(0, 0, 720, 1280, 'bgImage');
 
-            // var skyLayer = game.add.group();
-            // skyLayer.z = 0;
-            // var cloudLayer = game.add.group();
-            // cloudLayer.z = 1;
-
             createObjectGroups();
+
             player = new Player( game );
 
             scoreText = game.add.text(0, 0, "Score: 0", { font: "42px Verdana", fill: "#ffffff", align: "center" });
@@ -108,7 +105,6 @@ require([ "settings", "player" ],
             window.DEBUG = {};
             window.DEBUG.game = game;
             window.DEBUG.gameElements = gameElements;
-
 
             showStartScreen();
         }
@@ -155,13 +151,7 @@ require([ "settings", "player" ],
                 // }
 
                 //  Run collision
-                // game.physics.arcade.overlap(player, bombs, collisionHandler, null, this);
-                // game.physics.arcade.overlap(player, healths, collisionHandler, null, this);
-                // game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
-
-                // game.physics.arcade.overlap(player.children[0], [bombs], collisionHandler, null, this);
                 game.physics.arcade.overlap(player.container.children[1], [crystals, coins], collisionHandler, null, this);
-                // game.physics.arcade.overlap(magnetHitArea, healths, magnetisedCollection, null, this);
             // }
 
             // healths.forEach(function(h){
@@ -345,10 +335,6 @@ require([ "settings", "player" ],
             // snails.createMultiple(20, 'snail');
         }
 
-        function getRandomXPos(){
-            return Math.floor(Math.random() * game.world.width - gameBoundOffset );
-        }
-
         function setProps( obj, scale, bodyWidth, bodyHeight, type ){
             obj.scale.x = scale;
             obj.scale.y = scale;
@@ -364,18 +350,39 @@ require([ "settings", "player" ],
             obj.type = type;
         }
 
-        function createFallingObjects () {
-            var crystal = crystals.getFirstDead(false);
-            crystal.reset( getRandomXPos(), -5);
-            setProps( crystal, 1, 50, 64, 'crystal' );
-            game.physics.arcade.moveToXY(crystal, crystal.x, game.world.height + gameBoundOffset, 60, 6000);
+        function randInRangeWithStep( min, max, step ){
+            var tempArr = [];
 
-            var coin = coins.getFirstDead(false);
-            coin.reset( getRandomXPos(), -5);
-            setProps( coin, 1, 50, 45, 'coin' );
-            coin.animations.add('flip');
-            coin.animations.play('flip', 20, true);
-            game.physics.arcade.moveToXY(coin, coin.x, game.world.height + gameBoundOffset, 60, 6000);
+            for (var i = 0; i < max/step; i++) {
+                tempArr.push( i * step );
+            }
+
+            var randIndex = game.rnd.between(0, tempArr.length);
+            return tempArr[randIndex];
+        }
+
+        function createFallingObjects () {
+            var rand = game.rnd.between(0, 10), objectToCreate;
+
+            if ( rand === 0 ) {
+                objectToCreate = crystals.getFirstDead(false);
+                var x = randInRangeWithStep(0, game.world.width - gameBoundOffset, 100) + 50;
+                objectToCreate.reset( x, -5);
+                setProps( objectToCreate, 1, 50, 64, 'crystal' );
+                game.physics.arcade.moveToXY(objectToCreate, objectToCreate.x, game.world.height + gameBoundOffset, 60, 6000);
+                
+            }
+
+            if ( rand % 3 === 0 ) {
+                objectToCreate = coins.getFirstDead(false);
+                var x = randInRangeWithStep(0, game.world.width - gameBoundOffset, 100) + 50;
+                objectToCreate.reset( x, -5);
+                setProps( objectToCreate, 1, 50, 45, 'coin' );
+                objectToCreate.animations.add('flip');
+                objectToCreate.animations.play('flip', 20, true);
+                game.physics.arcade.moveToXY(objectToCreate, objectToCreate.x, game.world.height + gameBoundOffset, 60, 6000);
+            }
+            
 
             // var bomb = bombs.getFirstDead(false);
             // bomb.scale.x = 0.5;
