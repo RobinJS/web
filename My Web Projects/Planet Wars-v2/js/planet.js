@@ -170,6 +170,9 @@ define(function(require){
 	};
 
 	Planet.prototype.sendShipsTo = function( destinationPlanet ){
+		if ( this.ships.length === 0 ) { return; }
+
+		// CONTINUE FROM HERE
 		var allShips = [];
 
 		while(this.ships.length !== 0){
@@ -180,7 +183,9 @@ define(function(require){
 		this.updateShipsCount();
 
 		allShips.forEach(function(ship, idx){
-			ship.sendTo( destinationPlanet );
+			setTimeout(function(){
+				ship.sendTo( destinationPlanet );
+			}, 150 * idx);
 		});
 	};
 

@@ -76,7 +76,7 @@ define(function(){
 
 		this.moveAnimation.to( this.shape, duration, {x: destinationPlanet.currentShape.x, y: destinationPlanet.currentShape.y, ease:Linear.easeNone} );
 
-		TweenMax.to( this.shape.pivot, duration, {x: this.shape.width/2, y: this.shape.width/2, ease: Power2.easeIn, onComplete: function(){
+		TweenMax.to( this.shape.pivot, duration, {x: this.shape.width/2, y: this.shape.width/2, ease: Power4.easeOut, onComplete: function(){
 			destinationPlanet.addShip( that.team, that.planetType );
 			if ( destinationPlanet.team === "empty" ) {
 				destinationPlanet.setTeam( that.team, that.planetType );

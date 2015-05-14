@@ -171,19 +171,25 @@ define(function (require) {
 		};
 
 		this.stage.mouseup = this.stage.touchend = function(){
+			if ( !that.planetTapped ) { return; }
+
 			that.planetTapped = false;
 			that.arrow.clear();
 			if ( that.destinationPlanet ) {
 				that.destinationPlanet.hideDestinationMarker();
 				that.chosenPlanet.sendShipsTo( that.destinationPlanet );
+				that.destinationPlanet = null;
 			}
 
 			if ( that.chosenPlanet ) {
 				that.chosenPlanet.hideTouchMarker();
+				that.chosenPlanet = null;
 			}
 		};
 
 		this.stage.mouseout = this.stage.touchendoutside = function(){
+			if ( !that.planetTapped ) { return; }
+
 			that.planetTapped = false;
 			that.arrow.clear();
 			if ( that.destinationPlanet ) {
