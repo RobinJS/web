@@ -1,0 +1,45 @@
+{
+"frames": {
+	"bluePlanet.png": {
+		"frame": {"x":191, "y":0, "w":176, "h":176},
+		"spriteSourceSize": {"x":0,"y":0,"w":176,"h":176},
+		"sourceSize": {"w":176,"h":176}
+	},
+	"emptyPlanet.png": {
+		"frame": {"x":185, "y":191, "w":177, "h":176},
+		"spriteSourceSize": {"x":0,"y":0,"w":177,"h":176},
+		"sourceSize": {"w":177,"h":176}
+	},
+	"greenPlanet.png": {
+		"frame": {"x":0, "y":0, "w":190, "h":190},
+		"spriteSourceSize": {"x":0,"y":0,"w":190,"h":190},
+		"sourceSize": {"w":190,"h":190}
+	},
+	"orangePlanet.png": {
+		"frame": {"x":0, "y":375, "w":116, "h":117},
+		"spriteSourceSize": {"x":1,"y":0,"w":117,"h":117},
+		"sourceSize": {"w":117,"h":117}
+	},
+	"purplePlanet.png": {
+		"frame": {"x":363, "y":353, "w":173, "h":173},
+		"spriteSourceSize": {"x":0,"y":0,"w":173,"h":173},
+		"sourceSize": {"w":173,"h":173}
+	},
+	"redPlanet.png": {
+		"frame": {"x":0, "y":191, "w":184, "h":183},
+		"spriteSourceSize": {"x":0,"y":0,"w":184,"h":184},
+		"sourceSize": {"w":184,"h":184}
+	},
+	"yellowPlanet.png": {
+		"frame": {"x":363, "y":177, "w":175, "h":175},
+		"spriteSourceSize": {"x":1,"y":1,"w":176,"h":176},
+		"sourceSize": {"w":176,"h":176}
+	}
+
+},
+"meta": {
+	"image": "planets.png",
+	"size": {"w": 539, "h": 527},
+	"scale": "1"
+}
+}
