@@ -2,6 +2,7 @@ define(function (require) {
 	var PIXI = require('libs/pixi.dev'),
 		settings = require('settings'),
 		Signal = require('libs/signals.min'),
+		Player = require('player'),
 		Planet = require('planet'),
 		Button = require('button'),
 		Bangup = require('bangup'),
@@ -68,7 +69,7 @@ define(function (require) {
 				
 			break;
 	        case game.STATES.PLAY:
-        		
+        		this.startCreatingShips();
 	        break;
 	        case game.STATES.FINISH:
         		
@@ -81,15 +82,18 @@ define(function (require) {
 		// var background = new PIXI.Sprite.fromImage('img/bg.jpg');
 		// this.addChild(background);
 
+		this.player = new Player( "player1", "player", "bluePlanet" );
+		this.enemy = new Player( "enemy1", "enemy", "redPlanet" );
+
 	/* DESTIONATION ARROW */
 		this.arrow = new DestinationArrow();
 		this.addChild(this.arrow);
 
 	/* PLANETS */
 		this.planets = [
-			this.addChild(new Planet(this.arrow, 1, 'player', 150, 150)),
-			this.addChild(new Planet(this.arrow, 2, 'empty', 450, 350)),
-			this.addChild(new Planet(this.arrow, 3, 'opponent', 850, 250))
+			this.addChild(new Planet(this.arrow, "planet1", 150, 150, this.player.type, this.player.planetType)),
+			this.addChild(new Planet(this.arrow, "planet2", 450, 350, "empty", "emptyPlanet")),
+			this.addChild(new Planet(this.arrow, "planet3", 850, 250, this.enemy.type, this.enemy.planetType))
 		];
 
 	/* TEXTS */
@@ -191,21 +195,25 @@ define(function (require) {
 		};
 
 		this.planets.forEach(function(planet){
-			planet.shape.mousedown = planet.shape.touchstart = function(){
+			planet.currentShape.mousedown = planet.currentShape.touchstart = function(){
+				if ( this.parent.team !== 'player' ) {
+					return;
+				}
+
 				that.arrow.setStartXY(this.x, this.y);
 				that.planetTapped = true;
 				that.chosenPlanet = this.parent;
 				this.parent.showTouchMarker();
 			};
 
-			planet.shape.mouseover = function(){
+			planet.currentShape.mouseover = function(){
 				if ( !that.planetTapped || this.parent.id === that.chosenPlanet.id ) return;
 
 				that.destinationPlanet = this.parent;
 				this.parent.showDestinationMarker();
 			};
 
-			planet.shape.mouseout = planet.shape.touchendoutside = function(){
+			planet.currentShape.mouseout = planet.currentShape.touchendoutside = function(){
 				if ( !that.planetTapped || this.parent.id === that.chosenPlanet.id ) return;
 
 				this.parent.hideDestinationMarker();
@@ -217,8 +225,14 @@ define(function (require) {
 	};
 
 	Game.prototype.start = function () {
-		// this.currentState = this.STATES.BET;
-		// this.newState();
+		this.currentState = this.STATES.PLAY;
+		this.newState();
+	};
+
+	Game.prototype.startCreatingShips = function(){
+		this.planets.forEach(function(planet){
+			planet.startCreatingShips();
+		});
 	};
 
 	Game.prototype.activateButtons = function( buttons ){
