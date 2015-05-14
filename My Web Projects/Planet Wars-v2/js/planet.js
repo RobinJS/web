@@ -26,6 +26,7 @@ define(function(require){
 		this.team = team;
 		this.planetType = planetType;
 		this.creationInterval = null;
+		this.shipsAutoCreated = 0;
 		this.ships = [];
 		// this.isDestination = false;
 
@@ -147,11 +148,16 @@ define(function(require){
 
 		var that = this;
 		this.creationInterval = setInterval(function(){
-			that.ships.push( that.addChild(new Ship(that.planetType, that.currentShape.x, that.currentShape.y)));
-			that.updateShipsCount();
+			if ( that.shipsAutoCreated < settings.maxNumOfShips) {
+				var newShip = new Ship( that.team, that.planetType, that.currentShape.x, that.currentShape.y);
+				that.addChild( newShip )
+				that.ships.push( newShip );
 
-			if ( that.ships.length >= settings.maxNumOfShips) {
-				clearInterval(that.creationInterval);
+				that.shipsAutoCreated++;
+				that.updateShipsCount();
+
+
+				// clearInterval(that.creationInterval);
 			}
 		}, 1000);
 	};
@@ -161,6 +167,28 @@ define(function(require){
 		this.shipsCount.updateTransform();
 		var bounds = this.shipsCount.getBounds();
 		this.shipsCount.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
+	};
+
+	Planet.prototype.sendShipsTo = function( destinationPlanet ){
+		var allShips = [];
+
+		while(this.ships.length !== 0){
+			allShips.push(this.ships.splice(0, 1)[0]);
+		}
+
+		this.shipsAutoCreated = 0;
+		this.updateShipsCount();
+
+		allShips.forEach(function(ship, idx){
+			ship.sendTo( destinationPlanet );
+		});
+	};
+
+	Planet.prototype.addShip = function( team, planetType ){
+		var newShip = new Ship( team, planetType, this.currentShape.x, this.currentShape.y);
+		this.addChild( newShip )
+		this.ships.push( newShip );
+		this.updateShipsCount();
 	};
 
 		// this.startCreatingShips = function(){

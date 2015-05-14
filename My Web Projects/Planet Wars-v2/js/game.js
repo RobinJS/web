@@ -175,6 +175,7 @@ define(function (require) {
 			that.arrow.clear();
 			if ( that.destinationPlanet ) {
 				that.destinationPlanet.hideDestinationMarker();
+				that.chosenPlanet.sendShipsTo( that.destinationPlanet );
 			}
 
 			if ( that.chosenPlanet ) {
