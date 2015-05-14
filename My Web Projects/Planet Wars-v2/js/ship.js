@@ -1,17 +1,27 @@
 define(function(){
+	var settings = require('settings'),
+		Signal = require('libs/signals.min'),
+		PIXI = require('libs/pixi.dev');
 
 	var Ship = function( planetType, x, y ){
 		PIXI.DisplayObjectContainer.call(this);
-		
+
 		this.shape = PIXI.Sprite.fromFrame(planetType + 'Ship.png');
-		this.shape.pivot.x = this.shape.width/2;
-		this.shape.pivot.y = this.shape.height/2;
+		this.shape.pivot.x = 0;
+		this.shape.pivot.y = 180;
 		this.shape.scale.x = 0.5;
 		this.shape.scale.y = 0.5;
 		this.shape.x = x;
 		this.shape.y = y;
 		this.shape.visible = true;
 		this.shape.interactive = false;
+		this.addChild(this.shape);
+
+		var speeds = [ 150, 180, 210 ],
+			speed = speeds[Math.floor(Math.random() * speeds.length)];
+
+		this.circleAnimation = new TweenMax(this.shape, speed, { rotation: 360, repeat: -1, ease:Linear.easeNone});
+		this.circleAnimation.play();
 
 		// var team = homePlanet.team;
 		// var color = homePlanet.teamColor;

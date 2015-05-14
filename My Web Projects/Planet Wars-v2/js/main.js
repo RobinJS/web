@@ -7,9 +7,9 @@ require(["libs/pixi.dev", "libs/TweenMax.min", "stage", "settings", "game"],
 		stage.addChild(game);
 		stage.interactive = true;
 
-		game.events.assetsReady.addOnce(function(){
-			game.start();
-		});
+		// game.events.assetsReady.addOnce(function(){
+		// 	game.start();
+		// });
 	}
 	
 	loader.load();

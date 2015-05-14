@@ -2,7 +2,8 @@ define(function(require){
 
 	var settings = require('settings'),
 		Signal = require('libs/signals.min'),
-		PIXI = require('libs/pixi.dev');
+		PIXI = require('libs/pixi.dev'),
+		Ship = require('ship');
 
 		function newSprite( frameId, x, y ){
 			var sprite = PIXI.Sprite.fromFrame(frameId);
@@ -62,6 +63,11 @@ define(function(require){
 		this.destinationMarker.y = y;
 		this.destinationMarker.alpha = 0;
 		this.addChild( this.destinationMarker );
+
+		this.shipsCount = new PIXI.Text("", { font: 'bold 26px Arial', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 2 });
+		this.shipsCount.x = x;
+		this.shipsCount.y = y;
+		this.addChild(this.shipsCount);
 
 		this.rotateAnimation = new TweenMax(this.destinationMarker, 210, {regX: 50, regY:50, rotation: 360, repeat: -1, ease:Linear.easeNone});
 
@@ -141,9 +147,20 @@ define(function(require){
 
 		var that = this;
 		this.creationInterval = setInterval(function(){
-			that.ships.push( this.addChild(new Ship(that.planetType, that.currentShape.x, that.currentShape.y)));
-			// that.ships.push(this.addChild(newSprite('blueShip.png', that.currentShape.x, that.currentShape.y)));
+			that.ships.push( that.addChild(new Ship(that.planetType, that.currentShape.x, that.currentShape.y)));
+			that.updateShipsCount();
+
+			if ( that.ships.length >= settings.maxNumOfShips) {
+				clearInterval(that.creationInterval);
+			}
 		}, 1000);
+	};
+
+	Planet.prototype.updateShipsCount = function(){
+		this.shipsCount.setText( this.ships.length.toString() );
+		this.shipsCount.updateTransform();
+		var bounds = this.shipsCount.getBounds();
+		this.shipsCount.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
 	};
 
 		// this.startCreatingShips = function(){

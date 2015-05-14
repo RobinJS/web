@@ -54,7 +54,7 @@ define(function (require) {
 		var that = this;
 		this.createGameElements(function(){
 			that.addListeners(function(){
-				that.events.assetsReady.dispatch();
+				that.start();
 			});
 		});
 	};

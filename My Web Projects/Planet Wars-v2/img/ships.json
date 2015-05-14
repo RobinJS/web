@@ -1,0 +1,40 @@
+{
+"frames": {
+	"bluePlanetShip.png": {
+		"frame": {"x":0, "y":58, "w":28, "h":28},
+		"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
+		"sourceSize": {"w":28,"h":28}
+	},
+	"greenPlanetShip.png": {
+		"frame": {"x":29, "y":29, "w":28, "h":28},
+		"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
+		"sourceSize": {"w":28,"h":28}
+	},
+	"orangePlanetShip.png": {
+		"frame": {"x":29, "y":0, "w":28, "h":28},
+		"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
+		"sourceSize": {"w":28,"h":28}
+	},
+	"purplePlanetShip.png": {
+		"frame": {"x":29, "y":58, "w":28, "h":28},
+		"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
+		"sourceSize": {"w":28,"h":28}
+	},
+	"redPlanetShip.png": {
+		"frame": {"x":0, "y":29, "w":28, "h":28},
+		"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
+		"sourceSize": {"w":28,"h":28}
+	},
+	"yellowPlanetShip.png": {
+		"frame": {"x":0, "y":0, "w":28, "h":28},
+		"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
+		"sourceSize": {"w":28,"h":28}
+	}
+
+},
+"meta": {
+	"image": "ships.png",
+	"size": {"w": 58, "h": 87},
+	"scale": "1"
+}
+}
