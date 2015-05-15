@@ -1,4 +1,4 @@
-define(function(){
+define(function (require) {
 	var settings = {
 		gameWidth: 1280,
 		gameHeight: 770,

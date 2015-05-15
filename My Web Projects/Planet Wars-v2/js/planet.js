@@ -190,8 +190,12 @@ define(function(require){
 	};
 
 	Planet.prototype.addShip = function( team, planetType ){
+		if ( this.team === "empty" ) {
+			destinationPlanet.setTeam( team, planetType );
+		}
+		
 		var newShip = new Ship( team, planetType, this.currentShape.x, this.currentShape.y);
-		this.addChild( newShip )
+		this.addChild( newShip );
 		this.ships.push( newShip );
 		this.updateShipsCount();
 	};

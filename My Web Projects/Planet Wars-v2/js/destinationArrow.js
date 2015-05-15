@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
 	var settings = require('settings'),
 		PIXI = require('libs/pixi.dev');
 

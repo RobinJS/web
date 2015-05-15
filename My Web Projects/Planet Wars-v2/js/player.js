@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
 
 	var settings = require('settings'),
 		Signal = require('libs/signals.min'),

@@ -1,4 +1,4 @@
-define(function(){
+define(function (require) {
 	var settings = require('settings'),
 		Signal = require('libs/signals.min'),
 		PIXI = require('libs/pixi.dev');
@@ -76,11 +76,8 @@ define(function(){
 
 		this.moveAnimation.to( this.shape, duration, {x: destinationPlanet.currentShape.x, y: destinationPlanet.currentShape.y, ease:Linear.easeNone} );
 
-		TweenMax.to( this.shape.pivot, duration, {x: this.shape.width/2, y: this.shape.width/2, ease: Power4.easeOut, onComplete: function(){
+		TweenMax.to( this.shape.pivot, duration, {x: this.shape.width/2, y: this.shape.width/2, ease: Sine.easeInOut, onComplete: function(){
 			destinationPlanet.addShip( that.team, that.planetType );
-			if ( destinationPlanet.team === "empty" ) {
-				destinationPlanet.setTeam( that.team, that.planetType );
-			}
 			that.parent.removeChild(that);
 			delete that;
 		}});
