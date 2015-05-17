@@ -20,8 +20,10 @@ define(function (require) {
 
 		this.planetTapped = false;
 		this.chosenPlanet = null;
-		this.destinationPlanet = null;
+		this.destinationPlanet = null
 
+		this.shipsInSpace = [];
+		
 		this.events = {
 			assetsReady: new Signal()
 		}
@@ -91,9 +93,9 @@ define(function (require) {
 
 	/* PLANETS */
 		this.planets = [
-			this.addChild(new Planet(this.arrow, "planet1", 150, 150, this.player.type, this.player.planetType)),
-			this.addChild(new Planet(this.arrow, "planet2", 450, 350, "empty", "emptyPlanet")),
-			this.addChild(new Planet(this.arrow, "planet3", 850, 250, this.enemy.type, this.enemy.planetType))
+			this.addChild(new Planet( this, this.arrow, "planet1", 150, 150, this.player.type, this.player.planetType)),
+			this.addChild(new Planet( this, this.arrow, "planet2", 450, 350, "empty", "emptyPlanet")),
+			this.addChild(new Planet( this, this.arrow, "planet3", 850, 250, this.enemy.type, this.enemy.planetType))
 		];
 
 	/* TEXTS */
@@ -175,6 +177,8 @@ define(function (require) {
 
 			that.planetTapped = false;
 			that.arrow.clear();
+			console.log( this.destinationPlanet );
+
 			if ( that.destinationPlanet ) {
 				that.destinationPlanet.hideDestinationMarker();
 				that.chosenPlanet.sendShipsTo( that.destinationPlanet );
@@ -217,12 +221,15 @@ define(function (require) {
 				if ( !that.planetTapped || this.parent.id === that.chosenPlanet.id ) return;
 
 				that.destinationPlanet = this.parent;
+				console.log( this.destinationPlanet );
 				this.parent.showDestinationMarker();
 			};
 
 			planet.currentShape.mouseout = planet.currentShape.touchendoutside = function(){
 				if ( !that.planetTapped || this.parent.id === that.chosenPlanet.id ) return;
 
+				that.destinationPlanet = null;
+				console.log( this.destinationPlanet );
 				this.parent.hideDestinationMarker();
 			};
 			

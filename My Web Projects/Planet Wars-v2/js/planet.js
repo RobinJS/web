@@ -18,9 +18,10 @@ define(function(require){
 			return sprite;
 		}
 
-	var Planet = function( arrow, id, x, y, team, planetType ){
+	var Planet = function( game, arrow, id, x, y, team, planetType ){
 		PIXI.DisplayObjectContainer.call(this);
 
+		this.game = game;
 		this.arrow = arrow;
 		this.id = id;
 		this.team = team;
@@ -31,17 +32,18 @@ define(function(require){
 		// this.isDestination = false;
 
 		// var thisPlanetShipsNum = 0;
-		this.shapeVariations = {
-			bluePlanet: this.addChild(newSprite('bluePlanet.png', x, y)),
-			emptyPlanet: this.addChild(newSprite('emptyPlanet.png', x, y)),
-			greenPlanet: this.addChild(newSprite('greenPlanet.png', x, y)),
-			orangePlanet: this.addChild(newSprite('orangePlanet.png', x, y)),
-			purplePlanet: this.addChild(newSprite('purplePlanet.png', x, y)),
-			redPlanet: this.addChild(newSprite('redPlanet.png', x, y)),
-			yellowPlanet: this.addChild(newSprite('yellowPlanet.png', x, y))
+		this.textures = {
+			bluePlanet: new PIXI.Texture.fromFrame('bluePlanet.png'),
+			emptyPlanet: new PIXI.Texture.fromFrame('emptyPlanet.png'),
+			greenPlanet: new PIXI.Texture.fromFrame('greenPlanet.png'),
+			orangePlanet: new PIXI.Texture.fromFrame('orangePlanet.png'),
+			purplePlanet: new PIXI.Texture.fromFrame('purplePlanet.png'),
+			redPlanet: new PIXI.Texture.fromFrame('redPlanet.png'),
+			yellowPlanet: new PIXI.Texture.fromFrame('yellowPlanet.png')
 		};
 
-		this.currentShape = this.shapeVariations[planetType];
+		this.currentShape =  this.addChild(newSprite('emptyPlanet.png', x, y));
+		this.currentShape.setTexture(this.textures[this.planetType]);
 		this.currentShape.visible = true;
 		this.currentShape.interactive = true;
 
@@ -136,11 +138,8 @@ define(function(require){
 
 	Planet.prototype.setTeam = function( team, planetType ){
 		this.team = team;
-		this.currentShape.visible = false;
-		this.currentShape.interactive = false;
-		this.currentShape = this.shapeVariations[planetType];
-		this.currentShape.visible = true;
-		this.currentShape.interactive = true;
+		this.planetType = planetType;
+		this.currentShape.setTexture(this.textures[planetType]);
 	};
 
 	Planet.prototype.startCreatingShips = function( team, planetType ){
@@ -150,7 +149,7 @@ define(function(require){
 		this.creationInterval = setInterval(function(){
 			if ( that.shipsAutoCreated < settings.maxNumOfShips) {
 				var newShip = new Ship( that.team, that.planetType, that.currentShape.x, that.currentShape.y);
-				that.addChild( newShip )
+				that.game.addChild( newShip )
 				that.ships.push( newShip );
 
 				that.shipsAutoCreated++;
@@ -172,31 +171,37 @@ define(function(require){
 	Planet.prototype.sendShipsTo = function( destinationPlanet ){
 		if ( this.ships.length === 0 ) { return; }
 
-		// CONTINUE FROM HERE
-		var allShips = [];
+		var that = this,
+			shipsToSend = this.ships.length;
 
-		while(this.ships.length !== 0){
-			allShips.push(this.ships.splice(0, 1)[0]);
+		function send(){
+			if ( shipsToSend > 0 ) {
+				setTimeout(function(){
+					var ship = that.ships.splice(0,1)[0];
+					ship.sendTo( destinationPlanet );
+					that.game.shipsInSpace.push( ship );
+					that.shipsAutoCreated--;
+					if ( that.shipsAutoCreated < 0 ) {
+						that.shipsAutoCreated = 0;
+					}
+					that.updateShipsCount();
+					shipsToSend--;
+					send();
+				}, 100);
+			}
 		}
 
-		this.shipsAutoCreated = 0;
-		this.updateShipsCount();
-
-		allShips.forEach(function(ship, idx){
-			setTimeout(function(){
-				ship.sendTo( destinationPlanet );
-			}, 150 * idx);
-		});
+		send();
 	};
 
 	Planet.prototype.addShip = function( team, planetType ){
 		if ( this.team === "empty" ) {
-			destinationPlanet.setTeam( team, planetType );
+			this.setTeam( team, planetType );
+			this.startCreatingShips( team, planetType );
 		}
 		
-		var newShip = new Ship( team, planetType, this.currentShape.x, this.currentShape.y);
-		this.addChild( newShip );
-		this.ships.push( newShip );
+		var ship = this.game.shipsInSpace.splice(0,1)[0];
+		this.ships.push( ship );
 		this.updateShipsCount();
 	};
 

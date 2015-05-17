@@ -78,8 +78,10 @@ define(function (require) {
 
 		TweenMax.to( this.shape.pivot, duration, {x: this.shape.width/2, y: this.shape.width/2, ease: Sine.easeInOut, onComplete: function(){
 			destinationPlanet.addShip( that.team, that.planetType );
-			that.parent.removeChild(that);
-			delete that;
+			TweenMax.to( that.shape.pivot, 0.5, {x: 0, y: 180});
+			that.circleAnimation.play();
+			// that.parent.removeChild(that);
+			// delete that;
 		}});
 	};
 

@@ -14,6 +14,9 @@ require(["libs/pixi.dev", "libs/TweenMax.min", "stage", "settings", "game"],
 	
 	loader.load();
 
+	// to fix: move ships to planet b, then back to a, check shipsAutoCreated
+	
+
 	// create planes
 	// set starting planet
 	// set opponent(s) planets
