@@ -18,14 +18,14 @@ define(function(require){
 			return sprite;
 		}
 
-	var Planet = function( game, arrow, id, x, y, team, planetType ){
+	var Planet = function( game, player, id, x, y ){
 		PIXI.DisplayObjectContainer.call(this);
 
 		this.game = game;
-		this.arrow = arrow;
+		this.player = player;
 		this.id = id;
-		this.team = team;
-		this.planetType = planetType;
+		this.team = this.player ? this.player.type : "empty";
+		this.planetType = this.player ? this.player.planetType : "emptyPlanet";
 		this.creationInterval = null;
 		this.shipsAutoCreated = 0;
 		this.ships = [];
@@ -86,36 +86,6 @@ define(function(require){
 	Planet.prototype.addListeners = function(){
 		var that = this;
 
-	// this.currentShape.mousedown = function(){
-		// 	that.arrow.setStartXY( that.currentShape.x, that.currentShape.y );
-		// 	that.events.onMouseDown.dispatch();
-			// settings.clickedPlanet = this;
-
-			// arrow.setStartPosition( this.x, this.y );
-			// markers.placeTouchMarker( this.x, this.y );
-			
-			// mainStage.addEventListener('stagemousemove', arrow.drawArrow);
-		// };
-
-		// this.currentShape.addEventListener('mouseover', function(e){
-		// 	if ( settings.clickedPlanet === null || this.id === settings.clickedPlanet.id ) return;
-
-		// 	// settings.destinationPlanet = this;
-		// 	markers.placeDestinationMarker(this.x, this.y);
-		// }.bind(this));
-
-		// this.currentShape.addEventListener('mouseout', function(e){
-		// 	// if ( !this.isDestination ) return;
-
-		// 	markers.removeDestinationMarker(this.x, this.y);
-		// }.bind(this));
-
-		// this.currentShape.on('pressup', function(){
-		// 	// this.isDestination = true;
-		// 	// thisPlanetShipsNum += settings.clickedPlanet.getShipsNum();
-		// 	// this.text.text = thisPlanetShipsNum;
-			
-		// }.bind(this));
 	};
 
 	Planet.prototype.showTouchMarker = function(){
@@ -161,6 +131,31 @@ define(function(require){
 		}, 1000);
 	};
 
+
+
+/*
+	var SmallObj = function(id, parent){
+		this.id = id;
+        this.parent = parent;
+		this.die = function(){
+			this.parent.forEach(function(obj, ind){
+				if ( obj.id === this.id ) {
+					this.parent.splice(this.parent[ind], 1);
+				}
+			}.bind(this));
+		}
+	};
+
+	this.c = [];
+	this.c.push(new SmallObj(1, this.c));
+	this.c.push(new SmallObj(2, this.c));
+*/
+
+	// add ships to container inside player
+
+
+
+
 	Planet.prototype.updateShipsCount = function(){
 		this.shipsCount.setText( this.ships.length.toString() );
 		this.shipsCount.updateTransform();
@@ -194,15 +189,36 @@ define(function(require){
 		send();
 	};
 
-	Planet.prototype.addShip = function( team, planetType ){
-		if ( this.team === "empty" ) {
-			this.setTeam( team, planetType );
-			this.startCreatingShips( team, planetType );
-		}
+	Planet.prototype.addShip = function( team, planetType, deleteShip ){
+		// if ( this.team === team ) {
+		// 	// arrives at same team planet
+		// 	var ship = this.game.shipsInSpace.splice(0,1)[0];
+		// 	this.ships.push( ship );
+		// } else if ( this.team === "empty" ) {
+		// 	// first time on empty planet
+		// 	this.setTeam( team, planetType );
+		// 	this.startCreatingShips( team, planetType );
+		// 	var ship = this.game.shipsInSpace.splice(0,1)[0];
+		// 	this.ships.push( ship );
+		// } else {
+		// 	// arrives at enemy planet
+		// 	if ( this.ships.length > 0 ) {
+		// 		// fights agains enemy ship
+		// 		this.game.shipsInSpace.splice(0,1)[0];
+		// 		this.ships.splice(0, 1);
+		// 		this.shipsAutoCreated--;
+		// 	} else {
+		// 		// takes over the planet
+		// 		this.shipsAutoCreated = 0;
+		// 		this.setTeam( team, planetType );
+		// 		// var ship = this.game.shipsInSpace.splice(0,1)[0];
+		// 		// this.ships.push( ship );
+		// 	}
+		// }
+
+		// ;;;console.log(this.ships.length);
 		
-		var ship = this.game.shipsInSpace.splice(0,1)[0];
-		this.ships.push( ship );
-		this.updateShipsCount();
+		// this.updateShipsCount();
 	};
 
 		// this.startCreatingShips = function(){

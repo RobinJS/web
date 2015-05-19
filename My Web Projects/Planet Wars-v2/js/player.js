@@ -4,12 +4,13 @@ define(function (require) {
 		Signal = require('libs/signals.min'),
 		PIXI = require('libs/pixi.dev');
 
-	var Player = function( id, type, planetType ){
+	var Player = function( id, team, planetType ){
 		PIXI.DisplayObjectContainer.call(this);
 
 		this.id = id;
-		this.type = type;
+		this.team = team;
 		this.planetType = planetType;
+		this.ships = [];
 	};
 
 	Player.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
