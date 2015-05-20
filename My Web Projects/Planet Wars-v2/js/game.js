@@ -21,6 +21,7 @@ define(function (require) {
 		this.planetTapped = false;
 		this.chosenPlanet = null;
 		this.destinationPlanet = null;
+		this.newShipID = 0;
 
 		this.events = {
 			assetsReady: new Signal()
@@ -85,7 +86,9 @@ define(function (require) {
 
 	/* PLAYERS*/
 		this.player = new Player( "player1", "player", "bluePlanet" );
+		this.addChild(this.player);
 		this.enemy = new Player( "enemy1", "enemy", "redPlanet" );
+		this.addChild(this.enemy);
 
 	/* DESTIONATION ARROW */
 		this.arrow = new DestinationArrow();
@@ -254,6 +257,11 @@ define(function (require) {
 		// buttons.forEach(function( btn ){
 		// 	btn.deactivate();
 		// });
+	};
+
+	Game.prototype.getNewId = function(){
+		this.newShipID++;
+		return this.newShipID.toString();
 	};
 
 	return Game;

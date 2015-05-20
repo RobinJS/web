@@ -10,11 +10,10 @@ define(function (require) {
 		this.id = id;
 		this.team = team;
 		this.planetType = planetType;
-		this.ships = [];
+		
 	};
 
 	Player.prototype = Object.create( PIXI.DisplayObjectContainer.prototype );
-
 	
 	return Player;
 });

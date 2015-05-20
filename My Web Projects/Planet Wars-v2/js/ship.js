@@ -3,15 +3,20 @@ define(function (require) {
 		Signal = require('libs/signals.min'),
 		PIXI = require('libs/pixi.dev');
 
-	var Ship = function( team, planetType, x, y ){
+	var Ship = function( player, currentPlanet, id, x, y ){
 		PIXI.DisplayObjectContainer.call(this);
 
-		this.team = team;
-		this.planetType = planetType;
+		this.player = player;
+		this.currentPlanet = currentPlanet;
+		this.id = id;
+		this.team = this.player.team;
+		this.planetType = this.player.planetType;
+
+		this.isFlyingToAnotherPLanet = false;
 		// this.x = x;
 		// this.y = y;
 
-		this.shape = PIXI.Sprite.fromFrame(planetType + 'Ship.png');
+		this.shape = PIXI.Sprite.fromFrame(this.planetType + 'Ship.png');
 		this.shape.pivot.x = 0;
 		this.shape.pivot.y = 180;
 		this.shape.scale.x = 0.5;
@@ -83,13 +88,49 @@ define(function (require) {
 
 		TweenMax.to( this.shape.pivot, duration, {x: this.shape.width/2, y: this.shape.width/2, ease: Sine.easeInOut, onComplete: function(){
 			// check this planet and decide what to do
-			
+			that.onArrival( destinationPlanet );
 			// destinationPlanet.addShip( that.team, that.planetType, toBeDestroyed );
-			TweenMax.to( that.shape.pivot, 0.5, {x: 0, y: 180});
-			that.circleAnimation.play();
+			// TweenMax.to( that.shape.pivot, 0.5, {x: 0, y: 180});
+
+			// that.circleAnimation.play();
 			// that.parent.removeChild(that);
 			// delete that;
 		}});
+	};
+
+	Ship.prototype.onArrival = function( destinationPlanet ){
+		this.selfDestruct();
+
+		if ( destinationPlanet.team === this.team ) {
+			// arrives at same team planet
+			destinationPlanet.createShip();
+		} else if ( destinationPlanet.team === "empty" ) {
+			// first time on empty planet
+			destinationPlanet.setProps( this.player );
+			destinationPlanet.createShip();
+			destinationPlanet.startCreatingShips();
+		} else {
+			// arrives at enemy planet
+			if ( destinationPlanet.ships.length > 0 ) {
+				// fights agains enemy ship
+				destinationPlanet.killAShip();
+			} else {
+				// takes over the planet
+				destinationPlanet.setProps( this.player );
+				destinationPlanet.createShip();
+				destinationPlanet.shipsAutoCreated = 0;
+			}
+		}
+	};
+
+	Ship.prototype.selfDestruct = function(){
+		this.currentPlanet.killAShip(this);
+		// this.currentPlanet.shipsContainer.children.forEach(function(ship, index){
+		// 	if ( ship.id === this.id ) {
+		// 		this.currentPlanet.shipsContainer.removeChild( this );
+		// 		this.currentPlanet.
+		// 	}
+		// }.bind(this));
 	};
 
 	return Ship;
