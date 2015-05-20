@@ -111,7 +111,7 @@ define(function (require) {
 			destinationPlanet.startCreatingShips();
 		} else {
 			// arrives at enemy planet
-			if ( destinationPlanet.ships.length > 0 ) {
+			if ( destinationPlanet.shipsCount > 0 ) {
 				// fights agains enemy ship
 				destinationPlanet.killAShip();
 			} else {

@@ -30,7 +30,7 @@ define(function(require){
 		this.shipsAutoCreated = 0;
 		this.shipsContainer = new PIXI.DisplayObjectContainer();
 		this.addChild(this.shipsContainer);
-		this.ships = [];
+		this.shipsCount = 0;
 
 		// this.isDestination = false;
 
@@ -70,10 +70,10 @@ define(function(require){
 		this.destinationMarker.alpha = 0;
 		this.addChild( this.destinationMarker );
 
-		this.shipsCount = new PIXI.Text("", { font: 'bold 26px Arial', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 2 });
-		this.shipsCount.x = x;
-		this.shipsCount.y = y;
-		this.addChild(this.shipsCount);
+		this.shipsCountText = new PIXI.Text("", { font: 'bold 26px Arial', fill: '#ffffff', align: 'center', stroke: '#000000', strokeThickness: 2 });
+		this.shipsCountText.x = x;
+		this.shipsCountText.y = y;
+		this.addChild(this.shipsCountText);
 
 		this.rotateAnimation = new TweenMax(this.destinationMarker, 210, {regX: 50, regY:50, rotation: 360, repeat: -1, ease:Linear.easeNone});
 
@@ -131,7 +131,7 @@ define(function(require){
 	Planet.prototype.createShip = function(){
 		var newShip = new Ship( this.player, this, this.game.getNewId, this.currentShape.x, this.currentShape.y );
 		this.shipsContainer.addChild( newShip );
-		this.ships.push( newShip );
+		this.shipsCount++;
 		this.updateShipsCountText();
 	};
 
@@ -141,33 +141,34 @@ define(function(require){
 		} else {
 			this.shipsContainer.removeChildAt( 0 );
 		}
-		this.ships.splice( 0, 1 );
+		this.shipsCount--;
+		this.shipsAutoCreated--;
 		this.updateShipsCountText();
 	};
 
 	Planet.prototype.updateShipsCountText = function(){
-		this.shipsCount.setText( this.ships.length.toString() );
-		this.shipsCount.updateTransform();
-		var bounds = this.shipsCount.getBounds();
-		this.shipsCount.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
+		this.shipsCountText.setText( this.shipsCount.toString() );
+		this.shipsCountText.updateTransform();
+		var bounds = this.shipsCountText.getBounds();
+		this.shipsCountText.pivot = new PIXI.Point(bounds.width / 2, bounds.height / 2);
 	};
 
 	Planet.prototype.sendShipsTo = function( destinationPlanet ){
-		if ( this.shipsContainer.children.length === 0 || this.ships.length === 0 ) { return; }
+		if ( this.shipsContainer.children.length === 0 || this.shipsCount === 0 ) { return; }
 
 		var that = this,
-			shipsToSend = this.ships.splice(0, this.ships.length);
+			shipsToSend = this.shipsContainer.children.slice(0, this.shipsContainer.children.length);
 
 		function send(){
 			if ( shipsToSend.length > 0 ) {
 				setTimeout(function(){
 					var ship = shipsToSend.splice(0,1)[0];
 					ship.sendTo( destinationPlanet );
+					that.shipsCount--;
 					that.shipsAutoCreated--;
 
-					if ( that.shipsAutoCreated < 0 ) {
-						that.shipsAutoCreated = 0;
-					}
+					if ( that.shipsAutoCreated < 0 ) { that.shipsAutoCreated = 0; }
+					if ( that.shipsCount < 0 ) { that.shipsCount = 0; }
 
 					that.updateShipsCountText();
 					send();
