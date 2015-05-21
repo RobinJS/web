@@ -141,8 +141,6 @@ define(function(require){
 		} else {
 			this.shipsContainer.removeChildAt( 0 );
 		}
-		this.shipsCount--;
-		this.shipsAutoCreated--;
 		this.updateShipsCountText();
 	};
 
