@@ -17,8 +17,8 @@ define(function (require) {
 		// this.y = y;
 
 		this.shape = PIXI.Sprite.fromFrame(this.planetType + 'Ship.png');
-		this.shape.pivot.x = 0;
-		this.shape.pivot.y = 180;
+		this.shape.pivot.x = this.shape.width/2;
+		this.shape.pivot.y = this.shape.height/2;
 		this.shape.scale.x = 0.5;
 		this.shape.scale.y = 0.5;
 		this.shape.x = x;
@@ -111,7 +111,7 @@ define(function (require) {
 			destinationPlanet.startCreatingShips();
 		} else {
 			// arrives at enemy planet
-			if ( destinationPlanet.shipsCount > 0 ) {
+			if ( destinationPlanet.shipsContainer.children.length > 0 ) {
 				// fights agains enemy ship
 				destinationPlanet.killAShip();
 			} else {

@@ -181,6 +181,7 @@ define(function (require) {
 			that.planetTapped = false;
 			that.arrow.clear();
 			if ( that.destinationPlanet ) {
+				;;;console.log(that.destinationPlanet);
 				that.destinationPlanet.hideDestinationMarker();
 				that.chosenPlanet.sendShipsTo( that.destinationPlanet );
 				that.destinationPlanet = null;
@@ -197,6 +198,7 @@ define(function (require) {
 
 			that.planetTapped = false;
 			that.arrow.clear();
+			;;;console.log(that.destinationPlanet);
 			if ( that.destinationPlanet ) {
 				that.destinationPlanet.hideDestinationMarker();
 			}
@@ -226,8 +228,9 @@ define(function (require) {
 			};
 
 			planet.currentShape.mouseout = planet.currentShape.touchendoutside = function(){
-				if ( !that.planetTapped || this.parent.id === that.chosenPlanet.id ) return;
+				// if ( !that.planetTapped || this.parent.id === that.chosenPlanet.id ) return;
 
+				that.destinationPlanet = null;
 				this.parent.hideDestinationMarker();
 			};
 			

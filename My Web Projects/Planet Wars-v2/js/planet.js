@@ -131,6 +131,12 @@ define(function(require){
 	Planet.prototype.createShip = function(){
 		var newShip = new Ship( this.player, this, this.game.getNewId, this.currentShape.x, this.currentShape.y );
 		this.shipsContainer.addChild( newShip );
+
+		var levels = [ 120, 150, 180 ],
+			level = levels[Math.floor(Math.random() * levels.length)];
+
+		TweenMax.to(newShip.shape.pivot, 0.5, {x: 0, y: level});
+
 		this.shipsCount++;
 		this.updateShipsCountText();
 	};
@@ -140,6 +146,8 @@ define(function(require){
 			this.shipsContainer.removeChild( ship );
 		} else {
 			this.shipsContainer.removeChildAt( 0 );
+			this.shipsCount--;
+			this.shipsAutoCreated--;
 		}
 		this.updateShipsCountText();
 	};
