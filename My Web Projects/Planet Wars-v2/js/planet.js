@@ -7,8 +7,8 @@ define(function(require){
 
 		function newSprite( frameId, x, y ){
 			var sprite = PIXI.Sprite.fromFrame(frameId);
-			sprite.pivot.x = sprite.width/2;
-			sprite.pivot.y = sprite.height/2;
+			sprite.pivot.x = (sprite.getBounds().width)/2;
+			sprite.pivot.y = (sprite.getBounds().height)/2;
 			sprite.scale.x = 0.5;
 			sprite.scale.y = 0.5;
 			sprite.x = x;
@@ -45,14 +45,17 @@ define(function(require){
 			yellowPlanet: new PIXI.Texture.fromFrame('yellowPlanet.png')
 		};
 
-		this.currentShape =  this.addChild(newSprite('emptyPlanet.png', x, y));
+		this.currentShape = this.addChild(newSprite('emptyPlanet.png', x, y));
 		this.currentShape.setTexture(this.textures[this.planetType]);
+
+		this.currentShape.pivot.x = this.currentShape.texture.width / 2;
+		this.currentShape.pivot.y = this.currentShape.texture.height / 2;
 		this.currentShape.visible = true;
 		this.currentShape.interactive = true;
 
 		this.touchMarker = PIXI.Sprite.fromFrame("img/touchMarker.png");
-		this.touchMarker.pivot.x = this.touchMarker.width/2;
-		this.touchMarker.pivot.y = this.touchMarker.height/2;
+		this.touchMarker.pivot.x = (this.touchMarker.getBounds().width)/2;
+		this.touchMarker.pivot.y = (this.touchMarker.getBounds().height)/2;
 		this.touchMarker.scale.x = 0.5;
 		this.touchMarker.scale.y = 0.5;
 		this.touchMarker.x = x;
@@ -61,8 +64,8 @@ define(function(require){
 		this.addChild( this.touchMarker );
 
 		this.destinationMarker = PIXI.Sprite.fromFrame("img/destinationMarker.png");
-		this.destinationMarker.pivot.x = this.destinationMarker.width/2;
-		this.destinationMarker.pivot.y = this.destinationMarker.height/2;
+		this.destinationMarker.pivot.x = (this.destinationMarker.getBounds().width)/2;
+		this.destinationMarker.pivot.y = (this.destinationMarker.getBounds().height)/2;
 		this.destinationMarker.scale.x = 0.5;
 		this.destinationMarker.scale.y = 0.5;
 		this.destinationMarker.x = x;
@@ -114,6 +117,8 @@ define(function(require){
 		this.team = player.team;
 		this.planetType = player.planetType;
 		this.currentShape.setTexture(this.textures[this.planetType]);
+		this.currentShape.pivot.x = this.currentShape.texture.width / 2;
+		this.currentShape.pivot.y = this.currentShape.texture.height / 2;
 	};
 
 	Planet.prototype.startCreatingShips = function(){
