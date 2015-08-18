@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 16px Verdana, Arial; }
+      form { border: 1px solid #000000; padding: 3px; position: relative; bottom: 0; width: 100%; float: left; }
+      form input { border: 0; padding: 10px; width: 85%; margin-right: .5%; }
+      form button { width: 14%; background: #AFE89B; border: none; padding: 10px; float: right; }
+      #messages { list-style-type: none; margin: 10px 0; padding: 0; position: relative; float: left; height: 580px; width: 100%; overflow-y: scroll; }
+      #messages li { padding: 5px 10px; margin: 0px 5px; border-radius: 10px; margin-left: 50px; }
+      #messages li.myMessage { background: #D3EFFE; }
+      #messages li.friendMessage { background: #C5FFCE; }
+      #wrapper { width: 400px; height: 600px; border: 1px solid #000000; }
+      #usersOnline { width: 100px; height: 600px; position: absolute; top: 0; left: 410px; border: 1px solid #000; list-style-type: none; padding: 0 5px; }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <ul id="messages"></ul>
+      <form action="">
+        <input id="m" autocomplete="off" autofocus/><button>Send</button>
+      </form>
+      <p id="name" autocomplete="off" disabled="true"></p>
+      <ul id="usersOnline"></ul>
+    </div>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      window.onload = function(){
+        askForUsername();
+      };
+
+      window.onunload = function(){
+        socket.emit('user disconnecting', userName );
+      };
+
+      var socket = io();
+
+      var userName = null,
+        lastSender = null,
+        yourLastMessage = null,
+        messageBox = $('#m');
+
+       messageBox.keyup(function(e){
+        if ( e.keyCode === 38 && yourLastMessage !== null ) {
+          messageBox.val(yourLastMessage)
+        }
+       });
+
+      $('form').submit(function(){
+        var msg = messageBox.val();
+        var sendObj = { sender: userName, msg: msg };
+        socket.emit('chat message', JSON.stringify(sendObj) );
+        yourLastMessage = msg;
+        messageBox.val('');
+        return false;
+      });
+
+      socket.on('update online users', function( usersOnline, ip ){
+        ;;;console.log(ip);
+        $('#usersOnline li').remove();
+        usersOnline.forEach(function( user ){
+          $('#usersOnline').append( $('<li>').text( user ) );
+        });
+
+      });
+
+      socket.on('ask for username', function(){
+        var msg = "Sorry, this username is taken. ";
+        askForUsername( msg );
+      });
+
+      socket.on('disconnect', function(){
+        // reset();
+        alert("Sorry, the server is down.");
+      });
+
+      socket.on('chat message', function( data ){
+        var data = JSON.parse(data),
+          li = null;
+        
+          if ( lastSender !== data.sender ) {
+            var senderMsg = $('<li>').text( data.sender + ":").css('font-weight', 'bold');
+            $('#messages').append( senderMsg );
+          }
+
+          li = $('<li>').text( data.msg );
+
+          if ( data.sender === userName ) {
+            li.addClass('myMessage');
+          } else {
+            li.addClass('friendMessage');
+          }
+
+        $('#messages').append(li);
+        updateScroll();
+        lastSender = data.sender;
+      });
+
+      var messages = document.getElementById("messages");
+
+      function updateScroll (){
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      function askForUsername( msg ) {
+        var msg = msg || "";
+        while (userName == null ) {
+          userName = prompt(msg + "Enter username: ");
+          if ( userName != null ) {
+            $('#name').text("Your name is: " + userName);
+            socket.emit('user connecting', userName );
+          }
+        }
+      }
+
+      function reset(){
+        $('#usersOnline li').remove();
+        $('#name').text("Your name is: ");
+      }
+
+    </script>
+  </body>
+</html>
